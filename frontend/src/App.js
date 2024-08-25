@@ -6,6 +6,7 @@ import {createBrowserRouter,RouterProvider} from 'react-router-dom'
 // import Signup from './pages/User/Signup';
 // import Profile from './pages/Employee/Profile';
 import LandingPage from './pages/Landing/LandingPage';
+import Thankyou from './pages/Thankyou/Thankyou';
 
 
 
@@ -29,6 +30,10 @@ function App() {
     {
       path:'/Admin',
       element:<AdminHome/>
+    },
+    {
+      path:'/thankyou',
+      element:<Thankyou/>
     },
     // {
     //   path:'/Employee/:username',
