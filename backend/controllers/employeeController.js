@@ -74,7 +74,7 @@ const Login = async (req, res) => {
 // Get all employees
 const GetEmp = async (req, res) => {
     try {
-        const employees = await EmpModel.find({});
+        const employees = await EmpModel.find({"empId": req.body.empId});
         res.status(200).json(employees);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
