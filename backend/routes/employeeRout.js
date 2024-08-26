@@ -4,6 +4,6 @@ const checkUser = require('../middleware/auth')
 
 router.post('/login',Login)
 router.post('/signup',Signup)
-router.get('/getEmp',checkUser ,GetEmp)
+router.post('/getEmp',checkUser ,GetEmp)
 
 module.exports = router;

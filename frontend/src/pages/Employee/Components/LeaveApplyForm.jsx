@@ -4,13 +4,16 @@ const LeaveApplyForm = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
   const [leaveReason, setLeaveReason] = useState('');
-  const [isUrgent, setIsUrgent] = useState(false);
+  const [fromFirstHalf, setfromFirstHalf] = useState(false);
+  const [fromSecondHalf, setfromSecondHalf] = useState(false);
+  const [toFirstHalf, settoFirstHalf] = useState(false);
+  const [toSecondHalf, settoSecondHalf] = useState(false);
   const [leaveType, setLeaveType] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // Handle form submission logic here
-    console.log({ fromDate, toDate, leaveReason, isUrgent, leaveType });
+    console.log({ fromDate, toDate, leaveReason, leaveType });
   };
 
   return (
@@ -32,7 +35,7 @@ const LeaveApplyForm = () => {
                 <option value="sick">Sick Leave</option>
                 <option value="vacation">Vacation Leave</option>
                 <option value="casual">Casual Leave</option>
-              </select>
+              </select> 
             </div>
 
             <div className='w-[40%]'>
@@ -68,8 +71,8 @@ const LeaveApplyForm = () => {
                   <input
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
-                    checked={isUrgent}
-                    onChange={() => setIsUrgent(!isUrgent)}
+                    checked={fromFirstHalf}
+                    onChange={() => setfromFirstHalf(!fromFirstHalf)}
                   />
                   <label className="ml-2 text-gray-700">First Half</label>
                 </div>
@@ -78,8 +81,8 @@ const LeaveApplyForm = () => {
                   <input
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
-                    checked={isUrgent}
-                    onChange={() => setIsUrgent(!isUrgent)}
+                    checked={fromSecondHalf}
+                    onChange={() => setfromSecondHalf(!fromSecondHalf)}
                   />
                   <label className="ml-2 text-gray-700">Second Half</label>
                 </div>
@@ -93,7 +96,7 @@ const LeaveApplyForm = () => {
                 <input
                   type="date"
                   className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
-                  value={fromDate}
+                  value={toDate}
                   onChange={(e) => setToDate(e.target.value)}
                   required
                 />
@@ -104,18 +107,18 @@ const LeaveApplyForm = () => {
                   <input
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
-                    checked={isUrgent}
-                    onChange={() => setIsUrgent(!isUrgent)}
+                    checked={toFirstHalf}
+                    onChange={() => settoFirstHalf(!toFirstHalf)}
                   />
-                  <label className="ml-2 text-gray-700">First Half</label>
+                  <label className="ml-2 textay-700">First Half</label>
                 </div>
 
                 <div className="flex items-center mt-7">
                   <input
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
-                    checked={isUrgent}
-                    onChange={() => setIsUrgent(!isUrgent)}
+                    checked={toSecondHalf}
+                    onChange={() => settoSecondHalf(!toSecondHalf)}
                   />
                   <label className="ml-2 text-gray-700">Second Half</label>
                 </div>
