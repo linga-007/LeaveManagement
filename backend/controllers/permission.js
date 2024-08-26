@@ -1,3 +1,4 @@
+const { EmpModel } = require('../models/employeeSchema');
 const { PermissionModel } = require('../models/permissionSchem'); // Replace with the correct path
 
 // Apply for permission
@@ -5,16 +6,24 @@ const ApplyPermission = async (req, res) => {
     try {
         const { empId, role, hrs, reason } = req.body;
 
-        const newPermission = new PermissionModel({
-            empId,
-            role,
-            hrs,
-            reason
-        });
+        const emp = await EmpModel.findById(empId);
+        if (!empId) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
 
-        await newPermission.save();
-
-        res.status(201).json({ message: 'Permission applied successfully', permission: newPermission });
+        if(emp.permission < 4){
+            const newPermission = new PermissionModel({
+                empId,
+                role,
+                hrs,
+                reason
+            });
+            await newPermission.save();
+            res.status(201).json({ message: 'Permission applied successfully', permission: newPermission });
+        }
+        else{
+            return res.status(403).json({ message: 'Insufficient permission level' });
+        }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -30,8 +39,12 @@ const AcceptPermission = async (req, res) => {
             return res.status(404).json({ message: 'Permission not found' });
         }
 
+        const emp = await EmpModel.findById(permission.empId);
+
+        emp.permission += 1;
         permission.status = 'Approved';
         await permission.save();
+        await emp.save();
 
         res.status(200).json({ message: 'Permission approved successfully', permission });
     } catch (error) {
