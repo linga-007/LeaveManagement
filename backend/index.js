@@ -19,15 +19,20 @@ app.use('/emp',EmpRout)
 app.use('/leave',LeaveRout)
 app.use('/permission',PermissionRout)
 
-cron.schedule('* * * * *', () => {
-    const now = new Date();
-    if (now.getDate() === 1) {
-        resetData();
-    }
+cron.schedule('0 0 1 2 *', () => {
+    resetGVR();
 });
 
-const resetData = async() => {
-    console.log('reset')
+cron.schedule('0 0 1 * *', () => {
+    reset3P();
+});
+
+const reset3P = async() => {
+    console.log('3P')
+}
+
+const resetGVR = async() => {
+    console.log('GVR')
 }
 
 app.get("/test", (req, res)=>{
