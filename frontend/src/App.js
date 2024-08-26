@@ -6,6 +6,7 @@ import {createBrowserRouter,RouterProvider} from 'react-router-dom'
 // import Signup from './pages/User/Signup';
 // import Profile from './pages/Employee/Profile';
 import LandingPage from './pages/Landing/LandingPage';
+import EmployeeHomePage from './pages/Employee/EmployeeHome';
 
 
 
@@ -25,6 +26,10 @@ function App() {
     {
       path:'/',
       element:<LandingPage/>
+    },
+    {
+      path:'/Employee',
+      element:<EmployeeHomePage/>
     },
     {
       path:'/Admin',
