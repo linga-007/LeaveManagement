@@ -51,6 +51,7 @@ const Login = async (req, res) => {
         const { empId, password } = req.body;
 
         // Find employee by ID
+        console.log(empId , password);  
         const employee = await EmpModel.findOne({ empId });
         if (!employee) {
             return res.status(400).json({ message: 'Employee not found' });
@@ -74,11 +75,14 @@ const Login = async (req, res) => {
 // Get all employees
 const GetEmp = async (req, res) => {
     try {
+        console.log(req.body.empId);
         const employees = await EmpModel.find({"empId": req.body.empId});
+
+        console.log(employees)
         res.status(200).json(employees);
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
-    }
+        res.status(500).json({ message: 'Server error', error });
+    }
 }
 
 module.exports = {Login,Signup,GetEmp}
