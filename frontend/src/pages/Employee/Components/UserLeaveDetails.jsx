@@ -20,7 +20,7 @@ function table() {
             <thead className="divide-y divide-gray-200 bg-white">
               <tr className="bg-gray-50">
                 {tableHead.map((val, index) => (
-                  <th key={index} className="px-5 py-5  border border-gray-400 text-left text-xs text-gray-500 uppercase  text-balance break-words">
+                  <th key={index} className="px-5 py-3  border border-gray-400 text-left text-xs text-gray-500 uppercase  text-balance break-words">
                     <div className='flex justify-center items-center'>
                     {val}
                       </div>
