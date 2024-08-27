@@ -1,14 +1,53 @@
 import React, { useState } from 'react';
+import { render } from '@react-email/render';
+
+import EmailTemplate from '../../EmailTemplate';
 
 const LeaveApplyForm = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
-  const [leaveReason, setLeaveReason] = useState('');
-  const [fromFirstHalf, setfromFirstHalf] = useState(false);
-  const [fromSecondHalf, setfromSecondHalf] = useState(false);
-  const [toFirstHalf, settoFirstHalf] = useState(false);
-  const [toSecondHalf, settoSecondHalf] = useState(false);
+
+  const [leaveDetail,setLeaveDetail] = useState('')
+  const [fromFirstHalf, setFromFirstHalf] = useState(false);
+  const [fromSecondHalf, setFromSecondHalf] = useState(false);
+  const [toFirstHalf, setToFirstHalf] = useState(false);
+  const [toSecondHalf, setToSecondHalf] = useState(false);
+
   const [leaveType, setLeaveType] = useState('');
+  const [leaveReason, setLeaveReason] = useState('');
+
+  var img = "https://www.gilbarco.com/us/sites/gilbarco.com.us/files/2022-07/gilbarco_logo.png"
+  const sendEmail = async (e) => {
+     e.preventDefault()
+    console.log("SENDING...")
+    const emailContent =await render(   <EmailTemplate
+      leaveType={leaveType}
+      fromDate={fromDate}
+      toDate={toDate}
+      leaveReason={leaveDetail}
+      userName="Kishore"
+      imageUrl={img}
+      fromFirstHalf={fromFirstHalf?"Yes":"No"}
+      fromSecondHalf={fromSecondHalf?"Yes":"No"}
+      toFirstHalf={toFirstHalf?"Yes":"No"}
+      toSecondHalf={toSecondHalf?"Yes":"No"}
+    />);
+    console.log(emailContent);
+    const response = await fetch('http://localhost:5000/send-email', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ emailContent }),
+    });
+
+    if (response.ok) {
+      alert('Email sent successfully!');
+    } else {
+      alert('Failed to send email.');
+    }
+  }; 
+
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -19,7 +58,7 @@ const LeaveApplyForm = () => {
   return (
     <div className='w-[80%] shadow-lg mx-2 p-2 border-2 border-black'>
       <h2 className="text-2xl font-bold mb-4">Leave Apply Form</h2>
-      <form onSubmit={handleSubmit} className='w-[90%] flex justify-center'>
+      <form onSubmit={sendEmail} className='w-[90%] flex justify-center'>
         <div className='w-[95%]'>
           
           <div className='flex w-full justify-between'>
@@ -31,7 +70,6 @@ const LeaveApplyForm = () => {
                 onChange={(e) => setLeaveType(e.target.value)}
                 required
               >
-                <option value="">Select Leave Type</option>
                 <option value="sick">Sick Leave</option>
                 <option value="vacation">Vacation Leave</option>
                 <option value="casual">Casual Leave</option>
@@ -39,14 +77,13 @@ const LeaveApplyForm = () => {
             </div>
 
             <div className='w-[40%]'>
-              <label className="block text-gray-700 mb-1">Leave Type</label>
+              <label className="block text-gray-700 mb-1">Leave Reason</label>
               <select
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
-                value={leaveType}
-                onChange={(e) => setLeaveType(e.target.value)}
+                value={leaveReason}
+                onChange={(e) => setLeaveReason(e.target.value)}
                 required
               >
-                <option value="">Select Leave Type</option>
                 <option value="sick">Sick Leave</option>
                 <option value="vacation">Vacation Leave</option>
                 <option value="casual">Casual Leave</option>
@@ -72,7 +109,9 @@ const LeaveApplyForm = () => {
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
                     checked={fromFirstHalf}
-                    onChange={() => setfromFirstHalf(!fromFirstHalf)}
+
+                    onChange={() => setFromFirstHalf(!fromFirstHalf)}
+
                   />
                   <label className="ml-2 text-gray-700">First Half</label>
                 </div>
@@ -82,7 +121,9 @@ const LeaveApplyForm = () => {
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
                     checked={fromSecondHalf}
-                    onChange={() => setfromSecondHalf(!fromSecondHalf)}
+
+                    onChange={() => setFromSecondHalf(!fromSecondHalf)}
+
                   />
                   <label className="ml-2 text-gray-700">Second Half</label>
                 </div>
@@ -108,7 +149,9 @@ const LeaveApplyForm = () => {
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
                     checked={toFirstHalf}
-                    onChange={() => settoFirstHalf(!toFirstHalf)}
+
+                    onChange={() => setToFirstHalf(!toFirstHalf)}
+
                   />
                   <label className="ml-2 textay-700">First Half</label>
                 </div>
@@ -118,7 +161,9 @@ const LeaveApplyForm = () => {
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
                     checked={toSecondHalf}
-                    onChange={() => settoSecondHalf(!toSecondHalf)}
+
+                    onChange={() => setToSecondHalf(!toSecondHalf)}
+
                   />
                   <label className="ml-2 text-gray-700">Second Half</label>
                 </div>
@@ -127,12 +172,12 @@ const LeaveApplyForm = () => {
 
            <div className='flex justify-between'>
            <div className='w-[80%]' >
-          <label className="block text-gray-700 mb-1">Leave Reason</label>
+          <label className="block text-gray-700 mb-1">Reason for Leave</label>
           <textarea
             className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
             rows="2"
-            value={leaveReason}
-            onChange={(e) => setLeaveReason(e.target.value)}
+            value={leaveDetail}
+            onChange={(e) => setLeaveDetail(e.target.value)}
             required
           />
         </div>
