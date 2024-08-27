@@ -63,7 +63,11 @@ const schema = new db.Schema(
         paternityLeave: {
             type: Number,
             default: 0
-        }
+        },
+        permission: {
+            type: Number,
+            default: 0
+        }   
     },
     {
         timestamps: true

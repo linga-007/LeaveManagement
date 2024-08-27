@@ -6,6 +6,7 @@ import EmailTemplate from '../../EmailTemplate';
 const LeaveApplyForm = () => {
   const [fromDate, setFromDate] = useState('');
   const [toDate, setToDate] = useState('');
+
   const [leaveDetail,setLeaveDetail] = useState('')
   const [fromFirstHalf, setFromFirstHalf] = useState(false);
   const [fromSecondHalf, setFromSecondHalf] = useState(false);
@@ -72,7 +73,7 @@ const LeaveApplyForm = () => {
                 <option value="sick">Sick Leave</option>
                 <option value="vacation">Vacation Leave</option>
                 <option value="casual">Casual Leave</option>
-              </select>
+              </select> 
             </div>
 
             <div className='w-[40%]'>
@@ -108,7 +109,9 @@ const LeaveApplyForm = () => {
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
                     checked={fromFirstHalf}
+
                     onChange={() => setFromFirstHalf(!fromFirstHalf)}
+
                   />
                   <label className="ml-2 text-gray-700">First Half</label>
                 </div>
@@ -118,7 +121,9 @@ const LeaveApplyForm = () => {
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
                     checked={fromSecondHalf}
+
                     onChange={() => setFromSecondHalf(!fromSecondHalf)}
+
                   />
                   <label className="ml-2 text-gray-700">Second Half</label>
                 </div>
@@ -144,9 +149,11 @@ const LeaveApplyForm = () => {
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
                     checked={toFirstHalf}
+
                     onChange={() => setToFirstHalf(!toFirstHalf)}
+
                   />
-                  <label className="ml-2 text-gray-700">First Half</label>
+                  <label className="ml-2 textay-700">First Half</label>
                 </div>
 
                 <div className="flex items-center mt-7">
@@ -154,7 +161,9 @@ const LeaveApplyForm = () => {
                     type="checkbox"
                     className="form-checkbox h-5 w-5 text-blue-600"
                     checked={toSecondHalf}
+
                     onChange={() => setToSecondHalf(!toSecondHalf)}
+
                   />
                   <label className="ml-2 text-gray-700">Second Half</label>
                 </div>

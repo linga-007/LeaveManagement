@@ -1,13 +1,39 @@
 import React from 'react'
+// import { useState , useEffect} from 'react';
+import axios from 'axios';
+function Table() {
 
-function table() {
+  // const [response,setResponse] = useState({});
+  const empId = "3P1";
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBJZCI6IjNQMSIsInJvbGUiOiIzUCIsImlhdCI6MTcyNDY2ODQ5NywiZXhwIjoxNzI0NjcyMDk3fQ.2anufOX8LjYRigGCAdH0mxOXJ2IktyWKPfI59mixzc8"
+  
+
+  const getData = async() =>{
+    try {
+      const res = await axios.post("http://localhost:5000/emp/getEmp",{
+      empId
+      },
+       {
+
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      });
+      // setResponse(res.data[0]);
+      console.log(res);
+  
+    } catch (error) {
+      console.error("Error fetching user details:", error);
+    }
+  }
+
   const tableHead = ["Leave Type","Op Balance", "Eligibility", "Total Eligibility", "Availed", "LOP", "Leave Lapsed","Leave Encashed","closing Balance","Max Leave Carry Forward","Availed","Closing Balance"];
 
   const currentData = ["Paternity Leave","Paternity Leave","Paternity Leave"]
   const value = [[1,2,3,4,5,6,7,8,9,10,11],[1,2,3,4,5,6,7,8,9,10,11],[1,2,3,4,5,6,7,8,9,10,11]];
   return (
     <>
-
         <div className='flex flex-wrap flex-col w-[100%]'>
           <table className='table-fixed w-[100%] border-collapse border border-gray-400'>
           <thead className='bg-blue-600'>
@@ -44,4 +70,4 @@ function table() {
   )
 }
 
-export default table
+export default Table
