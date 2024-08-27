@@ -82,7 +82,7 @@ const GetEmp = async (req, res) => {
         res.status(200).json(employees);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
-    }
+    }
 }
 
 module.exports = {Login,Signup,GetEmp}

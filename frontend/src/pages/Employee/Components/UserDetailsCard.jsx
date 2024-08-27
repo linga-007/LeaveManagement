@@ -7,7 +7,7 @@ function UserDetailsCard() {
 
   const [response,setResponse] = useState({});
   const empId = "3P1";
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBJZCI6IjNQMSIsInJvbGUiOiIzUCIsImlhdCI6MTcyNDY2ODQ5NywiZXhwIjoxNzI0NjcyMDk3fQ.2anufOX8LjYRigGCAdH0mxOXJ2IktyWKPfI59mixzc8"
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBJZCI6IjNQMSIsInJvbGUiOiIzUCIsImlhdCI6MTcyNDc0OTcxMiwiZXhwIjoxNzI0NzUzMzEyfQ.c27gshzu31DaXS4yfMy7dBDTIBR5SjXYNJGM3iKLQJw"
   useEffect(()=>{
     getData();
   },[])
