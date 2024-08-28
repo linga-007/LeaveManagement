@@ -1,6 +1,8 @@
+
 import React, { useState } from 'react';
 import { render } from '@react-email/render';
 import EmailTemplate from '../../EmailTemplate';
+
 
 import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
@@ -32,6 +34,7 @@ const LeaveApplyForm = () => {
   var img = "https://www.gilbarco.com/us/sites/gilbarco.com.us/files/2022-07/gilbarco_logo.png";
   const sendEmail = async (e) => {
     e.preventDefault();
+
     const emailContent = await render(
       <EmailTemplate
         leaveType={leaveType}
@@ -47,19 +50,23 @@ const LeaveApplyForm = () => {
       />
     );
 
-    const response = await fetch('http://localhost:5001/send-email', {
-      method: 'POST',
+    console.log(emailContent);
+    const response = await fetch("http://localhost:5001/send-email", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({ emailContent }),
     });
 
+    
+
     if (response.ok) {
-      alert('Email sent successfully!');
+      alert("Email sent successfully!");
     } else {
-      alert('Failed to send email.');
+      alert("Failed to send email.");
     }
+
   };
 
   return (
@@ -94,7 +101,7 @@ const LeaveApplyForm = () => {
               </select>
             </div>
 
-            <div className='w-[40%]'>
+            <div className="w-[40%]">
               <label className="block text-gray-700 mb-1">Leave Reason</label>
               <select
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
@@ -110,22 +117,27 @@ const LeaveApplyForm = () => {
             </div>
           </div>
 
+
           <div className='w-[100%] flex justify-between'>
             <div className='mr-4 w-[60%]'>
+            
               <label className="block text-gray-700 mb-1">From Date</label>
               <input
                 type="date"
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
                 value={fromDate}
+
                 onChange={(e) => {
                   setFromDate(e.target.value);
                   setToDate(e.target.value); // Set toDate to fromDate initially
                 }}
-                required
+
               />
             </div>
 
+
             <div className='flex w-[40%] justify-around'>
+
               <div className="flex items-center mt-7">
                 <input
                   type="checkbox"
@@ -148,6 +160,7 @@ const LeaveApplyForm = () => {
             </div>
           </div>
 
+
           <div className='w-[100%] flex justify-between'>
             <div className='mr-4 w-[60%]'>
               <label className="block text-gray-700 mb-1">To Date</label>
@@ -162,6 +175,7 @@ const LeaveApplyForm = () => {
             </div>
 
             <div className='flex w-[40%] justify-around'>
+
               <div className="flex items-center mt-7">
                 <input
                   type="checkbox"
@@ -169,7 +183,9 @@ const LeaveApplyForm = () => {
                   checked={toFirstHalf}
                   onChange={() => setToFirstHalf(!toFirstHalf)}
                 />
+
                 <label className="ml-2 text-gray-700">First Half</label>
+
               </div>
 
               <div className="flex items-center mt-7">
@@ -262,6 +278,7 @@ const LeaveApplyForm = () => {
       </div>
         }
       </form>
+
     </div>
   );
 };
