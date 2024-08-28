@@ -33,6 +33,10 @@ const schema = new db.Schema(
             required: true,
             enum: ['Pending', 'Approved', 'Denied'],
             default: 'Pending'
+        },
+        isLOP: {
+            type: Boolean,
+            default: false
         }
     },
     {

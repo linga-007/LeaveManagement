@@ -3,11 +3,14 @@ const jwt = require('jsonwebtoken');
 const dotenv = require('dotenv')
 dotenv.config('./env')
 const { EmpModel } = require('../models/employeeSchema');
+const { CasualLeave } = require('../models/casualLeaveSchema');
+const { PrivelageLeave } = require('../models/privelageLeaveSchema');
+const { PaternityLeave } = require('../models/paternityLeaveSchema');
 
 // Signup
-const Signup = async (req, res) => {
+const Register = async (req, res) => {
     try {
-        const { empId, password, empName, role, designation, reportionManager, dateOfJoining, function: empFunction, department, level, location, isPaternity, CL, PL, paternityLeave } = req.body;
+        const { empId, password, empName, role, designation, reportionManager, dateOfJoining, function: empFunction, department, level, location, isPaternity, permissionEligible, permissionAvailed } = req.body;
 
         // Check if employee already exists
         const existingEmployee = await EmpModel.findOne({ empId });
@@ -32,10 +35,46 @@ const Signup = async (req, res) => {
             level,
             location,
             isPaternity,
-            CL,
-            PL,
-            paternityLeave
+            permissionEligible,
+            permissionAvailed
         });
+
+        if(isPaternity){
+            const paternity = new PaternityLeave({
+                empId,
+                opBalance: 5,
+                eligibility: 5,
+                totalEligibility: 5,
+                closingBalance: 5,
+                futureClosingBalance: 5
+            })
+        }
+
+        if(role === "3P"){
+            const cl = new CasualLeave({
+                empId,
+                opBalance: 12,
+                eligibility: 12,
+                totalEligibility: 12,
+                closingBalance: 12,
+                futureClosingBalance: 12
+            })
+
+            await cl.save()
+        }
+        else if(role === "GVR"){
+            const pl = new PrivelageLeave({
+                empId,
+                opBalance: 16,
+                eligibility: 16,
+                totalEligibility: 16,
+                closingBalance: 16,
+                carryForward: 16,
+                futureClosingBalance: 16
+            })
+            
+            await pl.save()
+        }
 
         await newEmployee.save();
 
@@ -51,7 +90,6 @@ const Login = async (req, res) => {
         const { empId, password } = req.body;
 
         // Find employee by ID
-        console.log(empId , password);  
         const employee = await EmpModel.findOne({ empId });
         if (!employee) {
             return res.status(400).json({ message: 'Employee not found' });
@@ -82,7 +120,7 @@ const GetEmp = async (req, res) => {
         res.status(200).json(employees);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
-    }
+    }
 }
 
-module.exports = {Login,Signup,GetEmp}
+module.exports = {Login,Register,GetEmp}
