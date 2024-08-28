@@ -46,25 +46,17 @@ const schema = new db.Schema(
         },
         location: {
             type: String,
-        required: true
+            required: true
         },
         isPaternity: {
             type: Boolean,
             default: false
         },
-        CL: {
+        permissionEligible: {
             type: Number,
-            default: 0
+            default: 4
         },
-        PL: {
-            type: Number,
-            default: 0
-        },
-        paternityLeave: {
-            type: Number,
-            default: 0
-        },
-        permission: {
+        permissionAvailed: {
             type: Number,
             default: 0
         }   

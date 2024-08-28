@@ -1,29 +1,55 @@
 const { LeaveModel } = require('../models/leaveSchema'); 
-const { EmpModel } = require('../models/employeeSchema')
+const { EmpModel } = require('../models/employeeSchema');
+const { CasualLeave } = require('../models/casualLeaveSchema');
+const { PrivelageLeave } = require('../models/privelageLeaveSchema');
+const { PaternityLeave } = require('../models/paternityLeaveSchema');
 
 // Apply for leave
 const ApplyLeave = async (req, res) => {
     try {
         const { empId, leaveType, from, to, numberOfDays, reason } = req.body;
 
-        const emp = await EmpModel.findById(empId);
-        if (!empId) {
+        const emp = await EmpModel.findOne({empId});
+
+        if (!emp) {
             return res.status(404).json({ message: 'Employee not found' });
         }
 
         if(emp.role === "3P"){
             if(leaveType === "Casual Leave"){
-                if(emp.CL < 1){
-                    const newLeave = new LeaveModel({
+                const cl = await CasualLeave.findOne({empId})
+                if(cl.availed < 1){
+                    const leave = new LeaveModel({
                         empId,
                         leaveType,
                         from,
                         to,
                         numberOfDays,
                         reason
-                    });
-                }else{
-                    return res.status(404).json({ message: 'Leave Limit Exceded' });
+                    })
+                    await leave.save()
+                    res.status(201).json({ message: 'Leave applied successfully', leave });
+                }
+                else{
+                    return res.status(404).json({ message: 'Casual Leave Limit Exceded' });
+                }
+            }
+            else if(leaveType === "Paternity Leave"){
+                const pl = await PaternityLeave.findOne({empId})
+                if(pl.availed < 5){
+                    const leave = new LeaveModel({
+                        empId,
+                        leaveType,
+                        from,
+                        to,
+                        numberOfDays,
+                        reason
+                    })
+                    await leave.save()
+                    res.status(201).json({ message: 'Leave applied successfully', leave });
+                }
+                else{
+                    return res.status(404).json({ message: 'Paternity Leave Limit Exceded' });
                 }
             }
             else{
@@ -32,54 +58,90 @@ const ApplyLeave = async (req, res) => {
         }
         else{
             if(leaveType === "Casual Leave"){
-                if(emp.CL < 10){
-                    const newLeave = new LeaveModel({
+                const cl = await CasualLeave.findOne({empId})
+                if(cl.availed < 10){
+                    const leave = new LeaveModel({
                         empId,
                         leaveType,
                         from,
                         to,
                         numberOfDays,
                         reason
-                    });
-                }else{
-                    return res.status(404).json({ message: 'Leave Limit Exceded' });
+                    })
+                    await leave.save()
+                    res.status(201).json({ message: 'Leave applied successfully', leave });
+                }
+                else{
+                    return res.status(404).json({ message: 'Casual Leave Limit Exceded' });
                 }
             }
             else if(leaveType === "Privelage Leave"){
-                if(emp.PL < 16){
-                    const newLeave = new LeaveModel({
+                const pl = await PrivelageLeave.findOne({empId})
+                if(pl.availed < 16){
+                    const leave = new LeaveModel({
                         empId,
                         leaveType,
                         from,
                         to,
                         numberOfDays,
                         reason
-                    });
-                }else{
-                    return res.status(404).json({ message: 'Leave Limit Exceded' });
+                    })
+                    await leave.save()
+                    res.status(201).json({ message: 'Leave applied successfully', leave });
+                }
+                else{
+                    return res.status(404).json({ message: 'Privelage Leave Limit Exceded' });
+                }
+            }
+            else if(leaveType === "Paternity Leave"){
+                const pl = await PaternityLeave.findOne({empId})
+                if(pl.availed < 5){
+                    const leave = new LeaveModel({
+                        empId,
+                        leaveType,
+                        from,
+                        to,
+                        numberOfDays,
+                        reason
+                    })
+                    await leave.save()
+                    res.status(201).json({ message: 'Leave applied successfully', leave });
+                }
+                else{
+                    return res.status(404).json({ message: 'Paternity Leave Limit Exceded' });
                 }
             }
             else{
-                if(emp.isPaternity && emp.paternityLeave < 5){
-                    const newLeave = new LeaveModel({
-                        empId,
-                        leaveType,
-                        from,
-                        to,
-                        numberOfDays,
-                        reason
-                    });
-                }
-                else{
-                    return res.status(404).json({ message: 'Leave Limit Exceded' });
-                }
+                return res.status(404).json({ message: 'Permission Denied to Apply Leave' });
             }
         }
-
-        await newLeave.save();
-
-        res.status(201).json({ message: 'Leave applied successfully', leave: newLeave });
+        
     } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+const LOP = async(req, res) => {
+    try{
+        const { empId, leaveType, from, to, numberOfDays, reason } = req.body;
+
+        const emp = await EmpModel.findOne({empId});
+
+        if (!emp) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        const leave = new LeaveModel({
+            empId,
+            leaveType,
+            from,
+            to,
+            numberOfDays,
+            reason,
+            isLOP: true
+        })
+        await leave.save()
+        res.status(201).json({ message: 'LOP Leave applied successfully', leave });
+    } catch(err){
         res.status(500).json({ message: 'Server error', error });
     }
 }
@@ -93,20 +155,68 @@ const AcceptLeave = async (req, res) => {
         if (!leave) {
             return res.status(404).json({ message: 'Leave not found' });
         }
-        const emp = await EmpModel.findById(leave.empId);
-        if(leave.leaveType === "Casual Leave"){
-            emp.CL += 1;
-        }
-        else if(leave.leaveType === "Privelage Leave"){
-            emp.PL += 1;
+
+        if(leave.isLOP){
+            if(leave.leaveType === "Casual Leave"){
+                const cl = await CasualLeave.findOne({empId: leave.empId})
+                cl.LOP += 1;
+                cl.eligibility -= 1;
+                cl.totalEligibility -= 1;
+                cl.closingBalance -= 1;
+                cl.futureClosingBalance -= 1;
+                await cl.save()
+            }
+            else if(leave.leaveType === "Privelage Leave"){
+                const pl = await PrivelageLeave.findOne({empId: leave.empId})
+                pl.LOP += 1;
+                pl.eligibility -= 1;
+                pl.totalEligibility -= 1;
+                pl.closingBalance -= 1;
+                pl.futureClosingBalance -= 1;
+                await pl.save()
+            }
+            else{
+                const pl = await PaternityLeave.findOne({empId: leave.empId})
+                pl.LOP += 1;
+                pl.eligibility -= 1;
+                pl.totalEligibility -= 1;
+                pl.closingBalance -= 1;
+                pl.futureClosingBalance -= 1;
+                await pl.save()
+            }
         }
         else{
-            emp.paternityLeave += 1;
+            if(leave.leaveType === "Casual Leave"){
+                const cl = await CasualLeave.findOne({empId: leave.empId})
+                cl.availed += 1;
+                cl.eligibility -= 1;
+                cl.totalEligibility -= 1;
+                cl.closingBalance -= 1;
+                cl.futureClosingBalance -= 1;
+                await cl.save()
+            }
+            else if(leave.leaveType === "Privelage Leave"){
+                const pl = await PrivelageLeave.findOne({empId: leave.empId})
+                pl.availed += 1;
+                pl.eligibility -= 1;
+                pl.totalEligibility -= 1;
+                pl.closingBalance -= 1;
+                pl.futureClosingBalance -= 1;
+                await pl.save()
+            }
+            else{
+                const pl = await PaternityLeave.findOne({empId: leave.empId})
+                pl.availed += 1;
+                pl.eligibility -= 1;
+                pl.totalEligibility -= 1;
+                pl.closingBalance -= 1;
+                pl.futureClosingBalance -= 1;
+                await pl.save()
+            }
         }
+
         leave.status = 'Approved';
         await leave.save();
-        await emp.save();
-
         res.status(200).json({ message: 'Leave approved successfully', leave });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -148,4 +258,4 @@ const GetLeave = async (req, res) => {
     }
 }
 
-module.exports = {ApplyLeave,AcceptLeave,DenyLeave,GetLeave}
+module.exports = {ApplyLeave,LOP,AcceptLeave,DenyLeave,GetLeave}

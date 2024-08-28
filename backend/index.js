@@ -4,9 +4,11 @@ const mongoose = require('mongoose');
 const cors = require('cors');
 const cron = require('node-cron');
 const dotenv = require('dotenv')
-const EmpRout = require('./routes/employeeRout')
-const LeaveRout = require('./routes/leaveRout')
-const PermissionRout = require('./routes/permissionRout')
+const EmpRoute = require('./routes/employeeRoute')
+const LeaveRoute = require('./routes/leaveRoute')
+const PermissionRoute = require('./routes/permissionRoute')
+const TableRoute = require('./routes/tableRoute')
+const Email = require('./routes/mailRoute')
 
 const app = express()
 app.use(express.json())
@@ -15,9 +17,11 @@ app.use(cors());
    
 dotenv.config('./env')
 
-app.use('/emp',EmpRout)
-app.use('/leave',LeaveRout)
-app.use('/permission',PermissionRout)
+app.use('/emp',EmpRoute)
+app.use('/leave',LeaveRoute)
+app.use('/permission',PermissionRoute)
+app.use('/table',TableRoute)
+app.use('/mail', Email)
 
 cron.schedule('0 0 1 2 *', () => {
     resetGVR();
