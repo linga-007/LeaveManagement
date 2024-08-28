@@ -16,7 +16,7 @@ function EmployeeHomePage() {
 
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-around  px-5">
+    <div className="w-screen h-screen flex flex-col justify-evenly px-5 py-2">
       <Nav/>
       <div className="flex justify-start w-[100%]">
         <UserDetailsCard />
