@@ -14,7 +14,6 @@ function Table() {
       empId
       },
        {
-
         headers: {
           Authorization: `Bearer ${token}`,
           "Content-Type": "application/json",

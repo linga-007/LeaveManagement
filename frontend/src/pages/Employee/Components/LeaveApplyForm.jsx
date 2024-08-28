@@ -33,7 +33,7 @@ const LeaveApplyForm = () => {
       toSecondHalf={toSecondHalf?"Yes":"No"}
     />);
     console.log(emailContent);
-    const response = await fetch('http://localhost:5000/send-email', {
+    const response = await fetch('http://localhost:5001/send-email', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -56,7 +56,7 @@ const LeaveApplyForm = () => {
   };
 
   return (
-    <div className='w-[80%] shadow-lg mx-2 p-2 border-2 border-black'>
+    <div className='w-[80%] shadow-lg mx-2 p-4 '>
       <h2 className="text-2xl font-bold mb-4">Leave Apply Form</h2>
       <form onSubmit={sendEmail} className='w-[90%] flex justify-center'>
         <div className='w-[95%]'>
