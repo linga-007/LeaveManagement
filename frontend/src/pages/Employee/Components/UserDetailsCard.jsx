@@ -7,8 +7,11 @@ function UserDetailsCard() {
 
   const [response,setResponse] = useState({});
   const empId = "3P1";
-  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJlbXBJZCI6IjNQMSIsInJvbGUiOiIzUCIsImlhdCI6MTcyNDc0OTcxMiwiZXhwIjoxNzI0NzUzMzEyfQ.c27gshzu31DaXS4yfMy7dBDTIBR5SjXYNJGM3iKLQJw"
+  const token = document.cookie.split('=')[1]
+  console.log("token ",token)
+
   useEffect(()=>{
+ 
     getData();
   },[])
 
@@ -26,6 +29,8 @@ function UserDetailsCard() {
       });
       setResponse(res.data[0]);
       console.log(res);
+      console.log( )
+   
   
     } catch (error) {
       console.error("Error fetching user details:", error);
@@ -35,7 +40,7 @@ function UserDetailsCard() {
     var title = ["Desigination: ","Repoting Manager: ","DOJ: ","Function: ","Department: ","Band/Level: ","Location: "];
     var details = [response.designation , response.reportionManager,  response.dateOfJoining , response.function , response.department , response.level , response.location    ];
   return (
-    <div className='p-10 w-[25%]  bg-red-100 text-blue-700 flex flex-col justify-center items-center '>
+    <div className='p-10 w-[25%]  bg-[#f5f6f7] text-blue-700 flex flex-col justify-center items-center '>
     <img src={UserImg} className='h-[10vh]'/>
     <div className='flex flex-col justify-center items-center'>
        <h1 className='text-xl font-bold'>{response.empName}</h1>

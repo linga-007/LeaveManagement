@@ -61,7 +61,7 @@ const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, ima
           pX={20}
           pY={10}
           style={{ backgroundColor: '#28a745', color: '#fff', textDecoration: 'none', borderRadius: '5px', marginRight: '10px',padding:"10px" }}
-          href="https://example.com/accept"
+          href="http://localhost:5000/"
         >
           Accept
         </Button>
