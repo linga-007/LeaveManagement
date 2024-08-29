@@ -4,8 +4,8 @@ const checkUser = require('../middleware/auth')
 
 router.post('/apply', checkUser, ApplyLeave)
 router.post('/applyLOP', checkUser, LOP)
-router.post('/accept', checkUser, AcceptLeave)
-router.post('/deny', checkUser ,DenyLeave)
+router.get('/accept/:leaveId', AcceptLeave)
+router.get('/deny/:leaveId',DenyLeave)
 router.get('/getLeave', checkUser, GetLeave)
 
 module.exports = router;

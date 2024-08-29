@@ -1,6 +1,6 @@
 import { Html, Head, Body, Text, Button, Img } from '@react-email/components';
 
-const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, imageUrl ,fromFirstHalf,fromSecondHalf,toFirstHalf,toSecondHalf}) => (
+const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, imageUrl ,fromFirstHalf,fromSecondHalf,toFirstHalf,toSecondHalf,leaveId,LOP}) => (
   <Html>
     <Head />
     <Body style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#f9f9f9' }}>
@@ -13,6 +13,10 @@ const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, ima
         You have received a new leave request. Please find the details below:
       </Text>
       <table style={{ width: '100%', borderCollapse: 'collapse', marginBottom: '20px' }}>
+      <tr>
+          <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>LOP:</td>
+          <td style={{ padding: '10px', backgroundColor: '#fff' }}>{LOP}</td>
+        </tr>
         <tr>
           <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>Leave Type:</td>
           <td style={{ padding: '10px', backgroundColor: '#fff' }}>{leaveType}</td>
@@ -28,7 +32,6 @@ const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, ima
             <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>second half:</td>
             <td style={{ padding: '10px', backgroundColor: '#fff' }}>{fromSecondHalf}</td>
             </div>}
-        
           </td>
         </tr>
         <tr>
@@ -61,7 +64,7 @@ const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, ima
           pX={20}
           pY={10}
           style={{ backgroundColor: '#28a745', color: '#fff', textDecoration: 'none', borderRadius: '5px', marginRight: '10px',padding:"10px" }}
-          href="http://localhost:5000/"
+          href={`http://localhost:5000/leave/accept/${leaveId}?webhook=true`}
         >
           Accept
         </Button>
@@ -69,10 +72,10 @@ const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, ima
           pX={20}
           pY={10}
           style={{ backgroundColor: '#dc3545', color: '#fff', textDecoration: 'none', borderRadius: '5px' ,padding:"10px" }}
-          href="https://example.com/decline"
+          href={`http://localhost:5000/leave/deny/${leaveId}?webhook=true`}
         >
           Decline
-        </Button>
+        </Button>   
       </div>
     </Body>
   </Html>

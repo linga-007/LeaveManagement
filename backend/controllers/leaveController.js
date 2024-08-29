@@ -7,6 +7,7 @@ const { PaternityLeave } = require('../models/paternityLeaveSchema');
 // Apply for leave
 const ApplyLeave = async (req, res) => {
     try {
+        console.log("checkkkk")
         const { empId, leaveType, from, to, numberOfDays, reason } = req.body;
 
         const emp = await EmpModel.findOne({empId});
@@ -31,7 +32,7 @@ const ApplyLeave = async (req, res) => {
                     res.status(201).json({ message: 'Leave applied successfully', leave });
                 }
                 else{
-                    return res.status(404).json({ message: 'Casual Leave Limit Exceded' });
+                    return res.status(202).json({ message: 'Casual Leave Limit Exceded' });
                 }
             }
             else if(leaveType === "Paternity Leave"){
@@ -149,7 +150,7 @@ const LOP = async(req, res) => {
 // Accept leave
 const AcceptLeave = async (req, res) => {
     try {
-        const { leaveId } = req.body;
+        const { leaveId } = req.params;
 
         const leave = await LeaveModel.findById(leaveId);
         if (!leave) {
@@ -226,7 +227,7 @@ const AcceptLeave = async (req, res) => {
 // Deny leave
 const DenyLeave = async (req, res) => {
     try {
-        const { leaveId } = req.body;
+        const { leaveId } = req.params;
 
         const leave = await LeaveModel.findById(leaveId);
         if (!leave) {

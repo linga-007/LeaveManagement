@@ -4,17 +4,16 @@ const { PermissionModel } = require('../models/permissionSchem'); // Replace wit
 // Apply for permission
 const ApplyPermission = async (req, res) => {
     try {
-        const { empId, role, hrs, reason } = req.body;
-
-        const emp = await EmpModel.findById(empId);
+        const { empId, hrs, reason } = req.body;
+       
+        const emp = await EmpModel.findOne({empId});
         if (!empId) {
             return res.status(404).json({ message: 'Employee not found' });
         }
-
-        if(emp.permission < 4){
+       
+        if(emp.permissionAvailed < 4){
             const newPermission = new PermissionModel({
                 empId,
-                role,
                 hrs,
                 reason
             });
