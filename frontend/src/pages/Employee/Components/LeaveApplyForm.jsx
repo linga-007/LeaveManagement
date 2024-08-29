@@ -1,73 +1,238 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { render } from '@react-email/render';
 import EmailTemplate from '../../EmailTemplate';
+import {jwtDecode} from "jwt-decode"
 
 
 import dayjs from 'dayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { MobileTimePicker } from '@mui/x-date-pickers/MobileTimePicker';
+import axios from 'axios';
+import { json } from 'react-router-dom';
 
 const LeaveApplyForm = () => {
-  const [fromDate, setFromDate] = useState('');
-  const [toDate, setToDate] = useState('');
-  const [leaveDetail, setLeaveDetail] = useState('');
+  const [fromDate, setFromDate] = useState("");
+  const [toDate, setToDate] = useState("");
+  const [leaveDetail, setLeaveDetail] = useState("");
   const [fromFirstHalf, setFromFirstHalf] = useState(false);
   const [fromSecondHalf, setFromSecondHalf] = useState(false);
   const [toFirstHalf, setToFirstHalf] = useState(false);
   const [toSecondHalf, setToSecondHalf] = useState(false);
 
-  const [leaveType, setLeaveType] = useState('');
-  const [leaveReason, setLeaveReason] = useState('');
+  const [leaveType, setLeaveType] = useState("Casual Leave");
+  const [leaveReason, setLeaveReason] = useState("Personal");
   const [selectedOption, setSelectedOption] = useState('Leave Application');
   const [permissionDate,setPermissionDate] = useState("");
   const [fromTime, setFromTime] = useState(dayjs()); 
   const [toTime, setToTime] = useState(dayjs()); 
   const [permissionReason,setPermissionReason] = useState("") 
+  const [numberOfDays, setNumberOfDays] = useState(0);
+  // const [leaveId,setLeaveId] = useState("");
+
+  const [isOpen, setIsOpen] = useState(false);
+
+  const togglePopup = () => {
+    setIsOpen(!isOpen);
+  };
+
+  const handleConfirm = async() => {
+     console.log("check")
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/leave/applyLOP",
+        {
+          "empId": "3P1",
+          "leaveType": leaveType,
+           "from": {
+              "date": fromDate,
+              "first-half": fromFirstHalf,
+              "second-half" : fromSecondHalf
+           },
+           "to": {
+              "date": toDate,
+              "first-half": toFirstHalf,
+              "second-half": toSecondHalf
+           },
+           "numberOfDays": numberOfDays,
+           "reason": "Personal"
+      },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      
+     var data = res.data;
+      console.log(data.leave._id)
+     
+      sendEmail(data.leave._id,"True");
+      
+      console.log("data", res.data);
+    } catch (error) {
+      console.error("Error Leave Apply", error);
+    }finally{
+      setIsOpen(!isOpen);
+    }
+    
+  };
+
+  const handleCancel = () => {
+    console.log("Cancelled!");
+    togglePopup();
+  };
+
+  useEffect(() => {
+    if (fromDate && toDate) {
+      const diff = dayjs(toDate).diff(dayjs(fromDate), 'day') + 1; // Adding 1 to include both fromDate and toDate
+      setNumberOfDays(diff);
+      console.log(diff)
+    }
+  }, [fromDate, toDate]);
+
+  
+  
 
 
   const handleToggle = () => {
     setSelectedOption(selectedOption === 'Leave Application' ? 'Permission' : 'Leave Application');
   };
 
-  var img = "https://www.gilbarco.com/us/sites/gilbarco.com.us/files/2022-07/gilbarco_logo.png";
-  const sendEmail = async (e) => {
-    e.preventDefault();
+  const token = document.cookie.split('=')[1];
+  console.log(token)
+  const decodedToken = jwtDecode(token);
+  console.log("in",decodedToken.empId)
 
+  const dataPrint = ()=>{
+    console.log("Check Data:")
+    console.log(leaveDetail,leaveReason,leaveType)
+  }
+
+  dataPrint()
+  const sendData = async (e) => {
+
+    
+
+    e.preventDefault()
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/leave/apply",
+        {
+          "empId": "3P1",
+          "leaveType": leaveType,
+           "from": {
+              "date": fromDate,
+              "first-half": fromFirstHalf,
+              "second-half" : fromSecondHalf
+           },
+           "to": {
+              "date": toDate,
+              "first-half": toFirstHalf,
+              "second-half": toSecondHalf
+           },
+           "numberOfDays": numberOfDays,
+           "reason": "Personal"
+      },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
+      if(res.status === 202){
+        setIsOpen(!isOpen);
+        console.log(isOpen)
+      }
+     var data = res.data;
+      console.log(data.leave._id)
+      // setLeaveId(data.leave._id)
+    //  console.log("mailId",leaveId)
+      sendEmail(data.leave._id,"false");
+      
+      // Update the value array based on the retrieved data
+      
+      
+      console.log("data", res.data);
+    } catch (error) {
+      console.error("Error Leave Apply", error);
+    }
+  };
+
+  
+
+  var img = "https://www.gilbarco.com/us/sites/gilbarco.com.us/files/2022-07/gilbarco_logo.png"
+  const sendEmail = async (objId,LOP) => {
+
+    console.log("rksweufghou",leaveType,leaveReason)
     const emailContent = await render(
       <EmailTemplate
         leaveType={leaveType}
         fromDate={fromDate}
         toDate={toDate}
-        leaveReason={leaveDetail}
-        userName="Kishore"
+        leaveReason={leaveReason}
+        userName={decodedToken.empId}
         imageUrl={img}
-        fromFirstHalf={fromFirstHalf ? "Yes" : "No"}
-        fromSecondHalf={fromSecondHalf ? "Yes" : "No"}
-        toFirstHalf={toFirstHalf ? "Yes" : "No"}
-        toSecondHalf={toSecondHalf ? "Yes" : "No"}
+        leaveId = {objId}
+        LOP ={LOP}
       />
     );
-
-    console.log(emailContent);
-    const response = await fetch("http://localhost:5001/send-email", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ emailContent }),
-    });
-
-    
-
-    if (response.ok) {
-      alert("Email sent successfully!");
-    } else {
-      alert("Failed to send email.");
+  
+    try {
+      const response = await axios.post(
+        'http://localhost:5000/mail/send  ',
+        {
+          email: "kkishorekumar536@gmail.com",
+          html: emailContent,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+  
+      if (response.status === 200) {
+        alert('Email sent successfully');
+      } else {
+        alert('Failed to send email');
+      }
+    } catch (error) {
+      console.error("Error sending email:", error.response ? error.response.data : error.message);
+      alert('Error sending email');
     }
-
   };
+
+  const applyPermission = async (e)=>{
+    e.preventDefault()
+    try {
+      const res = await axios.post(
+        "http://localhost:5000/permission/apply",
+        {
+          empId:decodedToken.empId,
+          hrs:1,
+          reason:permissionReason
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            "Content-Type": "application/json",
+          },
+        }
+      );
+     var data = res.data;      
+      
+      console.log("data", res.data);
+    } catch (error) {
+      console.error("Error Leave Apply", error);
+    }
+  }
 
   return (
     <div className='w-[80%] shadow-lg mx-2 p-4'>
@@ -83,8 +248,7 @@ const LeaveApplyForm = () => {
           </div>
         </div>
       </div>
-
-      <form onSubmit={sendEmail} className='w-[90%] flex justify-center'>
+      <form onSubmit={sendData} className='w-[90%] flex justify-center'>
         {selectedOption === 'Leave Application'? <div className='w-[95%]'>
           <div className='flex w-full justify-between'>
             <div className='w-[40%]'>
@@ -95,9 +259,9 @@ const LeaveApplyForm = () => {
                 onChange={(e) => setLeaveType(e.target.value)}
                 required
               >
-                <option value="sick">Sick Leave</option>
-                <option value="vacation">Vacation Leave</option>
-                <option value="casual">Casual Leave</option>
+                <option value="Casual Leave">Casual Leave</option>
+                <option value="Privelage Leave">Privelage Leave</option>
+                <option value="Paternity Leave">Paternity Leave</option>
               </select>
             </div>
 
@@ -109,10 +273,10 @@ const LeaveApplyForm = () => {
                 onChange={(e) => setLeaveReason(e.target.value)}
                 required
               >
-                <option value="sick">Personal Leave</option>
-                <option value="vacation">Medical Leave</option>
-                <option value="casual">Paternity Leave</option>
-                <option value="casual">Family Function</option>
+                <option value="Personal">Personal Leave</option>
+                <option value="Medical">Medical Leave</option>
+                <option value="Peternity">Paternity Leave</option>
+                <option value="Family Function">Family Function</option>
               </select>
             </div>
           </div>
@@ -227,8 +391,8 @@ const LeaveApplyForm = () => {
               <input
                 type="date"
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
-                value={toDate}
-                min={fromDate} // Ensure toDate cannot be earlier than fromDate
+                value={permissionDate}
+            // Ensure toDate cannot be earlier than fromDate
                 onChange={(e) => setPermissionDate(e.target.value)}
                 required
               />
@@ -265,20 +429,41 @@ const LeaveApplyForm = () => {
               <textarea
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
                 rows="2"
-                value={leaveDetail}
+                value={permissionReason}
                 onChange={(e) => setPermissionReason(e.target.value)}
                 required
               />
             </div>
             <div className='flex items-center justify-center '>
-              <button className='h-fit bg-blue-500 py-2 px-7 mx-2 rounded-lg shadow-lg'>
+              <button  className='h-fit bg-blue-500 py-2 px-7 mx-2 rounded-lg shadow-lg'>
                 Apply
               </button>
             </div>
       </div>
         }
       </form>
-
+      {isOpen && (
+        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+            <h2 className="text-lg font-semibold mb-4">Popup Title</h2>
+            <p className="mb-4">This is a simple popup message.</p>
+            <div className="flex justify-end space-x-4">
+              <button
+                className="px-4 py-2 bg-red-600 text-white rounded-lg"
+                onClick={handleCancel}
+              >
+                Cancel
+              </button>
+              <button
+                className="px-4 py-2 bg-green-600 text-white rounded-lg"
+                onClick={handleConfirm}
+              >
+                Confirm
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

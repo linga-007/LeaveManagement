@@ -6,11 +6,6 @@ const schema = new db.Schema(
             type: String,
             required: true
         },
-        role: {
-            type: String,
-            enum: ['Admin', 'Manager', '3P', 'GVR'],
-            default: '3P'
-        },
         hrs: {
             type: Number,
             min: 0,
