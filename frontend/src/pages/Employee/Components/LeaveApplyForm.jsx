@@ -94,10 +94,6 @@ const LeaveApplyForm = () => {
     }
   }, [fromDate, toDate]);
 
-  
-  
-
-
   const handleToggle = () => {
     setSelectedOption(selectedOption === 'Leave Application' ? 'Permission' : 'Leave Application');
   };

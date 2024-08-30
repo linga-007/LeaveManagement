@@ -218,7 +218,9 @@ const AcceptLeave = async (req, res) => {
 
         leave.status = 'Approved';
         await leave.save();
-        res.status(200).json({ message: 'Leave approved successfully', leave });
+        // res.status(200).json({ message: 'Leave approved successfully', leave });
+        const filePath = path.join(__dirname, "../view/accept.html");
+        res.sendFile(filePath);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -237,7 +239,9 @@ const DenyLeave = async (req, res) => {
         leave.status = 'Denied';
         await leave.save();
 
-        res.status(200).json({ message: 'Leave denied successfully', leave });
+        // res.status(200).json({ message: 'Leave denied successfully', leave });
+        const filePath = path.join(__dirname, "../view/reject.html");
+        res.sendFile(filePath);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
