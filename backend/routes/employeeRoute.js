@@ -1,8 +1,9 @@
 const router = require('express').Router();
-const {Login,Register,GetEmp} = require('../controllers/employeeController');
+const {Login,RFIDLogin,Register,GetEmp} = require('../controllers/employeeController');
 const checkUser = require('../middleware/auth')
 
-router.post('/login',Login)
+router.post('/Adminlogin',Login)
+router.post('/login',RFIDLogin)
 router.post('/register',Register)
 router.post('/getEmp',checkUser ,GetEmp)
 

@@ -110,6 +110,25 @@ const Login = async (req, res) => {
     }
 }
 
+const RFIDLogin = async(req,res) =>{
+    try {
+        const { empId } = req.body;
+
+        // Find employee by ID
+        const employee = await EmpModel.findOne({ empId });
+        if (!employee) {
+            return res.status(400).json({ message: 'Employee not found'});
+        }
+
+        // Generate JWT token
+        const token = jwt.sign({ empId: employee.empId, role: employee.role }, process.env.SECRET, { expiresIn: '1h' });
+
+        res.status(200).json({ message: 'Login successful', token });
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
 // Get all employees
 const GetEmp = async (req, res) => {
     try {
@@ -119,8 +138,8 @@ const GetEmp = async (req, res) => {
         console.log(employees)
         res.status(200).json(employees);
     } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({ message: 'Server error', error});
     }
 }
 
-module.exports = {Login,Register,GetEmp}
+module.exports = {Login,Register,RFIDLogin,GetEmp}
