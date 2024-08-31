@@ -3,6 +3,7 @@ import { useParams } from 'react-router-dom';
 import Table from './Components/UserLeaveDetails';
 import UserDetailsCard from './Components/UserDetailsCard';
 import Nav from './Components/Nav';
+import LeaveAcceptedEmailTemplate from '../EmployeeAcceptedMailTemplate';
 
 import LeaveApplyForm from './Components/LeaveApplyForm';
 
@@ -16,13 +17,13 @@ function EmployeeHomePage() {
 
 
   return (
-    <div className="w-screen h-screen flex flex-col justify-evenly px-5 py-2">
-      <Nav/>
-      <div className="flex justify-start w-[100%]">
+    <div className="w-screen h-screen flex justify-between  ">
         <UserDetailsCard />
+      <div className="flex flex-col justify-between w-[100%] px-3 py-3 ">
         <LeaveApplyForm/>
+        <Table />
       </div>
-      <Table />
+  
     </div>
   );
 }
