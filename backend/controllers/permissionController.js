@@ -4,7 +4,7 @@ const { PermissionModel } = require('../models/permissionSchem'); // Replace wit
 // Apply for permission
 const ApplyPermission = async (req, res) => {
     try {
-        const { empId, hrs, reason } = req.body;
+        const { empId, date, from, to, hrs, reason } = req.body;
        
         const emp = await EmpModel.findOne({empId});
         if (!empId) {
@@ -14,6 +14,9 @@ const ApplyPermission = async (req, res) => {
         if(emp.permissionAvailed < 4){
             const newPermission = new PermissionModel({
                 empId,
+                date,
+                from,
+                to,
                 hrs,
                 reason
             });

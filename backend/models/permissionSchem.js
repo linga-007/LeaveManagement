@@ -6,6 +6,18 @@ const schema = new db.Schema(
             type: String,
             required: true
         },
+        date:{
+            type: String,
+            required: true
+        },
+        from: {
+            type: String,
+            required: true
+        },
+        to: {
+            type: String,
+            required: true
+        },
         hrs: {
             type: Number,
             min: 0,
