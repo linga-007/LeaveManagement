@@ -94,7 +94,9 @@ function Table() {
   const currentData = ["Privilege Leave", "Casual Leave", "Paternity Leave"];
 
   return (
-    <div className='flex flex-wrap flex-col w-[100%]'>
+    <div className=' bg-[#f5f6f7] p-3 rounded-md'>
+
+<div className='flex flex-wrap flex-col w-[100%] '>
       <table className='table-fixed w-[100%] border-collapse border border-gray-400'>
         <thead className='bg-blue-600'>
           <tr>
@@ -120,8 +122,8 @@ function Table() {
         </thead>
         <tbody>
           {currentData.map((val, index) => (
-            <tr key={index} className="border border-gray-400">
-              <td className='px-3 py-0 border border-gray-400 '>
+            <tr key={index} className="border border-gray-400 bg-white">
+              <td className='px-3 py-2 border border-gray-400 '>
                 <div className='flex justify-center items-center uppercase'>{val}</div>
               </td>
               {value[index].map((cellValue, i) => (
@@ -134,6 +136,9 @@ function Table() {
         </tbody>
       </table>
     </div>
+
+    </div>
+    
   );
 }
 

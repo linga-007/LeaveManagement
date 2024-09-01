@@ -43,7 +43,7 @@ const LeaveApplyForm = () => {
       const res = await axios.post(
         "http://localhost:5000/leave/applyLOP",
         {
-          "empId": "3P1",
+          "empId": decodedToken.empId,
           "leaveType": leaveType,
            "from": {
               "date": fromDate,
@@ -118,7 +118,7 @@ const LeaveApplyForm = () => {
       const res = await axios.post(
         "http://localhost:5000/leave/apply",
         {
-          "empId": "3P1",
+          "empId": decodedToken.empId,
           "leaveType": leaveType,
            "from": {
               "date": fromDate,
@@ -164,15 +164,15 @@ const LeaveApplyForm = () => {
 
   var img = "https://www.gilbarco.com/us/sites/gilbarco.com.us/files/2022-07/gilbarco_logo.png"
   const sendEmail = async (objId,LOP) => {
-
     console.log("rksweufghou",leaveType,leaveReason)
     const emailContent = await render(
       <EmailTemplate
+        empId = {decodedToken.empId}
         leaveType={leaveType}
         fromDate={fromDate}
         toDate={toDate}
         leaveReason={leaveReason}
-        userName={decodedToken.empId}
+        userName="aa"
         imageUrl={img}
         leaveId = {objId}
         LOP ={LOP}
@@ -231,7 +231,7 @@ const LeaveApplyForm = () => {
   }
 
   return (
-    <div className='w-[80%] shadow-lg mx-2 p-4'>
+    <div className='w-[100%] bg-[#f5f6f7]  p-4'>
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold mb-4">{selectedOption}</h2>
         <div className="w-[25%] bg-gray-300 rounded-lg cursor-pointer" onClick={handleToggle}>

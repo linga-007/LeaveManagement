@@ -2,13 +2,22 @@ import React from 'react'
 import UserImg from "../assets/user.png"
 import axios from 'axios'
 import { useEffect , useState } from 'react'
+import { jwtDecode } from 'jwt-decode';
+import GVRLOGO from "../../../images/GVR.png"
 
+
+
+ 
 function UserDetailsCard() {
 
   const [response,setResponse] = useState({});
-  const empId = "3P1";
+ 
   const token = document.cookie.split('=')[1]
-  console.log("token ",token)
+  const decodedToken = jwtDecode(token)
+  const empId = decodedToken.empId
+
+
+  console.log("token ",empId)
 
   useEffect(()=>{
  
@@ -40,18 +49,22 @@ function UserDetailsCard() {
     var title = ["Desigination: ","Repoting Manager: ","DOJ: ","Function: ","Department: ","Band/Level: ","Location: "];
     var details = [response.designation , response.reportionManager,  response.dateOfJoining , response.function , response.department , response.level , response.location    ];
   return (
-    <div className='p-10 w-[25%]  bg-[#f5f6f7] text-blue-700 flex flex-col justify-center items-center '>
+    <div className='w-[25%]  bg-[#000046]  '>
+      <div className=''>
+          <img src={GVRLOGO}/> 
+          </div>
+ <div className='w-[100%] text-white flex flex-col justify-center items-center '>
     <img src={UserImg} className='h-[10vh]'/>
     <div className='flex flex-col justify-center items-center'>
        <h1 className='text-xl font-bold'>{response.empName}</h1>
        <div>
-       {title.map((val,index)=><h1> <span className='text-black text-lg font-semibold'>{val}</span> {details[index]}</h1>)}
+       {title.map((val,index)=><h1> <span className='text-pink-700 text-lg font-semibold'>{val}</span> {details[index]}</h1>)}
 
        </div>
-       
-
     </div>
     </div>
+    </div>
+   
   )
 }
 

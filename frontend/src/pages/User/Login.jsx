@@ -1,26 +1,22 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
 import axios from "axios";
-import {jwtDecode} from "jwt-decode"
+import { jwtDecode } from "jwt-decode";
 
 const Login = () => {
   const navigate = useNavigate();
-
-  const [empId, setEmpId] = useState("");
-  const [password, setPassword] = useState("");
+  const [RFID, setRFID] = useState("");
   const [error, setError] = useState("");
 
   const handleLogin = async (e) => {
-    e.preventDefault();
-    if (empId !== "" && password !== "") {
+    e.preventDefault(); // Prevent default form submission behavior
+    if (RFID !== "") {
       try {
-        console.log(empId,password)
+        console.log(RFID);
         const res = await axios.post(
           `http://localhost:5000/emp/login`,
           {
-            empId,
-            password,
+            "empId":"0007353027"
           },
           {
             headers: {
@@ -28,23 +24,21 @@ const Login = () => {
             },
           }
         );
-        console.log(res.status)
+
+        console.log(res.status);
         console.log(res.data.token);
         if (res.status === 200) {
-          document.cookie = `token=${res.data.token}`;  
-          
-          console.log(document.cookie)
+          document.cookie = `token=${res.data.token}`;
+          console.log(document.cookie);
 
           const decodedToken = jwtDecode(res.data.token);
-          console.log(decodedToken);
+          console.log("decoded",decodedToken);
 
           if (decodedToken.role === "admin") {
             navigate("/Admin"); // Redirect to admin page
-          } else if (decodedToken.role !== 'admin') {
-            navigate(`/Employee/${decodedToken.empId}`); // Redirect to employee page with ID
           } else {
-            navigate("/"); // Redirect to home if role is unknown
-          }  
+            navigate(`/Employee/${decodedToken.empId}`); // Redirect to employee page with ID
+          }
         } else if (res.status === 401) {
           setError("Incorrect password");
         }
@@ -64,37 +58,20 @@ const Login = () => {
           Log In
         </h2>
         {error && <p className="error text-red-500 text-center">{error}</p>}
-        <form onSubmit={handleLogin} className="w-full">
+        <form className="w-full" onSubmit={handleLogin}> {/* Attach handleLogin to form submission */}
           <div className="mb-6">
             <label className="block text-gray-700 text-sm sm:text-base">
               empId
             </label>
             <input
               type="text"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
+              className="mt-1 p-2 w-full border border-gray-300 rounded-md "
               placeholder="empId"
-              value={empId}
-              onChange={(e) => setEmpId(e.target.value)}
+              autoFocus={true}
+              value={RFID}
+              onChange={(e) => setRFID(e.target.value)}
             />
           </div>
-          <div className="mb-6">
-            <label className="block text-gray-700 text-sm sm:text-base">
-              Password
-            </label>
-            <input
-              type="password"
-              className="mt-1 p-2 w-full border border-gray-300 rounded-md"
-              placeholder="********"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </div>
-          <button
-            type="submit"
-            className="w-full bg-black text-white py-2 rounded-md hover:bg-gray-800 focus:outline-none focus:ring-2 focus:ring-gray-600"
-          >
-            Log In
-          </button>
           <div className="mt-4 text-center">
             <p className="text-gray-700 text-sm">
               Don't have an account?{" "}
@@ -106,6 +83,7 @@ const Login = () => {
               </span>
             </p>
           </div>
+          <button type="submit" className="mt-4 p-2 bg-blue-500 text-white rounded-md">Log In</button> {/* Add a submit button */}
         </form>
       </div>
     </div>
