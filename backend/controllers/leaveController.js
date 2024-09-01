@@ -5,6 +5,7 @@ const { CasualLeave } = require('../models/casualLeaveSchema');
 const { PrivelageLeave } = require('../models/privelageLeaveSchema');
 const { PaternityLeave } = require('../models/paternityLeaveSchema');
 
+
 // Apply for leave
 const ApplyLeave = async (req, res) => {
     try {
@@ -220,7 +221,7 @@ const AcceptLeave = async (req, res) => {
         leave.status = 'Approved';
         await leave.save();
         // res.status(200).json({ message: 'Leave approved successfully', leave });
-        const filePath = path.join(__dirname, "/view/accept.html");
+        const filePath = path.join(__dirname, "../view/accept.html");
         res.sendFile(filePath);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -241,9 +242,9 @@ const DenyLeave = async (req, res) => {
         await leave.save();
 
         // res.status(200).json({ message: 'Leave denied successfully', leave });
-        const filePath = path.join(__dirname, "/view/reject.html");
+        const filePath = path.join(__dirname, "../view/reject.html");
         res.sendFile(filePath);
-        res.status(200).json({msg:"hello"})
+        // res.status(200).json({msg:"hello"})
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
