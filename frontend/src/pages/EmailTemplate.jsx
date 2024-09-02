@@ -1,6 +1,6 @@
 import { Html, Head, Body, Text, Button, Img } from '@react-email/components';
 
-const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, imageUrl ,fromFirstHalf,fromSecondHalf,toFirstHalf,toSecondHalf,leaveId,LOP}) => (
+const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, imageUrl ,fromDay,toDay,leaveId,LOP}) => (
   <Html>
     <Head />
     <Body style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#f9f9f9' }}>
@@ -26,24 +26,15 @@ const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, ima
           
           <td style={{ padding: '10px', backgroundColor: '#fff' }}>
             <div>{fromDate}</div>
-           {fromFirstHalf=="Yes" && fromSecondHalf=="Yes" || fromFirstHalf=="No" && fromSecondHalf=="No"? <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}> Full Day</td> : <div>
-            <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>First half:</td>
-            <td style={{ padding: '10px', backgroundColor: '#fff' }}>{fromFirstHalf}</td>
-            <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>second half:</td>
-            <td style={{ padding: '10px', backgroundColor: '#fff' }}>{fromSecondHalf}</td>
-            </div>}
+            <td style={{ padding: '10px', backgroundColor: '#fff' }}>{fromDay}</td>
           </td>
         </tr>
         <tr>
           <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>To Date:</td>
           <td style={{ padding: '10px', backgroundColor: '#fff' }}>
             <div>{toDate}</div>
-            {toFirstHalf=="Yes" && toSecondHalf=="Yes" || toFirstHalf=="No" && toSecondHalf=="No"? <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}> Full Day</td> : <div>
-            <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>First half:</td>
-            <td style={{ padding: '10px', backgroundColor: '#fff' }}>{toFirstHalf}</td>
-            <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>second half:</td>
-            <td style={{ padding: '10px', backgroundColor: '#fff' }}>{toSecondHalf}</td>
-            </div>}
+            <td style={{ padding: '10px', backgroundColor: '#fff' }}>{toDay}</td>
+
           </td>
         </tr>
         <tr>
