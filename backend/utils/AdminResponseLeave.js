@@ -16,7 +16,7 @@ const htmlTemplateAccept = `
     </div>
     <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
       <p style="font-size: 16px; line-height: 1.5; color: #333333;">
-        Dear [Recipient Name],
+        Dear Kishore Kumar,
       </p>
       <p style="font-size: 16px; line-height: 1.5; color: #333333;">
         We are pleased to inform you that your request has been <strong>approved</strong>. You can now proceed with the next steps as outlined.
@@ -29,14 +29,14 @@ const htmlTemplateAccept = `
       </p>
       <p style="font-size: 16px; line-height: 1.5; color: #333333;">
         Best Regards,<br/>
-        [Your Company Name]
+        Gilbarco Veeder-Root
       </p>
     </div>
     <div style="text-align: center; padding-top: 20px;">
       <a href="[Link]" style="display: inline-block; padding: 10px 20px; background-color: #4CAF50; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">View Details</a>
     </div>
     <div style="padding-top: 20px; text-align: center; font-size: 12px; color: #777777;">
-      <p>&copy; 2024 [Your Company Name]. All rights reserved.</p>
+      <p>&copy; 2024 Gilbarco Veeder-Root. All rights reserved.</p>
     </div>
   </div>
 `;
@@ -48,7 +48,7 @@ const htmlTemplateReject = `
     </div>
     <div style="padding: 20px; background-color: #f9f9f9; border-radius: 8px;">
       <p style="font-size: 16px; line-height: 1.5; color: #333333;">
-        Dear [Recipient Name],
+        Dear Kishore Kumar,
       </p>
       <p style="font-size: 16px; line-height: 1.5; color: #333333;">
         We regret to inform you that your request has been <strong>declined</strong>. Unfortunately, we are unable to proceed with the request at this time.
@@ -61,14 +61,14 @@ const htmlTemplateReject = `
       </p>
       <p style="font-size: 16px; line-height: 1.5; color: #333333;">
         Best Regards,<br/>
-        [Your Company Name]
+        Gilbarco Veeder-Root
       </p>
     </div>
     <div style="text-align: center; padding-top: 20px;">
       <a href="[Link]" style="display: inline-block; padding: 10px 20px; background-color: #e74c3c; color: white; text-decoration: none; border-radius: 5px; font-size: 16px;">View Details</a>
     </div>
     <div style="padding-top: 20px; text-align: center; font-size: 12px; color: #777777;">
-      <p>&copy; 2024 [Your Company Name]. All rights reserved.</p>
+      <p>&copy; 2024 Gilbarco Veeder-Root. All rights reserved.</p>
     </div>
   </div>
 `;
@@ -79,7 +79,7 @@ const Accepted = (mail) =>{
     const mailOptions = {
         // from: 'your-email@gmail.com', // Sender address
         to: mail, // List of receivers
-        subject: 'Request Approval', // Subject line
+        subject: 'Request Approved', // Subject line
         html: htmlTemplateAccept // HTML body content
     };
 
