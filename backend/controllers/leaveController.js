@@ -159,6 +159,15 @@ const AcceptLeave = async (req, res) => {
             return res.status(404).json({ message: 'Leave not found' });
         }
 
+        if (leave.status == 'Approved'){
+            const filePath = path.join(__dirname, "../view/alreadyAccepted.html");
+            res.sendFile(filePath);
+        }
+        else if(leave.status == 'Rejected'){
+            const filePath = path.join(__dirname, "../view/alreadyRejected.html");
+            res.sendFile(filePath);
+        }
+
         if(leave.isLOP){
             if(leave.leaveType === "Casual Leave"){
                 const cl = await CasualLeave.findOne({empId: leave.empId})
