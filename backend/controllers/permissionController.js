@@ -1,5 +1,6 @@
 const { EmpModel } = require('../models/employeeSchema');
 const { PermissionModel } = require('../models/permissionSchem'); // Replace with the correct path
+const { Accepted, Rejected } = require('../utils/AdminResponseLeave')
 
 // Apply for permission
 const ApplyPermission = async (req, res) => {
@@ -47,7 +48,7 @@ const AcceptPermission = async (req, res) => {
         permission.status = 'Approved';
         await permission.save();
         await emp.save();
-
+        Accepted()
         res.status(200).json({ message: 'Permission approved successfully', permission });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -66,7 +67,7 @@ const DenyPermission = async (req, res) => {
 
         permission.status = 'Denied';
         await permission.save();
-
+        Rejected()
         res.status(200).json({ message: 'Permission denied successfully', permission });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
