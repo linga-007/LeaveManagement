@@ -48,7 +48,7 @@ const AcceptPermission = async (req, res) => {
         permission.status = 'Approved';
         await permission.save();
         await emp.save();
-        Accepted()
+        Accepted('kkishorekumar536@gmail.com')
         res.status(200).json({ message: 'Permission approved successfully', permission });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -67,7 +67,7 @@ const DenyPermission = async (req, res) => {
 
         permission.status = 'Denied';
         await permission.save();
-        Rejected()
+        Rejected('kkishorekumar536@gmail.com')
         res.status(200).json({ message: 'Permission denied successfully', permission });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
