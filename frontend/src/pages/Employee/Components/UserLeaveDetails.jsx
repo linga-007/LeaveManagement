@@ -109,13 +109,13 @@ function Table() {
           </tr>
         </thead>
         <thead className="divide-y divide-gray-200 bg-white">
-          <tr className="bg-gray-50">
+          <tr className="bg-gray-50 text-md">
             {tableHead.map((val, index) => (
               <th
                 key={index}
-                className="border border-gray-400 text-left text-xs text-gray-500 uppercase text-balance break-words"
+                className="border text-md border-gray-400 text-left text-xs text-gray-500 uppercase text-balance break-words"
               >
-                <div className='flex justify-center items-center'>{val}</div>
+                <div className='flex justify-center items-center text-md'>{val}</div>
               </th>
             ))}
           </tr>
@@ -124,11 +124,11 @@ function Table() {
           {currentData.map((val, index) => (
             <tr key={index} className="border border-gray-400 bg-white">
               <td className=' border border-gray-400 '>
-                <div className='flex justify-center items-center uppercase'>{val}</div>
+                <div className='flex justify-center items-center uppercase text-md'>{val}</div>
               </td>
               {value[index].map((cellValue, i) => (
-                <td key={i} className='border border-gray-400'>
-                  <div className='flex justify-center items-center'>{cellValue}</div>
+                <td key={i} className='border border-gray-400 text-md'>
+                  <div className='flex justify-center items-center text-md'>{cellValue}</div>
                 </td>
               ))}
             </tr>
