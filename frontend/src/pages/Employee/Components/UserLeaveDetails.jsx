@@ -94,15 +94,15 @@ function Table() {
   const currentData = ["Privilege Leave", "Casual Leave", "Paternity Leave"];
 
   return (
-    <div className=' bg-[#f5f6f7] p-3 rounded-md'>
+    <div className=' p-3 rounded-md'>
 
-<div className='flex flex-wrap flex-col w-[100%] '>
-      <table className='table-fixed w-[100%] border-collapse border border-gray-400'>
-        <thead className='bg-blue-600'>
+<div className='flex flex-wrap flex-col w-[100%] justify-center items-center'>
+      <table className='table-fixed w-[98%] border-collapse border border-gray-400'>
+        <thead className='bg-[#595d5e]'>
           <tr>
             <th
               colSpan={tableHead.length}
-              className="px-5 py-2 text-left text-xs text-white uppercase"
+              className=" text-left text-lg text-white uppercase"
             >
               Leave Balance Management
             </th>
@@ -113,7 +113,7 @@ function Table() {
             {tableHead.map((val, index) => (
               <th
                 key={index}
-                className="px-5 py-2 border border-gray-400 text-left text-xs text-gray-500 uppercase text-balance break-words"
+                className="border border-gray-400 text-left text-xs text-gray-500 uppercase text-balance break-words"
               >
                 <div className='flex justify-center items-center'>{val}</div>
               </th>
@@ -123,7 +123,7 @@ function Table() {
         <tbody>
           {currentData.map((val, index) => (
             <tr key={index} className="border border-gray-400 bg-white">
-              <td className='px-3 py-2 border border-gray-400 '>
+              <td className=' border border-gray-400 '>
                 <div className='flex justify-center items-center uppercase'>{val}</div>
               </td>
               {value[index].map((cellValue, i) => (

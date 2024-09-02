@@ -4,7 +4,7 @@ import Table from './Components/UserLeaveDetails';
 import UserDetailsCard from './Components/UserDetailsCard';
 import Nav from './Components/Nav';
 import LeaveAcceptedEmailTemplate from '../EmployeeAcceptedMailTemplate';
-
+import Sidenav from './Components/Sidenav';
 import LeaveApplyForm from './Components/LeaveApplyForm';
 
 
@@ -17,9 +17,10 @@ function EmployeeHomePage() {
 
 
   return (
-    <div className="w-screen h-screen flex justify-between  ">
-        <UserDetailsCard />
-      <div className="flex flex-col justify-between w-[100%] px-3 py-3 ">
+    <div className="w-screen h-screen flex">
+        <Sidenav />
+      <div className="w-full  flex flex-col pt-2 ">
+        <Nav/>
         <LeaveApplyForm/>
         <Table />
       </div>
