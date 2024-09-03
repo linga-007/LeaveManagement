@@ -31,12 +31,30 @@ cron.schedule('0 0 1 * *', () => {
     reset3P();
 });
 
+cron.schedule('0 0 1 * *', () => {
+    resetPermission();
+});
+
+cron.schedule('0 0 1 1 *', () => {
+    carryForward();
+});
+
 const reset3P = async() => {
+    //reset Eligibility = 12, Total Eligibility = 12, Availed = 0, LOP = 0, Closing Balance = 12
     console.log('3P')
 }
 
 const resetGVR = async() => {
+    //reset Eligibility = 16, Total Eligibility = 16, Availed = 0, LOP = 0, Closing Balance = 16, Closing Balance = 16
     console.log('GVR')
+}
+
+const resetPermission = async() => {
+    console.log('Permission')
+}
+
+const carryForward = async() => {
+    console.log('carryForward')
 }
 
 app.get("/test", (req, res)=>{

@@ -96,43 +96,6 @@ function Table() {
   return (
     <div className=' p-3 rounded-md'>
 
-<<<<<<< HEAD
-<div className='flex flex-wrap flex-col w-[100%] '>
-<div className="overflow-x-auto">
-  <table className='table-fixed w-full border-collapse border border-gray-400 sm:min-w-full sm:table-fixed'>
-    <thead className='bg-blue-600'>
-      <tr>
-        <th
-          colSpan={tableHead.length}
-          className=" text-left text-xs text-white uppercase"
-        >
-          Leave Balance Management
-        </th>
-      </tr>
-    </thead>
-    <thead className="divide-y divide-gray-200 bg-white">
-      <tr className="bg-gray-50">
-        {tableHead.map((val, index) => (
-          <th
-            key={index}
-            className=" border border-gray-400 text-left text-md  text-gray-500 uppercase text-balance break-words"
-          >
-            <div className='flex justify-center items-center'>{val}</div>
-          </th>
-        ))}
-      </tr>
-    </thead>
-    <tbody>
-      {currentData.map((val, index) => (
-        <tr key={index} className="border border-gray-400 bg-white text-[18px]">
-          <td className=' border border-gray-400 '>
-            <div className='flex justify-center items-center uppercase'>{val}</div>
-          </td>
-          {value[index].map((cellValue, i) => (
-            <td key={i} className=' border border-gray-400 '>
-              <div className='flex justify-center items-center '>{cellValue}</div>
-            </td>
-=======
 <div className='flex flex-wrap flex-col w-[100%] justify-center items-center'>
       <table className='table-fixed w-[98%] border-collapse border border-gray-400'>
         <thead className='bg-[#595d5e]'>
@@ -169,17 +132,16 @@ function Table() {
                 </td>
               ))}
             </tr>
->>>>>>> 6573be8d24cf0cbee1a7f139e066e3f73df7ff39
           ))}
-        </tr>
-      ))}
+        
+    
     </tbody>
-  </table>
-</div>
+    </table>
+  </div>
+  </div>
 
-    </div>
 
-    </div>
+   
     
   );
 }

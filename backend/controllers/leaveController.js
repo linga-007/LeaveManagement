@@ -253,13 +253,18 @@ const DenyLeave = async (req, res) => {
 const GetLeave = async (req, res) => {
     try {
         const { empId } = req.body;
-
-        const leaves = await LeaveModel.find({ empId });
+        const employee = await EmpModel.find({empId});
+        if(employee.role === 'manager'){
+            const leaves = await LeaveModel.find();
+            res.status(200).json(leaves);
+        }
+        else{
+            const leaves = await LeaveModel.find({ empId });
         if (!leaves.length) {
             return res.status(404).json({ message: 'No leaves found for this employee' });
         }
-
         res.status(200).json(leaves);
+        }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }

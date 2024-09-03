@@ -78,13 +78,18 @@ const DenyPermission = async (req, res) => {
 const GetPermission = async (req, res) => {
     try {
         const { empId } = req.body;
-
-        const permissions = await PermissionModel.find({ empId });
+        const employee = await EmpModel.find({empId});
+        if(employee.role === 'manager'){
+            const permissions = await PermissionModel.find();
+            res.status(200).json(permissions);
+        }
+        else{
+            const permissions = await PermissionModel.find({ empId });
         if (!permissions.length) {
             return res.status(404).json({ message: 'No permissions found for this employee' });
         }
-
         res.status(200).json(permissions);
+        }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }

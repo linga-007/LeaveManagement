@@ -17,16 +17,10 @@ function EmployeeHomePage() {
 
 
   return (
-<<<<<<< HEAD
-    <div className="w-screen h-screen flex ">
-        <Sidenav />
-      <div className=" w-full px-3 py-3 ">
-=======
     <div className="w-screen h-screen flex">
         <Sidenav />
       <div className="w-full  flex flex-col pt-2 ">
         <Nav/>
->>>>>>> 6573be8d24cf0cbee1a7f139e066e3f73df7ff39
         <LeaveApplyForm/>
         <Table />
       </div>

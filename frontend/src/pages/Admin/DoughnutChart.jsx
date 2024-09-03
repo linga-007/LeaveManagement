@@ -23,7 +23,7 @@ const DoughnutChart = () => {
   };
 
   return (
-    <div className="w-[16rem] h-[16rem] flex  justify-center items-center p-0">
+    <div className="w-[16rem] h-[14rem] flex  justify-center items-center p-0">
       <div>
         {/* <h2>Requests Summary Widget</h2> */}
         <Doughnut data={data} />
