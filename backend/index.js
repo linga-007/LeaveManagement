@@ -9,6 +9,7 @@ const LeaveRoute = require('./routes/leaveRoute')
 const PermissionRoute = require('./routes/permissionRoute')
 const TableRoute = require('./routes/tableRoute')
 const Email = require('./routes/mailRoute')
+const Circular = require('./routes/circularRoute')
 
 const app = express()
 app.use(express.json())
@@ -22,6 +23,7 @@ app.use('/leave',LeaveRoute)
 app.use('/permission',PermissionRoute)
 app.use('/table',TableRoute)
 app.use('/mail', Email)
+app.use('/circular', Circular)
 
 cron.schedule('0 0 1 2 *', () => {
     resetGVR();
