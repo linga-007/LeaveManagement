@@ -61,11 +61,12 @@ const Register = async (req, res) => {
         else if(role === "GVR"){
             const cl = new CasualLeave({
                 empId,
-                opBalance: 12,
-                eligibility: 12,
-                totalEligibility: 12,
-                closingBalance: 12,
-                futureClosingBalance: 12
+                opBalance: 10,
+                eligibility: 10,
+                totalEligibility: 10,
+                closingBalance: 10,
+                carryForward: 10,
+                futureClosingBalance: 10
             })
 
             const pl = new PrivelageLeave({
@@ -90,31 +91,31 @@ const Register = async (req, res) => {
     }
 }
 
-// Login
-const Login = async (req, res) => {
-    try {
-        const { empId, password } = req.body;
+// // Login
+// const Login = async (req, res) => {
+//     try {
+//         const { empId, password } = req.body;
 
-        // Find employee by ID
-        const employee = await EmpModel.findOne({ empId });
-        if (!employee) {
-            return res.status(400).json({ message: 'Employee not found' });
-        }
+//         // Find employee by ID
+//         const employee = await EmpModel.findOne({ empId });
+//         if (!employee) {
+//             return res.status(400).json({ message: 'Employee not found' });
+//         }
 
-        // Compare password
-        const isMatch = await bcrypt.compare(password, employee.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: 'Invalid credentials' });
-        }
+//         // Compare password
+//         const isMatch = await bcrypt.compare(password, employee.password);
+//         if (!isMatch) {
+//             return res.status(400).json({ message: 'Invalid credentials' });
+//         }
 
-        // Generate JWT token
-        const token = jwt.sign({ empId: employee.empId, role: employee.role }, process.env.SECRET, { expiresIn: '1h' });
+//         // Generate JWT token
+//         const token = jwt.sign({ empId: employee.empId, role: employee.role }, process.env.SECRET, { expiresIn: '1h' });
 
-        res.status(200).json({ message: 'Login successful', token });
-    } catch (error) {
-        res.status(500).json({ message: 'Server error', error });
-    }
-}
+//         res.status(200).json({ message: 'Login successful', token });
+//     } catch (error) {
+//         res.status(500).json({ message: 'Server error', error });
+//     }
+// }
 
 const RFIDLogin = async(req,res) =>{
     try {
@@ -146,4 +147,4 @@ const GetEmp = async (req, res) => {
     }
 }
 
-module.exports = {Login,Register,RFIDLogin,GetEmp}
+module.exports = {Register,RFIDLogin,GetEmp}

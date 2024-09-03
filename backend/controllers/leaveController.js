@@ -39,7 +39,7 @@ const ApplyLeave = async (req, res) => {
                     return res.status(202).json({ message: 'Casual Leave Limit Exceded' });
                 }
             }
-            else if(leaveType === "Paternity Leave"){
+            else if(leaveType === "Paternity Leave" && emp.isPaternity){
                 const pl = await PaternityLeave.findOne({empId})
                 if(pl.availed < 5){
                     const leave = new LeaveModel({
@@ -104,7 +104,7 @@ const ApplyLeave = async (req, res) => {
                     return res.status(404).json({ message: 'Privelage Leave Limit Exceded' });
                 }
             }
-            else if(leaveType === "Paternity Leave"){
+            else if(leaveType === "Paternity Leave" && emp.isPaternity){
                 const pl = await PaternityLeave.findOne({empId})
                 if(pl.availed < 5){
                     const leave = new LeaveModel({
@@ -158,7 +158,7 @@ const LOP = async(req, res) => {
         await leave.save()
         res.status(201).json({ message: 'LOP Leave applied successfully', leave });
     } catch(err){
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({ message: 'Server error', err });
     }
 }
 
@@ -166,74 +166,161 @@ const LOP = async(req, res) => {
 const AcceptLeave = async (req, res) => {
     try {
         const { leaveId } = req.params;
+        console.log("leave in backend" , leaveId)
+
+        const leave = await LeaveModel.findById(leaveId);
+        console.log("leave is " , leave)
+        if (!leave) {
+            return res.status(404).json({ message: 'Leave not found' });
+        }
+
+        if (leave.status === 'Approved'){
+            const filePath = path.join(__dirname, "../view/alreadyAccepted.html");
+            res.sendFile(filePath);
+        }
+        else if(leave.status === 'Rejected'){
+            const filePath = path.join(__dirname, "../view/alreadyRejected.html");
+            res.sendFile(filePath);
+        }
+        else{
+            if(leave.isLOP){
+                if(leave.leaveType === "Casual Leave"){
+                    const cl = await CasualLeave.findOne({empId: leave.empId})
+                    cl.LOP += 1;
+                    await cl.save()
+                }
+                else if(leave.leaveType === "Privelage Leave"){
+                    const pl = await PrivelageLeave.findOne({empId: leave.empId})
+                    pl.LOP += 1;
+                    await pl.save()
+                }
+                else{
+                    const pl = await PaternityLeave.findOne({empId: leave.empId})
+                    pl.LOP += 1;
+                    await pl.save()
+                }
+            }
+            else{
+                if(leave.leaveType === "Casual Leave"){
+                    const cl = await CasualLeave.findOne({empId: leave.empId})
+                    cl.availed += 1;
+                    cl.eligibility -= 1;
+                    cl.totalEligibility -= 1;
+                    cl.closingBalance -= 1;
+                    pl.carryForward -= 1;
+                    cl.futureClosingBalance -= 1;
+                    await cl.save()
+                }
+                else if(leave.leaveType === "Privelage Leave"){
+                    const pl = await PrivelageLeave.findOne({empId: leave.empId})
+                    pl.availed += 1;
+                    pl.eligibility -= 1;
+                    pl.totalEligibility -= 1;
+                    pl.closingBalance -= 1;
+                    pl.carryForward -= 1;
+                    pl.futureClosingBalance -= 1;
+                    await pl.save()
+                }
+                else{
+                    const pl = await PaternityLeave.findOne({empId: leave.empId})
+                    pl.availed += 1;
+                    pl.eligibility -= 1;
+                    pl.totalEligibility -= 1;
+                    pl.closingBalance -= 1;
+                    pl.futureClosingBalance -= 1;
+                    await pl.save()
+                }
+            }
+    
+            leave.status = 'Approved';
+            await leave.save();
+            // res.status(200).json({ message: 'Leave approved successfully', leave });
+            const filePath = path.join(__dirname, "../view/accept.html");
+            Accepted('lingeshwaran.kv2022cse@sece.ac.in')
+            res.sendFile(filePath);
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+const Accept = async (req, res) => {
+    try {
+        const { leaveId } = req.body;
 
         const leave = await LeaveModel.findById(leaveId);
         if (!leave) {
             return res.status(404).json({ message: 'Leave not found' });
         }
 
-        if (leave.status == 'Approved'){
-            const filePath = path.join(__dirname, "../view/alreadyAccepted.html");
-            res.sendFile(filePath);
+        if (leave.status === 'Approved'){
+            // const filePath = path.join(__dirname, "../view/alreadyAccepted.html");
+            // res.sendFile(filePath);
+            res.status(401).json({ message: 'Already Accepted' });
         }
-        else if(leave.status == 'Rejected'){
-            const filePath = path.join(__dirname, "../view/alreadyRejected.html");
-            res.sendFile(filePath);
-        }
+        else if(leave.status === 'Rejected'){
+            // const filePath = path.join(__dirname, "../view/alreadyRejected.html");
+            // res.sendFile(filePath);
+            res.status(401).json({ message: 'Already Rejected' });
 
-        if(leave.isLOP){
-            if(leave.leaveType === "Casual Leave"){
-                const cl = await CasualLeave.findOne({empId: leave.empId})
-                cl.LOP += 1;
-                await cl.save()
-            }
-            else if(leave.leaveType === "Privelage Leave"){
-                const pl = await PrivelageLeave.findOne({empId: leave.empId})
-                pl.LOP += 1;
-                await pl.save()
-            }
-            else{
-                const pl = await PaternityLeave.findOne({empId: leave.empId})
-                pl.LOP += 1;
-                await pl.save()
-            }
         }
         else{
-            if(leave.leaveType === "Casual Leave"){
-                const cl = await CasualLeave.findOne({empId: leave.empId})
-                cl.availed += 1;
-                cl.eligibility -= 1;
-                cl.totalEligibility -= 1;
-                cl.closingBalance -= 1;
-                cl.futureClosingBalance -= 1;
-                await cl.save()
-            }
-            else if(leave.leaveType === "Privelage Leave"){
-                const pl = await PrivelageLeave.findOne({empId: leave.empId})
-                pl.availed += 1;
-                pl.eligibility -= 1;
-                pl.totalEligibility -= 1;
-                pl.closingBalance -= 1;
-                pl.futureClosingBalance -= 1;
-                await pl.save()
+            if(leave.isLOP){
+                if(leave.leaveType === "Casual Leave"){
+                    const cl = await CasualLeave.findOne({empId: leave.empId})
+                    cl.LOP += 1;
+                    await cl.save()
+                }
+                else if(leave.leaveType === "Privelage Leave"){
+                    const pl = await PrivelageLeave.findOne({empId: leave.empId})
+                    pl.LOP += 1;
+                    await pl.save()
+                }
+                else{
+                    const pl = await PaternityLeave.findOne({empId: leave.empId})
+                    pl.LOP += 1;
+                    await pl.save()
+                }
             }
             else{
-                const pl = await PaternityLeave.findOne({empId: leave.empId})
-                pl.availed += 1;
-                pl.eligibility -= 1;
-                pl.totalEligibility -= 1;
-                pl.closingBalance -= 1;
-                pl.futureClosingBalance -= 1;
-                await pl.save()
+                if(leave.leaveType === "Casual Leave"){
+                    const cl = await CasualLeave.findOne({empId: leave.empId})
+                    cl.availed += 1;
+                    cl.eligibility -= 1;
+                    cl.totalEligibility -= 1;
+                    cl.closingBalance -= 1;
+                    pl.carryForward -= 1;
+                    cl.futureClosingBalance -= 1;
+                    await cl.save()
+                }
+                else if(leave.leaveType === "Privelage Leave"){
+                    const pl = await PrivelageLeave.findOne({empId: leave.empId})
+                    pl.availed += 1;
+                    pl.eligibility -= 1;
+                    pl.totalEligibility -= 1;
+                    pl.closingBalance -= 1;
+                    pl.carryForward -= 1;
+                    pl.futureClosingBalance -= 1;
+                    await pl.save()
+                }
+                else{
+                    const pl = await PaternityLeave.findOne({empId: leave.empId})
+                    pl.availed += 1;
+                    pl.eligibility -= 1;
+                    pl.totalEligibility -= 1;
+                    pl.closingBalance -= 1;
+                    pl.futureClosingBalance -= 1;
+                    await pl.save()
+                }
             }
+    
+            leave.status = 'Approved';
+            await leave.save();
+            res.status(200).json({ message: 'Leave approved successfully', leave });
+            // const filePath = path.join(__dirname, "../view/accept.html");
+            Accepted('lingeshwaran.kv2022cse@sece.ac.in')
+            // res.sendFile(filePath);
         }
-
-        leave.status = 'Approved';
-        await leave.save();
-        // res.status(200).json({ message: 'Leave approved successfully', leave });
-        const filePath = path.join(__dirname, "../view/accept.html");
-        Accepted('kkishorekumar536@gmail.com')
-        res.sendFile(filePath);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -252,9 +339,32 @@ const DenyLeave = async (req, res) => {
         leave.status = 'Denied';
         await leave.save();
 
+       // res.status(200).json({ message: 'Leave denied successfully', leave });
+       const filePath = path.join(__dirname, "../view/reject.html");
+       Rejected('lingeshwaran.kv2022cse@sece.ac.in')
+
+       res.sendFile(filePath);
+        // res.status(200).json({msg:"hello"})
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+const Deny = async (req, res) => {
+    try {
+        const { leaveId } = req.body;
+
+        const leave = await LeaveModel.findById(leaveId);
+        if (!leave) {
+            return res.status(404).json({ message: 'Leave not found' });
+        }
+
+        leave.status = 'Denied';
+        await leave.save();
+
         res.status(200).json({ message: 'Leave denied successfully', leave });
         // const filePath = path.join(__dirname, "../view/reject.html");
-        // Rejected('kkishorekumar536@gmail.com')
+        Rejected('lingeshwaran.kv2022cse@sece.ac.in')
         // res.sendFile(filePath);
         // res.status(200).json({msg:"hello"})
     } catch (error) {
@@ -267,7 +377,6 @@ const DenyLeave = async (req, res) => {
 const GetLeave = async (req, res) => {
     try {
         const { empId } = req.body;
-
         const employee = await EmpModel.findOne({empId});
         if(employee.role === 'Manager'){
             const leaves = await LeaveModel.find({});
@@ -286,4 +395,4 @@ const GetLeave = async (req, res) => {
     }
 }
 
-module.exports = {ApplyLeave,LOP,AcceptLeave,DenyLeave,GetLeave}
+module.exports = {ApplyLeave,LOP,AcceptLeave,Accept,DenyLeave,Deny,GetLeave}
