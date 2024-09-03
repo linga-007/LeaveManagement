@@ -79,7 +79,7 @@ const GetPermission = async (req, res) => {
     try {
         const { empId } = req.body;
         const employee = await EmpModel.find({empId});
-        if(employee.role === 'manager'){
+        if(employee.role === 'Manager'){
             const permissions = await PermissionModel.find();
             res.status(200).json(permissions);
         }
