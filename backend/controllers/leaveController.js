@@ -4,7 +4,7 @@ const { EmpModel } = require('../models/employeeSchema');
 const { CasualLeave } = require('../models/casualLeaveSchema');
 const { PrivelageLeave } = require('../models/privelageLeaveSchema');
 const { PaternityLeave } = require('../models/paternityLeaveSchema');
-const { Accepted, Rejected } = require('../utils/AdminResponse')
+const { Accepted, Rejected } = require('../utils/AdminResponseLeave')
 
 // Apply for leave
 const ApplyLeave = async (req, res) => {
@@ -159,32 +159,29 @@ const AcceptLeave = async (req, res) => {
             return res.status(404).json({ message: 'Leave not found' });
         }
 
+        if (leave.status == 'Approved'){
+            const filePath = path.join(__dirname, "../view/alreadyAccepted.html");
+            res.sendFile(filePath);
+        }
+        else if(leave.status == 'Rejected'){
+            const filePath = path.join(__dirname, "../view/alreadyRejected.html");
+            res.sendFile(filePath);
+        }
+
         if(leave.isLOP){
             if(leave.leaveType === "Casual Leave"){
                 const cl = await CasualLeave.findOne({empId: leave.empId})
                 cl.LOP += 1;
-                cl.eligibility -= 1;
-                cl.totalEligibility -= 1;
-                cl.closingBalance -= 1;
-                cl.futureClosingBalance -= 1;
                 await cl.save()
             }
             else if(leave.leaveType === "Privelage Leave"){
                 const pl = await PrivelageLeave.findOne({empId: leave.empId})
                 pl.LOP += 1;
-                pl.eligibility -= 1;
-                pl.totalEligibility -= 1;
-                pl.closingBalance -= 1;
-                pl.futureClosingBalance -= 1;
                 await pl.save()
             }
             else{
                 const pl = await PaternityLeave.findOne({empId: leave.empId})
                 pl.LOP += 1;
-                pl.eligibility -= 1;
-                pl.totalEligibility -= 1;
-                pl.closingBalance -= 1;
-                pl.futureClosingBalance -= 1;
                 await pl.save()
             }
         }

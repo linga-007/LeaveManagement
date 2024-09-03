@@ -8,6 +8,7 @@ import {createBrowserRouter,RouterProvider} from 'react-router-dom'
 import LandingPage from './pages/Landing/LandingPage';
 import EmployeeHomePage from './pages/Employee/EmployeeHome';
 import Login from './pages/User/Login';
+import History from './pages/Employee/Components/History';
 
 
 
@@ -35,6 +36,10 @@ function App() {
     {
       path:'/Admin',
       element:<AdminHome/>
+    },
+    {
+      path:'/history/:id',
+      element:<History/>
     },
     // {
     //   path:'/Employee/:username',
