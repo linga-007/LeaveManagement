@@ -14,6 +14,8 @@ const ApplyPermission = async (req, res) => {
         if(emp.permissionAvailed < 4){
             const newPermission = new PermissionModel({
                 empId,
+                empName: emp.empName,
+                role: emp.role,
                 date,
                 from,
                 to,
@@ -34,21 +36,58 @@ const ApplyPermission = async (req, res) => {
 // Accept permission
 const AcceptPermission = async (req, res) => {
     try {
-        const { permissionId } = req.body;
-
+        const { permissionId } = req.params;
+        console.log(permissionId);
         const permission = await PermissionModel.findById(permissionId);
         if (!permission) {
             return res.status(404).json({ message: 'Permission not found' });
         }
 
-        const emp = await EmpModel.findById(permission.empId);
+        const emp = await EmpModel.findOne({empId: permission.empId});
+        console.log(emp);
 
-        emp.permission += 1;
-        permission.status = 'Approved';
-        await permission.save();
-        await emp.save();
-        Accepted('kkishorekumar536@gmail.com')
-        res.status(200).json({ message: 'Permission approved successfully', permission });
+        if(permission.status === 'Pending'){
+            emp.permissionAvailed += permission.hrs;
+            emp.permissionEligible -= permission.hrs;
+            permission.status = 'Approved';
+            await permission.save();
+            await emp.save();
+            const filePath = path.join(__dirname, "../view/accept.html");
+            Accepted('lingeshwaran.kv2022cse@sece.ac.in')
+            res.sendFile(filePath);
+        }
+        else{
+            return res.status(403).json({ message: 'Permission already approved or denied' });
+        }
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+const Accept = async (req, res) => {
+    try {
+        const { permissionId } = req.body;
+        console.log(permissionId);
+        const permission = await PermissionModel.findById(permissionId);
+        if (!permission) {
+            return res.status(404).json({ message: 'Permission not found' });
+        }
+
+        const emp = await EmpModel.findOne({empId: permission.empId});
+        console.log(emp);
+
+        if(permission.status === 'Pending'){
+            emp.permissionAvailed += permission.hrs;
+            emp.permissionEligible -= permission.hrs;
+            permission.status = 'Approved';
+            await permission.save();
+            await emp.save();
+            Accepted('lingeshwaran.kv2022cse@sece.ac.in')
+            res.status(200).json({ message: 'Permission approved successfully', permission });
+        }
+        else{
+            return res.status(403).json({ message: 'Permission already approved or denied' });
+        }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -56,6 +95,26 @@ const AcceptPermission = async (req, res) => {
 
 // Deny permission
 const DenyPermission = async (req, res) => {
+    try {
+        const { permissionId } = req.params;
+
+        const permission = await PermissionModel.findById(permissionId);
+        if (!permission) {
+            return res.status(404).json({ message: 'Permission not found' });
+        }
+
+        permission.status = 'Denied';
+        await permission.save();
+        // Rejected('kkishorekumar536@gmail.com')
+        const filePath = path.join(__dirname, "../view/reject.html");
+        Rejected('lingeshwaran.kv2022cse@sece.ac.in')
+        res.sendFile(filePath);
+    } catch (error) {
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
+const Deny = async (req, res) => {
     try {
         const { permissionId } = req.body;
 
@@ -66,7 +125,7 @@ const DenyPermission = async (req, res) => {
 
         permission.status = 'Denied';
         await permission.save();
-        Rejected('kkishorekumar536@gmail.com')
+        Rejected('lingeshwaran.kv2022cse@sece.ac.in')
         res.status(200).json({ message: 'Permission denied successfully', permission });
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -77,7 +136,7 @@ const DenyPermission = async (req, res) => {
 const GetPermission = async (req, res) => {
     try {
         const { empId } = req.body;
-        const employee = await EmpModel.find({empId});
+        const employee = await EmpModel.findOne({empId});
         if(employee.role === 'Manager'){
             const permissions = await PermissionModel.find();
             res.status(200).json(permissions);
@@ -94,4 +153,4 @@ const GetPermission = async (req, res) => {
     }
 }
 
-module.exports = {ApplyPermission,AcceptPermission,DenyPermission,GetPermission}
+module.exports = {ApplyPermission,AcceptPermission,Accept,DenyPermission,Deny,GetPermission}
