@@ -6,7 +6,7 @@ const schema = new db.Schema(
             type: String,
             required: true
         },
-        empId: {
+        empName: {
             type: String,
             required: true
         },
@@ -33,10 +33,14 @@ const schema = new db.Schema(
             type: Number,
             required: true
         },
-        reason: {
+        reasonType: {
             type: String,
             enum: ['Personal', 'Medical', 'Peternity', 'Family Function'],
             default: 'Personal'
+        },
+        reason: {
+            type: String,
+            required: true
         },
         status: {
             type: String,
