@@ -252,10 +252,10 @@ const DenyLeave = async (req, res) => {
         leave.status = 'Denied';
         await leave.save();
 
-        // res.status(200).json({ message: 'Leave denied successfully', leave });
-        const filePath = path.join(__dirname, "../view/reject.html");
-        Rejected('kkishorekumar536@gmail.com')
-        res.sendFile(filePath);
+        res.status(200).json({ message: 'Leave denied successfully', leave });
+        // const filePath = path.join(__dirname, "../view/reject.html");
+        // Rejected('kkishorekumar536@gmail.com')
+        // res.sendFile(filePath);
         // res.status(200).json({msg:"hello"})
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
