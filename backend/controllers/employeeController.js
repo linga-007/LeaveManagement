@@ -10,7 +10,7 @@ const { PaternityLeave } = require('../models/paternityLeaveSchema');
 // Signup
 const Register = async (req, res) => {
     try {
-        const { empId, password, empName, role, designation, reportionManager, dateOfJoining, function: empFunction, department, level, location, isPaternity, permissionEligible, permissionAvailed } = req.body;
+        const { empId, empName, role, designation, reportionManager, dateOfJoining, function: empFunction, department, level, location, isPaternity, permissionEligible, permissionAvailed } = req.body;
 
         // Check if employee already exists
         const existingEmployee = await EmpModel.findOne({ empId });
@@ -18,13 +18,9 @@ const Register = async (req, res) => {
             return res.status(400).json({ message: 'Employee with this ID already exists' });
         }
 
-        // Hash the password
-        const hashedPassword = await bcrypt.hash(password, 10);
-
         // Create new employee
         const newEmployee = new EmpModel({
             empId,
-            password: hashedPassword,
             empName,
             role,
             designation,
@@ -63,6 +59,15 @@ const Register = async (req, res) => {
             await cl.save()
         }
         else if(role === "GVR"){
+            const cl = new CasualLeave({
+                empId,
+                opBalance: 12,
+                eligibility: 12,
+                totalEligibility: 12,
+                closingBalance: 12,
+                futureClosingBalance: 12
+            })
+
             const pl = new PrivelageLeave({
                 empId,
                 opBalance: 16,
@@ -72,7 +77,8 @@ const Register = async (req, res) => {
                 carryForward: 16,
                 futureClosingBalance: 16
             })
-            
+
+            await cl.save()
             await pl.save()
         }
 
