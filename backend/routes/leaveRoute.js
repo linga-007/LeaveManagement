@@ -1,6 +1,5 @@
 const router = require('express').Router();
-const {ApplyLeave,LOP,AcceptLeave,DenyLeave,GetLeave} = require('../controllers/leaveController');
-const checkUser = require('../middleware/auth')
+const {ApplyLeave,LOP,AcceptLeave,Accept,DenyLeave,Deny,GetLeave} = require('../controllers/leaveController');const checkUser = require('../middleware/auth')
 
 router.post('/apply', checkUser, ApplyLeave)
 router.post('/applyLOP', checkUser, LOP)

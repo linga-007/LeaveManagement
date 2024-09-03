@@ -166,8 +166,10 @@ const LOP = async(req, res) => {
 const AcceptLeave = async (req, res) => {
     try {
         const { leaveId } = req.params;
+        console.log("leave in backend" , leaveId)
 
         const leave = await LeaveModel.findById(leaveId);
+        console.log("leave is " , leave)
         if (!leave) {
             return res.status(404).json({ message: 'Leave not found' });
         }
