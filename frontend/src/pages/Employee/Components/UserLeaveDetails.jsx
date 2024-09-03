@@ -97,44 +97,47 @@ function Table() {
     <div className=' bg-[#f5f6f7] p-3 rounded-md'>
 
 <div className='flex flex-wrap flex-col w-[100%] '>
-      <table className='table-fixed w-[100%] border-collapse border border-gray-400'>
-        <thead className='bg-blue-600'>
-          <tr>
-            <th
-              colSpan={tableHead.length}
-              className="px-5 py-2 text-left text-xs text-white uppercase"
-            >
-              Leave Balance Management
-            </th>
-          </tr>
-        </thead>
-        <thead className="divide-y divide-gray-200 bg-white">
-          <tr className="bg-gray-50">
-            {tableHead.map((val, index) => (
-              <th
-                key={index}
-                className="px-5 py-2 border border-gray-400 text-left text-xs text-gray-500 uppercase text-balance break-words"
-              >
-                <div className='flex justify-center items-center'>{val}</div>
-              </th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {currentData.map((val, index) => (
-            <tr key={index} className="border border-gray-400 bg-white">
-              <td className='px-3 py-2 border border-gray-400 '>
-                <div className='flex justify-center items-center uppercase'>{val}</div>
-              </td>
-              {value[index].map((cellValue, i) => (
-                <td key={i} className='border border-gray-400'>
-                  <div className='flex justify-center items-center'>{cellValue}</div>
-                </td>
-              ))}
-            </tr>
+<div className="overflow-x-auto">
+  <table className='table-fixed w-full border-collapse border border-gray-400 sm:min-w-full sm:table-fixed'>
+    <thead className='bg-blue-600'>
+      <tr>
+        <th
+          colSpan={tableHead.length}
+          className=" text-left text-xs text-white uppercase"
+        >
+          Leave Balance Management
+        </th>
+      </tr>
+    </thead>
+    <thead className="divide-y divide-gray-200 bg-white">
+      <tr className="bg-gray-50">
+        {tableHead.map((val, index) => (
+          <th
+            key={index}
+            className=" border border-gray-400 text-left text-md  text-gray-500 uppercase text-balance break-words"
+          >
+            <div className='flex justify-center items-center'>{val}</div>
+          </th>
+        ))}
+      </tr>
+    </thead>
+    <tbody>
+      {currentData.map((val, index) => (
+        <tr key={index} className="border border-gray-400 bg-white text-[18px]">
+          <td className=' border border-gray-400 '>
+            <div className='flex justify-center items-center uppercase'>{val}</div>
+          </td>
+          {value[index].map((cellValue, i) => (
+            <td key={i} className=' border border-gray-400 '>
+              <div className='flex justify-center items-center '>{cellValue}</div>
+            </td>
           ))}
-        </tbody>
-      </table>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
     </div>
 
     </div>
