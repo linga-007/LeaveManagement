@@ -44,6 +44,8 @@ const ApplyLeave = async (req, res) => {
                 if(pl.availed < 5){
                     const leave = new LeaveModel({
                         empId,
+                        empName: emp.empName,
+                        role: emp.role,
                         leaveType,
                         from,
                         to,
@@ -67,6 +69,8 @@ const ApplyLeave = async (req, res) => {
                 if(cl.availed < 10){
                     const leave = new LeaveModel({
                         empId,
+                        empName: emp.empName,
+                        role: emp.role,
                         leaveType,
                         from,
                         to,
@@ -85,6 +89,8 @@ const ApplyLeave = async (req, res) => {
                 if(pl.availed < 16){
                     const leave = new LeaveModel({
                         empId,
+                        empName: emp.empName,
+                        role: emp.role,
                         leaveType,
                         from,
                         to,
@@ -103,6 +109,8 @@ const ApplyLeave = async (req, res) => {
                 if(pl.availed < 5){
                     const leave = new LeaveModel({
                         empId,
+                        empName: emp.empName,
+                        role: emp.role,
                         leaveType,
                         from,
                         to,
@@ -156,8 +164,10 @@ const LOP = async(req, res) => {
 const AcceptLeave = async (req, res) => {
     try {
         const { leaveId } = req.params;
+        console.log("leave in backend" , leaveId)
 
         const leave = await LeaveModel.findById(leaveId);
+        console.log("leave is " , leave)
         if (!leave) {
             return res.status(404).json({ message: 'Leave not found' });
         }
@@ -199,7 +209,9 @@ const AcceptLeave = async (req, res) => {
                 await cl.save()
             }
             else if(leave.leaveType === "Privelage Leave"){
+                console.log("in previlige")
                 const pl = await PrivelageLeave.findOne({empId: leave.empId})
+                console.log(pl)
                 pl.availed += 1;
                 pl.eligibility -= 1;
                 pl.totalEligibility -= 1;
@@ -217,13 +229,15 @@ const AcceptLeave = async (req, res) => {
                 await pl.save()
             }
         }
-
+        console.log("Completed")
         leave.status = 'Approved';
-        await leave.save();
-        // res.status(200).json({ message: 'Leave approved successfully', leave });
-        const filePath = path.join(__dirname, "../view/accept.html");
-        Accepted('kkishorekumar536@gmail.com')
-        res.sendFile(filePath);
+        await leave.save(); 
+        console.log("Completed 1")
+
+        res.status(200).json({ message: 'Leave approved successfully', leave });
+        // const filePath = path.join(__dirname, "../view/accept.html");
+        // Accepted('kkishorekumar536@gmail.com')
+        // res.sendFile(filePath);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
