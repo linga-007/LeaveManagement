@@ -7,10 +7,6 @@ const schema = new db.Schema(
             required: true,
             unique: true
         },
-        password: {
-            type: String,
-            required: true
-        },
         empName: {
             type: String,
             required: true
