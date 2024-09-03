@@ -7,9 +7,9 @@ import axios from "axios";
 import { MdMessage } from "react-icons/md";
 import { toast } from "react-toastify";
 import Card from "./Card";
-
+import PermissionTable from "./PermissionTable";
 import {jwtDecode} from 'jwt-decode';
-
+import Circular from "./Circular";
 
 import Table from "./Table";
 
@@ -95,7 +95,7 @@ const AdminHome = () => {
         </div> */}
         <Nav />
         <div className="w-full h-full flex justify-between">
-          <div className="w-[80%] h-full p-5 ">
+          <div className="w-[75%] h-full p-5 ">
             <div className="h-20px w-full flex justify-between gap-10 pb-5">
               <div>
                 <div className="relative w-64">
@@ -162,10 +162,12 @@ const AdminHome = () => {
                 <Card label="Total Leaves Denied" value="5" image="cancel" />
               </div>
             </div>
-          {isRequest ? <div><Table/></div> : isPermission ?  <div>hello</div> : <div> <Charts/></div>} 
+          {isRequest ? <div><Table/></div> : isPermission ?  <div><PermissionTable/></div> : <div> <Charts/></div>} 
 
           </div>
-          <div className="w-[20%] h-full border-x-2 solid"></div>
+          <div className="w-[25%]  flex justify-center border-x-2 solid">
+            <Circular/>
+          </div>
         </div>
 
         {/* Modal for displaying reason */}
