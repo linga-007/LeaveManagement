@@ -121,7 +121,7 @@ const RFIDLogin = async(req,res) =>{
         }
 
         // Generate JWT token
-        const token = jwt.sign({ empId: employee.empId, role: employee.role }, process.env.SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ empId: employee.empId, role: employee.role, empName: employee.empName }, process.env.SECRET, { expiresIn: '1h' });
 
         res.status(200).json({ message: 'Login successful', token });
     } catch (error) {

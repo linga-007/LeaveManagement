@@ -18,6 +18,7 @@ function Nav() {
   }, []);
 
   const getData = async () => {
+ 
     try {
       const res = await axios.post(
         'http://localhost:5000/emp/getEmp',
@@ -29,6 +30,7 @@ function Nav() {
           },
         }
       );
+
       setResponse(res.data[0]);
     } catch (error) {
       console.error('Error fetching user details:', error);

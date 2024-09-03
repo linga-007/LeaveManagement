@@ -20,6 +20,7 @@ function Table() {
 
   const getTableData = async () => {
     try {
+      console.log("start")
       const res = await axios.post(
         "http://localhost:5000/table/getDetails",
         {
@@ -34,6 +35,7 @@ function Table() {
       );
       setData(res.data);
       console.log(res.data)
+      console.log("end")
       
       // Update the value array based on the retrieved data
       

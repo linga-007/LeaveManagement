@@ -8,6 +8,7 @@ const Login = () => {
   const [RFID, setRFID] = useState("");
   const [error, setError] = useState("");
 
+
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     if (RFID !== "") {
@@ -16,7 +17,7 @@ const Login = () => {
         const res = await axios.post(
           `http://localhost:5000/emp/login`,
           {
-            "empId":"0007353027"
+            "empId":RFID
           },
           {
             headers: {
