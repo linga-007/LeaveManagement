@@ -247,7 +247,7 @@ const AcceptLeave = async (req, res) => {
 const Accept = async (req, res) => {
     try {
         const { leaveId } = req.body;
-
+        console.log(leaveId)
         const leave = await LeaveModel.findById(leaveId);
         if (!leave) {
             return res.status(404).json({ message: 'Leave not found' });
@@ -284,14 +284,19 @@ const Accept = async (req, res) => {
             }
             else{
                 if(leave.leaveType === "Casual Leave"){
+                    console.log("in casual leave")
                     const cl = await CasualLeave.findOne({empId: leave.empId})
+                    console.log("cl is " , cl.availed)
                     cl.availed += 1;
                     cl.eligibility -= 1;
                     cl.totalEligibility -= 1;
                     cl.closingBalance -= 1;
-                    pl.carryForward -= 1;
+                    cl.carryForward -= 1;
                     cl.futureClosingBalance -= 1;
+                    console.log("save above cl")
+
                     await cl.save()
+                    console.log("save below cl")
                 }
                 else if(leave.leaveType === "Privelage Leave"){
                     const pl = await PrivelageLeave.findOne({empId: leave.empId})
@@ -313,12 +318,13 @@ const Accept = async (req, res) => {
                     await pl.save()
                 }
             }
-    
+            console.log("done above")
             leave.status = 'Approved';
             await leave.save();
+            console.log("done ")
             res.status(200).json({ message: 'Leave approved successfully', leave });
             // const filePath = path.join(__dirname, "../view/accept.html");
-            Accepted('lingeshwaran.kv2022cse@sece.ac.in')
+            // Accepted('lingeshwaran.kv2022cse@sece.ac.in')
             // res.sendFile(filePath);
         }
     } catch (error) {

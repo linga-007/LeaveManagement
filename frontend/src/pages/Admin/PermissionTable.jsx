@@ -4,7 +4,9 @@ import Pagination from './Pagination'
 import { useState , useEffect } from "react";
 import {MdMessage} from 'react-icons/md'
 import {jwtDecode} from 'jwt-decode';
-import {toast} from 'react-toastify'
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 const PermissionTable = () => {
 
@@ -12,7 +14,7 @@ const PermissionTable = () => {
       "S.No",
         "Name",
         "Employee-Type",
-        "Leave-Type",
+        "Type",
         "From",
         "To",
         "Hours",
@@ -38,11 +40,14 @@ console.log("ij table component" , token)
       const handleAccept = async (id) => {
         try {
           console.log("id is  " , id)
-          const response = await axios.get(`http://localhost:5000/leave/accept/${id}`,
-            
+          const response = await axios.post(`http://localhost:5000/permission/accept`,
+            {
+              permissionId : id
+            },
 
             { headers: {
-            Authorization: `Bearer ${token}`
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
             
           },}
           );
@@ -61,8 +66,11 @@ console.log("ij table component" , token)
     
       const handleReject = async (id) => {
         try {
-          const response = await axios.get(`http://localhost:5000/leave/deny/${id}`,
-            
+          const response = await axios.post(`http://localhost:5000/permission/deny`,
+            {
+              permissionId : id
+            },
+
             { headers: {
               Authorization: `Bearer ${token}`,
               'Content-Type': 'application/json',
@@ -90,7 +98,7 @@ console.log("ij table component" , token)
     
       const getData = async () => {
         try {
-          const response = await axios.post('http://localhost:5000/leave/getLeave', 
+          const response = await axios.post('http://localhost:5000/permission/getPermission', 
             {empId},
             {
             headers: {
@@ -120,6 +128,7 @@ console.log("ij table component" , token)
     
   return (
     <div className="w-full  bg-slate-100 p-3 border-slate-950 rounded-lg">
+      <ToastContainer/>
       <div className="w-full overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 bg-white">
           <thead className="bg-gray-50">
@@ -148,16 +157,16 @@ console.log("ij table component" , token)
                   {row.role}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
-                  {row.leaveType}
+                  Permission 
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
-                  {row.from.date}
+                  {row.from}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
-                  {row.to.date}
+                  {row.to}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
-                  {row.numberOfDays}
+                  {row.hrs}
                 </td>
                 <td
                   className="px-4 py-2 whitespace-nowrap text-2xl font-medium text-gray-900 cursor-pointer"

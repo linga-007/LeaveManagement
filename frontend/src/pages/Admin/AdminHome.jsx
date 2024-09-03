@@ -5,7 +5,7 @@ import Leaves from "./Leaves";
 import Charts from "./Charts";
 import axios from "axios";
 import { MdMessage } from "react-icons/md";
-import { toast } from "react-toastify";
+
 import Card from "./Card";
 import PermissionTable from "./PermissionTable";
 import {jwtDecode} from 'jwt-decode';

@@ -1,6 +1,6 @@
 import { Html, Head, Body, Text, Button, Img } from '@react-email/components';
 
-const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, imageUrl ,fromDay,toDay,leaveId,LOP}) => (
+const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, imageUrl ,fromDay,toDay,leaveId,LOP,leaveDescription}) => (
   <Html>
     <Head />
     <Body style={{ fontFamily: 'Arial, sans-serif', padding: '20px', backgroundColor: '#f9f9f9' }}>
@@ -43,7 +43,7 @@ const EmailTemplate = ({ leaveType, fromDate, toDate, leaveReason, userName, ima
         </tr>
         <tr>
           <td style={{ padding: '10px', backgroundColor: '#f0f0f0', fontWeight: 'bold' }}>Reason for Leave:</td>
-          <td style={{ padding: '10px', backgroundColor: '#fff' }}>{leaveReason}</td>
+          <td style={{ padding: '10px', backgroundColor: '#fff' }}>{leaveDescription}</td>
         </tr>
      
       </table>

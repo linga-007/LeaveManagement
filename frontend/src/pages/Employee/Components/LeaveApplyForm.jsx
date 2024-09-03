@@ -13,6 +13,10 @@
   import ConfirmLeave from './ConfirmLeave';
 import ConfirmPermission from './ConfrimPermission';
 
+
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
   dayjs.extend(duration);
 
   const LeaveApplyForm = () => {
@@ -109,7 +113,7 @@ import ConfirmPermission from './ConfrimPermission';
       console.log('Permission submitted:', { permissionDate, fromTime, toTime, permissionReason });
 
       if (!hasErrors) {
-        handlePermission(!isPermission); 
+        handlePermission()
       }
     
     };
@@ -235,7 +239,8 @@ import ConfirmPermission from './ConfrimPermission';
                 "second-half": toSecondHalf
             },
             "numberOfDays": numberOfDays,
-            "reason": "Personal"
+            "reasonType":leaveReason ,
+            "reason" : leaveDescription
         },
           {
             headers: {
@@ -286,7 +291,10 @@ import ConfirmPermission from './ConfrimPermission';
       userName={decodedToken.empName}
       imageUrl="https://www.gilbarco.com/us/sites/gilbarco.com.us/files/2022-07/gilbarco_logo.png"
       leaveId={objId}
-      LOP={LOP}/>
+      LOP={LOP}
+      leaveDescription={leaveDescription}
+
+      />
       );
 
       try {
@@ -353,9 +361,7 @@ import ConfirmPermission from './ConfrimPermission';
         alert('Error sending email');
       }
     };
-    isTimeExceeding()
     const applyPermission = async (e)=>{
-
       console.log("permission")
       try {
           if (isTimeExceeding()) {
@@ -384,8 +390,9 @@ import ConfirmPermission from './ConfrimPermission';
       sendPermissionEmail(data.permission._id)
       } 
     }catch (error) {
-        console.error("Error Leave Apply", error);
+        console.error("Error permission Apply", error);
       }finally{
+        console.log("per end")
         setIsPermission(!isPermission)
       }
     }
@@ -393,6 +400,7 @@ import ConfirmPermission from './ConfrimPermission';
     return (
       <div className="h-fit pt-2 pb-2 flex flex-wrap gap-2 justify-center">
       {/* Leave Application Form */}
+      <ToastContainer />
        <div className="w-[48%] p-4 bg-white shadow-md rounded-md">
       <h2 className="text-2xl font-bold mb-4">Leave Application</h2>
       <div>

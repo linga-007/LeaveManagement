@@ -4,7 +4,9 @@
   import { useState , useEffect } from "react";
   import {MdMessage} from 'react-icons/md'
   import {jwtDecode} from 'jwt-decode';
-  import {toast} from 'react-toastify'
+  import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
+  
 
   const Table = () => {
 
@@ -44,7 +46,8 @@
               },
 
               { headers: {
-              Authorization: `Bearer ${token}`
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
               
             },}
             );
@@ -63,10 +66,13 @@
       
         const handleReject = async (id) => {
           try {
-            const response = await axios.get(`http://localhost:5000/leave/deny/${id}`,
-              
+            const response = await axios.post(`http://localhost:5000/leave/deny`,
+              {
+                leaveId : id
+              },
               { headers: {
-                Authorization: `Bearer ${token}`,
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
                 
               },}
             );
@@ -121,7 +127,9 @@
       console.log("datatobedispla   yed" , dataToDisplay)
       
     return (
+
       <div className="w-full  bg-slate-100 p-3 border-slate-950 rounded-lg">
+        <ToastContainer/>
         <div className="w-full overflow-x-auto">
           <table className="min-w-full divide-y divide-gray-200 bg-white">
             <thead className="bg-gray-50">
