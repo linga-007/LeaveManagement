@@ -146,6 +146,8 @@ const LOP = async(req, res) => {
         }
         const leave = new LeaveModel({
             empId,
+            empName: emp.empName,
+            role: emp.role,
             leaveType,
             from,
             to,
@@ -271,9 +273,9 @@ const DenyLeave = async (req, res) => {
 const GetLeave = async (req, res) => {
     try {
         const { empId } = req.body;
-        const employee = await EmpModel.findOne({empId});
+        const employee = await EmpModel.find({empId});
         if(employee.role === 'Manager'){
-            const leaves = await LeaveModel.find({});
+            const leaves = await LeaveModel.find();
             res.status(200).json(leaves);
         }
         else{
