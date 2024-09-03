@@ -16,7 +16,7 @@ const Email = async (req, res) => {
     const mailOptions = {
         from: 'voiceassistantcheck@gmail.com', // Sender email address
         to: email, // Recipient email address from request body
-        subject: 'Welcome Email', // Subject of the email
+        subject: 'Leave Request', // Subject of the email
         html: html, // HTML content from request body
     };
 
