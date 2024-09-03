@@ -263,12 +263,15 @@ const DenyLeave = async (req, res) => {
 }
 
 // Get leaves taken by a particular employee
+
 const GetLeave = async (req, res) => {
     try {
         const { empId } = req.body;
-        const employee = await EmpModel.find({empId});
+
+        const employee = await EmpModel.findOne({empId});
         if(employee.role === 'Manager'){
-            const leaves = await LeaveModel.find();
+            const leaves = await LeaveModel.find({});
+
             res.status(200).json(leaves);
         }
         else{
