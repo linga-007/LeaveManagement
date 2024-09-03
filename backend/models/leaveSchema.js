@@ -6,13 +6,15 @@ const schema = new db.Schema(
             type: String,
             required: true
         },
-        empId: {
+
+        empName:{
             type: String,
             required: true
         },
-        role: {
+        role:{
             type: String,
-            required: true,
+
+        
             enum: ['Admin', 'Manager', '3P', 'GVR'],
             default: '3P'
         },
