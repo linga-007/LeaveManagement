@@ -6,7 +6,6 @@ const { Accepted, Rejected } = require('../utils/AdminResponseLeave')
 const ApplyPermission = async (req, res) => {
     try {
         const { empId, date, from, to, hrs, reason } = req.body;
-       
         const emp = await EmpModel.findOne({empId});
         if (!empId) {
             return res.status(404).json({ message: 'Employee not found' });

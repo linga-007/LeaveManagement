@@ -8,6 +8,7 @@ const Login = () => {
   const [RFID, setRFID] = useState("");
   const [error, setError] = useState("");
 
+
   const handleLogin = async (e) => {
     e.preventDefault(); // Prevent default form submission behavior
     if (RFID !== "") {
