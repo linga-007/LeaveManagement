@@ -9,7 +9,7 @@ const { Accepted, Rejected } = require('../utils/AdminResponseLeave')
 // Apply for leave
 const ApplyLeave = async (req, res) => {
     try {
-        console.log("checkkkk")
+        console.log(req.body)
         const { empId, leaveType, from, to, numberOfDays, reason } = req.body;
 
         const emp = await EmpModel.findOne({empId});
@@ -127,6 +127,7 @@ const ApplyLeave = async (req, res) => {
 const LOP = async(req, res) => {
     try{
         const { empId, leaveType, from, to, numberOfDays, reason } = req.body;
+     
 
         const emp = await EmpModel.findOne({empId});
 

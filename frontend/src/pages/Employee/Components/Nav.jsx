@@ -3,8 +3,11 @@ import axios from 'axios';
 import {jwtDecode} from 'jwt-decode';
 import GVR from '../../../images/GVRLogo.png';
 import userImg from '../../../images/profile.png';
+import { useNavigate } from 'react-router-dom';
 
 function Nav() {
+
+  const navigate = useNavigate();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [userDetails, setUserDetails] = useState({});
   const token = document.cookie.split('=')[1];
@@ -33,9 +36,13 @@ function Nav() {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const handleLogout = () => {
+ 
     // Implement logout functionality here
-    console.log('Logout clicked');
+    const handleLogout = () => {
+      // Remove the JWT cookie by setting its expiration date to a past date
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      console.log('Logged out, cookie removed');
+      navigate("/");
   };
 
   return (

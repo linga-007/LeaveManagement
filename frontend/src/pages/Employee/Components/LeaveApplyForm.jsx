@@ -10,6 +10,8 @@
   import { json } from 'react-router-dom';
   import PermissionEmailTemplate from '../../PermissionTemplate';
   import duration from 'dayjs/plugin/duration';
+  import ConfirmLeave from './ConfirmLeave';
+import ConfirmPermission from './ConfrimPermission';
 
   dayjs.extend(duration);
 
@@ -32,9 +34,13 @@
     const [numberOfDays, setNumberOfDays] = useState(0);
     const [leaveId,setLeaveId] = useState("");
     const [leaveDescription, setLeaveDescription] = useState("");
+    const [isAppliedLeave , setIsAppliedLeave] = useState(false)
+    const [isPermission , setIsPermission] = useState(false)
 
 
-    const [isOpen, setIsOpen] = useState(false);
+    const [isLOP, setIsLOP] = useState(false);
+
+
 
 
 
@@ -45,16 +51,22 @@
         console.log(diff)
       }
     }, [fromDate, toDate]);
-
-    const handleToggle = () => {
-      setSelectedOption(selectedOption === 'Leave Application' ? 'Permission' : 'Leave Application');
-    };
-
   
     
     const togglePopup = () => {
-      setIsOpen(!isOpen);
+      setIsLOP(!isLOP);
     };
+
+
+    
+    const handleAppliedLeave = (e) =>{
+      setIsAppliedLeave(true)
+  }
+
+  
+  const handlePermission = (e) =>{
+    setIsPermission(true)
+}
 
 
 
@@ -93,7 +105,7 @@
             },
           }
         );
-
+       
         
       var data = res.data;
         console.log(data.leave._id)
@@ -104,14 +116,17 @@
       } catch (error) {
         console.error("Error Leave Apply", error);
       }finally{
-        setIsOpen(!isOpen);
+        setIsAppliedLeave(!isAppliedLeave)
+        setIsLOP(!isLOP);
       }
       
     };
 
-    const handleCancel = () => {
+    const handleCancel = (e) => {
+      e.preventDefault()
       console.log("Cancelled!");
       togglePopup();
+      setIsAppliedLeave(!isAppliedLeave)
     };
 
     
@@ -125,8 +140,10 @@
       console.log(leaveDetail,leaveReason,leaveType)
     }
     dataPrint()
+
+    console.log("leave app",isAppliedLeave)
     const applyLeave = async (e) => {
-      e.preventDefault()
+
       console.log("nothinggggg")
       try {
         const res = await axios.post(
@@ -156,8 +173,8 @@
         );
 
         if(res.status === 202){
-          setIsOpen(!isOpen);
-          console.log(isOpen)
+          setIsLOP(!isLOP);
+          console.log(isLOP)
         }
       var data = res.data;
         console.log("data",data)
@@ -190,7 +207,7 @@
       leaveReason={leaveReason}
       fromDay={fromDay}
       toDay={toDay}
-      userName="aa"
+      userName={decodedToken.empName}
       imageUrl="https://www.gilbarco.com/us/sites/gilbarco.com.us/files/2022-07/gilbarco_logo.png"
       leaveId={objId}
       LOP={LOP}/>
@@ -229,7 +246,7 @@
         fromTime = {fromTime.format("hh:mm A")}
         toTime={toTime.format("hh:mm A")}
         permissionReason = {permissionReason}
-        userName = "aa"
+        userName = {decodedToken.empName}
         imageUrl = {img}
         permissionId = {objId}
         />
@@ -262,24 +279,23 @@
     };
     isTimeExceeding()
     const applyPermission = async (e)=>{
-      e.preventDefault()
+
       console.log("permission")
       try {
           if (isTimeExceeding()) {
               alert("Time difference exceeds 4 hours");
           } else {
-              alert("Time difference is within 4 hours");
-          
+            console.log("Permession Sendttttt",typeof(dayjs.duration(toTime.diff(fromTime)).asHours()))
         const res = await axios.post(
           "http://localhost:5000/permission/apply",
           {
-            empId:decodedToken.empId,
-            hrs:1,
-            reason:permissionReason,
-            from:fromTime.format(),
-            to:toTime.format(),
-            date:permissionDate
-          },
+            "empId":decodedToken.empId,
+            "hrs":dayjs.duration(toTime.diff(fromTime)).asHours(),
+            "reason":permissionReason,
+            "date":permissionDate,
+            "from": fromTime.format("hh:mm A"),
+            "to":  toTime.format("hh:mm A")
+  },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -293,15 +309,17 @@
       } 
     }catch (error) {
         console.error("Error Leave Apply", error);
+      }finally{
+        setIsPermission(!isPermission)
       }
     }
 
     return (
-      <div className=" h-fit  pt-2 pb-2 flex flex-wrap gap-2 justify-center">
+      <div className="h-fit pt-2 pb-2 flex flex-wrap gap-2 justify-center">
       {/* Leave Application Form */}
       <div className="w-[48%] p-4 bg-white shadow-md rounded-md">
         <h2 className="text-2xl font-bold mb-4">Leave Application</h2>
-        <form onSubmit={applyLeave}>  
+        <div>  
           {/* Leave Type and Reason */}
           <div className="flex justify-between mb-4">
             <div className="w-[48%]">
@@ -313,7 +331,7 @@
                 required
               >
                 <option value="Casual Leave">Casual Leave</option>
-                <option value="Privelage Leave">Privelage Leave</option>
+                <option value="Privilege Leave">Privilege Leave</option>
                 <option value="Paternity Leave">Paternity Leave</option>
               </select>
             </div>
@@ -346,6 +364,7 @@
                   setFromDate(e.target.value);
                   setToDate(e.target.value);
                 }}
+                required
               />
             </div>
 
@@ -356,6 +375,7 @@
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
                 value={toDate}
                 onChange={(e) => setToDate(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -406,38 +426,37 @@
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">Leave Reason</label>
+            <label className="block text-gray-700 mb-1">Leave Description</label>
             <textarea
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500 resize-none"
               value={leaveDescription}
               onChange={(e) => setLeaveDescription(e.target.value)}
-              placeholder="Reason for permission"
+              placeholder="Reason for leave"
+              required
             />
           </div>
-
           <button
-            type="submit"
-            className="w-full bg-[#595d5e] text-white py-2 rounded-md  transition-colors duration-200"
+            onClick={()=>handleAppliedLeave(!isAppliedLeave)}
+            className="w-full bg-[#595d5e] text-white py-2 rounded-md transition-colors duration-200"
           >
             Submit Leave Application
           </button>
-        </form>
+        </div>
       </div>
 
       {/* Permission Form */}
-      <div className="w-[48%] p-4 bg-white shadow-md rounded-md">
+      <div className="w-[48%] p-4 bg-white shadow-md rounded-md flex flex-col justify-between">
         <h2 className="text-2xl font-bold mb-4">Permission Form</h2>
-        <form onSubmit={applyPermission}>
+        <div>
           <div className="flex justify-between mb-4">
             <div className="w-[50%]">
-              <label className="block text-gray-700 mb-1">
-                Permission Date
-              </label>
+              <label className="block text-gray-700 mb-1">Permission Date</label>
               <input
                 type="date"
                 className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
                 value={permissionDate}
                 onChange={(e) => setPermissionDate(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -448,12 +467,12 @@
                 <label className="block text-gray-700 mb-1">From Time</label>
                 <MobileTimePicker
                   value={fromTime}
-                  
                   onChange={(newValue) => setFromTime(newValue)}
                   renderInput={(params) => (
                     <input
                       {...params}
                       className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
+                      required
                     />
                   )}
                 />
@@ -469,6 +488,7 @@
                     <input
                       {...params}
                       className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500"
+                      required
                     />
                   )}
                 />
@@ -477,49 +497,78 @@
           </div>
 
           <div className="mb-4">
-            <label className="block text-gray-700 mb-1">
-              Permission Reason
-            </label>
+            <label className="block text-gray-700 mb-1">Permission Reason</label>
             <textarea
               className="w-full border border-gray-300 rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500 resize-none"
               value={permissionReason}
               onChange={(e) => setPermissionReason(e.target.value)}
               placeholder="Reason for permission"
+              required
             />
           </div>
 
           <button
-            type="submit"
-            className="w-full bg-[#595d5e] text-white py-2 rounded-md  transition-colors duration-200"
+            onClick={()=>handlePermission()}
+            className="w-full bg-[#595d5e] text-white py-2 rounded-md transition-colors duration-200"
           >
-            Submit Permission
+            Apply Permission
           </button>
-        </form>
-
-        {isOpen && (
-        <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-            <h2 className="text-lg font-semibold mb-4">Popup Title</h2>
-            <p className="mb-4">This is a simple popup message.</p>
-            <div className="flex justify-end space-x-4">
-              <button
-                className="px-4 py-2 bg-red-600 text-white rounded-lg"
-                onClick={handleCancel}
-              >
-                Cancel
-              </button>
-              <button
-                className="px-4 py-2 bg-green-600 text-white rounded-lg"
-                onClick={handleConfirm}
-              >
-                Confirm
-              </button>
-            </div>
-          </div>
         </div>
-      )}
       </div>
+      {isLOP && (
+       <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
+       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
+         <h2 className="text-lg font-semibold mb-4">Leave Limit Notification</h2>
+         <p className="mb-4">
+           You have crossed your leave limit. Are you sure you want to apply for Loss Of Pay (LOP)?
+         </p>
+         <div className="flex justify-end space-x-4">
+           <button
+             className="px-4 py-2 bg-red-600 text-white rounded-lg"
+             onClick={handleCancel}
+           >
+             Cancel
+           </button>
+           <button
+             className="px-4 py-2 bg-green-600 text-white rounded-lg"
+             onClick={handleConfirm}
+           >
+             Confirm
+           </button>
+         </div>
+       </div>
+     </div>
+      )}
+
+      {/* Confirmation Popup */}
+      { !isLOP && isAppliedLeave ? (
+        <ConfirmLeave
+          fromDate={fromDate}
+          toDate={toDate}
+          leaveReason={leaveReason}
+          leaveType={leaveType}
+          leaveDescription={leaveDescription}
+          onClose={setIsAppliedLeave}
+          numberOfDays={numberOfDays}
+          applyLeave={applyLeave}
+        />
+      ) : null}
+      {/* <ConfirmPermission/> */}
+      { isPermission&&<ConfirmPermission
+       hours={dayjs.duration(toTime.diff(fromTime)).asHours()}
+       reason = {permissionReason}
+       fromTime = {fromTime.format("hh:mm A")}
+       toTime = {toTime.format("hh:mm A")}
+       permissionDate = {permissionDate}
+       employeeName = {decodedToken.empName}
+       onClose = {setIsPermission}
+       applyPermission = {applyPermission}
+      />
+      }
     </div>
+
+
+
 
     );
   };
