@@ -8,11 +8,17 @@ import { MdMessage } from "react-icons/md";
 import { toast } from "react-toastify";
 import Card from "./Card";
 
+import {jwtDecode} from 'jwt-decode';
+
+
 import Table from "./Table";
 
 const AdminHome = () => {
-  const token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFhIiwicm9sZSI6InR5cGUtSSIsImlhdCI6MTcyMzI5NDA0MywiZXhwIjoxNzIzODk4ODQzfQ.Hj7RcI6VAkWylWET3omcIZUgwlDf8Ffpx9pBKvdAGZs"; // Replace with your token
+
+  const token = document.cookie.split('=')[1];
+  const decodedToken = jwtDecode(token);
+  const empId = decodedToken.empId;
+
   const headers = [
     "Name",
     "Employee-Type",
@@ -67,78 +73,11 @@ const AdminHome = () => {
   const totalPages = Math.ceil(data.length / rowsPerPage);
 
   const [isRequest , setIsRequest] = useState(false);
+  const [isPermission , setIsPermission] = useState(false);
 
-  const handlePageChange = (page) => {
-    setCurrentPage(page);
-  };
+ 
 
-  const handleAccept = async (id) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/leave/approve",
-        { id },
-        { headers: { "Content-Type": "application/json" } }
-      );
-
-      if (response.status === 200) {
-        toast.success("Leave request approved successfully!");
-      } else {
-        toast.error("Failed to approve leave request.");
-      }
-
-      getData();
-    } catch (error) {
-      console.error("Error accepting leave:", error);
-    }
-  };
-
-  const handleReject = async (id) => {
-    try {
-      const response = await axios.post(
-        "http://localhost:5000/leave/deny",
-        { id },
-        { headers: { "Content-Type": "application/json" } }
-      );
-      if (response.status === 200) {
-        toast.success("Leave request declined successfully!");
-      } else {
-        toast.error("Failed to decline leave request.");
-      }
-
-      getData();
-    } catch (error) {
-      console.error("Error rejecting leave:", error);
-    }
-  };
-
-  const handleReasonClick = (reason) => {
-    setSelectedReason(reason);
-  };
-
-  useEffect(() => {
-    getData();
-  }, []);
-
-  const getData = async () => {
-    try {
-      const response = await axios.get(
-        "http://localhost:5000/leave/getLeaves",
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      const filteredData = response.data.data.filter(
-        (record) => record.status === "Pending"
-      );
-      setData(filteredData);
-    } catch (error) {
-      console.error("Error fetching data:", error);
-    }
-  };
+  
 
   const startIndex = (currentPage - 1) * rowsPerPage;
   const endIndex = startIndex + rowsPerPage;
@@ -146,7 +85,7 @@ const AdminHome = () => {
 
   return (
     <div className="flex w-screen h-screen">
-      <Sidenav setIsRequest = {setIsRequest } />
+      <Sidenav setIsRequest = {setIsRequest } setIsPermission = {setIsPermission}/>
       <main className="flex flex-col pl-5 pr-5 pt-2 w-screen h-screen">
         {/* <div className="w-full flex justify-between h-12 mb-5 items-center pl-5 pr-5 bg-slate-100 border-slate-950 rounded-lg">
           <h2 className="font-semibold text-xl">Dashboard</h2>
@@ -223,7 +162,7 @@ const AdminHome = () => {
                 <Card label="Total Leaves Denied" value="5" image="cancel" />
               </div>
             </div>
-          {isRequest ? <div><Table/></div> : <div> <Charts/></div>} 
+          {isRequest ? <div><Table/></div> : isPermission ?  <div>hello</div> : <div> <Charts/></div>} 
 
           </div>
           <div className="w-[20%] h-full border-x-2 solid"></div>

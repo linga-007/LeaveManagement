@@ -16,7 +16,7 @@ const Login = () => {
         const res = await axios.post(
           `http://localhost:5000/emp/login`,
           {
-            "empId":"0007353027"
+            "empId":RFID
           },
           {
             headers: {
@@ -34,7 +34,7 @@ const Login = () => {
           const decodedToken = jwtDecode(res.data.token);
           console.log("decoded",decodedToken);
 
-          if (decodedToken.role === "admin") {
+          if (decodedToken.role === "Manager") {
             navigate("/Admin"); // Redirect to admin page
           } else {
             navigate(`/Employee/${decodedToken.empId}`); // Redirect to employee page with ID

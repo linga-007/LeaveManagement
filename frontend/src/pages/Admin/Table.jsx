@@ -3,19 +3,26 @@ import axios from "axios";
 import Pagination from './Pagination'
 import { useState , useEffect } from "react";
 import {MdMessage} from 'react-icons/md'
+import {jwtDecode} from 'jwt-decode';
+
 
 const Table = () => {
 
     const headers = [
         "Name",
         "Employee-Type",
-        "Leave-Type",
+         "Leave-Type",
         "From",
         "To",
         "Days",
         "Reason",
         "Action",
       ];
+
+const token = document.cookie.split('=')[1];
+console.log("ij table component" , token)
+  const decodedToken = jwtDecode(token);
+  const empId = decodedToken.empId;
 
       const [data, setData] = useState([]);
       const [currentPage, setCurrentPage] = useState(1);
@@ -30,8 +37,12 @@ const Table = () => {
       const handleAccept = async (id) => {
         try {
           const response = await axios.post('http://localhost:5000/leave/approve',
-            { id },
-            { headers: { 'Content-Type': 'application/json' } }
+            { empId },
+
+            { headers: {
+            // Authorization: `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },}
           );
     
         //   if (response.status === 200) {
@@ -74,13 +85,15 @@ const Table = () => {
     
       const getData = async () => {
         try {
-          const response = await axios.get('http://localhost:5000/leave/getLeaves', {
+          const response = await axios.post('http://localhost:5000/leave/getLeave', 
+            {empId},
+            {
             headers: {
-            //   'Authorization': `Bearer ${token}`,
+              'Authorization': `Bearer ${token}`,
               'Content-Type': 'application/json',
             },
           });
-    
+          console.log(response)
           const filteredData = response.data.data.filter(record => record.status === 'Pending');
           setData(filteredData);
         } catch (error) {
