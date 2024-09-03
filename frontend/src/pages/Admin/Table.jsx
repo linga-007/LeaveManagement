@@ -38,8 +38,10 @@
         const handleAccept = async (id) => {
           try {
             console.log("id is  " , id)
-            const response = await axios.get(`http://localhost:5000/leave/accept/${id}`,
-              
+            const response = await axios.post(`http://localhost:5000/leave/accept`,
+              {
+                leaveId : id
+              },
 
               { headers: {
               Authorization: `Bearer ${token}`
