@@ -24,6 +24,8 @@ const ApplyLeave = async (req, res) => {
                 if(cl.availed < 1){
                     const leave = new LeaveModel({
                         empId,
+                        empName: emp.empName,
+                        role: emp.role,
                         leaveType,
                         from,
                         to,
@@ -42,6 +44,8 @@ const ApplyLeave = async (req, res) => {
                 if(pl.availed < 5){
                     const leave = new LeaveModel({
                         empId,
+                        empName: emp.empName,
+                        role: emp.role,
                         leaveType,
                         from,
                         to,
@@ -65,6 +69,8 @@ const ApplyLeave = async (req, res) => {
                 if(cl.availed < 10){
                     const leave = new LeaveModel({
                         empId,
+                        empName: emp.empName,
+                        role: emp.role,
                         leaveType,
                         from,
                         to,
@@ -83,6 +89,8 @@ const ApplyLeave = async (req, res) => {
                 if(pl.availed < 16){
                     const leave = new LeaveModel({
                         empId,
+                        empName: emp.empName,
+                        role: emp.role,
                         leaveType,
                         from,
                         to,
@@ -101,6 +109,8 @@ const ApplyLeave = async (req, res) => {
                 if(pl.availed < 5){
                     const leave = new LeaveModel({
                         empId,
+                        empName: emp.empName,
+                        role: emp.role,
                         leaveType,
                         from,
                         to,
@@ -136,6 +146,8 @@ const LOP = async(req, res) => {
         }
         const leave = new LeaveModel({
             empId,
+            empName: emp.empName,
+            role: emp.role,
             leaveType,
             from,
             to,
@@ -255,7 +267,7 @@ const GetLeave = async (req, res) => {
     try {
         const { empId } = req.body;
         const employee = await EmpModel.find({empId});
-        if(employee.role === 'manager'){
+        if(employee.role === 'Manager'){
             const leaves = await LeaveModel.find();
             res.status(200).json(leaves);
         }
