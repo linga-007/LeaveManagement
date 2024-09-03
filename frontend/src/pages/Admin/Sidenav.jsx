@@ -13,7 +13,8 @@ const Sidenav = ({setIsRequest,  setIsPermission}) => {
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="bg-slate-100  h-full w-[7rem] rounded-xl flex flex-col items-center gap-y-[3rem]  py-[2rem]">
-        <button onClick={()=>setIsRequest(false) } className="icon-a icon-hover flex items-center justify-center flex-col gap-y-2 mt-[4rem]">
+        <button onClick={()=>{setIsRequest(false)
+         setIsPermission(false) } } className="icon-a icon-hover flex items-center justify-center flex-col gap-y-2 mt-[4rem]">
           <MdDashboard className="text-3xl text-slate-900"/>
           <p className="text-md font-semibold">Dashboard</p>
         </button>
