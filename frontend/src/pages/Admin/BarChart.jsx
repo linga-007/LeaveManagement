@@ -43,7 +43,7 @@ const BarChart = () => {
   };
 
   return (
-    <div className="w-[40rem] h-[16rem] flex  justify-center items-center p-0">
+    <div className="w-[40rem] h-[14rem] flex  justify-center items-center p-0">
       <Bar data={data} options={options} width={200} height={70}/>
     </div>
   );

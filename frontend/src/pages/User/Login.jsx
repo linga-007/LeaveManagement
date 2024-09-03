@@ -35,7 +35,7 @@ const Login = () => {
           const decodedToken = jwtDecode(res.data.token);
           console.log("decoded",decodedToken);
 
-          if (decodedToken.role === "admin") {
+          if (decodedToken.role === "Manager") {
             navigate("/Admin"); // Redirect to admin page
           } else {
             navigate(`/Employee/${decodedToken.empId}`); // Redirect to employee page with ID
