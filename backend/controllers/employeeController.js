@@ -134,8 +134,6 @@ const GetEmp = async (req, res) => {
     try {
         console.log(req.body.empId);
         const employees = await EmpModel.find({"empId": req.body.empId});
-
-        console.log(employees)
         res.status(200).json(employees);
     } catch (error) {
         res.status(500).json({ message: 'Server error', error});
