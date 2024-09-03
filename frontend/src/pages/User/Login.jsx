@@ -1,6 +1,6 @@
 import React from "react";
 import caos from "../../images/caos.png";
-import gilbarco from "../../images/new gilbarco.jpg";
+import gilbarco from "../../images/GVRLogo.png";
 import scanner from "../../images/tap-pay-15575682-unscreen.gif";
 import LoginTextFeild from "./LoginTextFeild";
 
@@ -10,7 +10,7 @@ const Login = () => {
       <div className="w-screen h-screen flex overflow-hidden absolute bg-white" >
       <div className="w-full h-full">
         <div className="bg-[#00aeff9d] rounded-r-3xl h-full rounded-br-full">
-          <img src={gilbarco} className=" w-44" alt="Gilbarco" />
+          <img src={gilbarco} className=" w-[300px] p-5" alt="Gilbarco" />
           <h1 className="font-bold text-[40px] ml-20 mt-20 text-white">
             Welcome to Gilbarco <br />
             Leave Management System

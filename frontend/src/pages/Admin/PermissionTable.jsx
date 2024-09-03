@@ -1,134 +1,119 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import Pagination from './Pagination'
-import { useState , useEffect } from "react";
-import {MdMessage} from 'react-icons/md'
+import Pagination from './Pagination';
+import { MdMessage, MdClose } from 'react-icons/md';
 import {jwtDecode} from 'jwt-decode';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
-
 const PermissionTable = () => {
 
-    const headers = [
-      "S.No",
-        "Name",
-        "Employee-Type",
-        "Type",
-        "From",
-        "To",
-        "Hours",
-        "Reason",
-        "Action",
-      ];
+  const headers = [
+    "S.No",
+    "Name",
+    "Employee-Type",
+    "Type",
+    "From",
+    "To",
+    "Hours",
+    "Reason",
+    "Action",
+  ];
 
-const token = document.cookie.split('=')[1];
-console.log("ij table component" , token)
+  const token = document.cookie.split('=')[1];
   const decodedToken = jwtDecode(token);
   const empId = decodedToken.empId;
 
-      var [data, setData] = useState([]);
-      const [currentPage, setCurrentPage] = useState(1);
-      const [selectedReason, setSelectedReason] = useState(null);
-      const rowsPerPage = 6; // Adjust as needed
-      const totalPages = Math.ceil(data.length / rowsPerPage);
-    
-      const handlePageChange = (page) => {
-        setCurrentPage(page);
-      };
-    
-      const handleAccept = async (id) => {
-        try {
-          console.log("id is  " , id)
-          const response = await axios.post(`http://localhost:5000/permission/accept`,
-            {
-              permissionId : id
-            },
+  const [data, setData] = useState([]);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [selectedReason, setSelectedReason] = useState(null);
+  const [isPopupOpen, setPopupOpen] = useState(false);
+  const rowsPerPage = 6; // Adjust as needed
+  const totalPages = Math.ceil(data.length / rowsPerPage);
 
-            { headers: {
-            Authorization: `Bearer ${token}`,
-            'Content-Type': 'application/json',
-            
-          },}
-          );
-    
-          if (response.status === 200) {
-            toast.success('Leave request approved successfully!');
-          } else {
-            toast.error('Failed to approve leave request.');
-          }
-    
-          getData();
-        } catch (error) {
-          console.error('Error accepting leave:', error);
-        }
-      };
-    
-      const handleReject = async (id) => {
-        try {
-          const response = await axios.post(`http://localhost:5000/permission/deny`,
-            {
-              permissionId : id
-            },
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+  };
 
-            { headers: {
-              Authorization: `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },}
-          );
-          if (response.status === 200) {
-            toast.success('Leave request declined successfully!');
-          } else {
-            toast.error('Failed to decline leave request.');
-          }
-    
-          getData();
-        } catch (error) {
-          console.error('Error rejecting leave:', error);
-        }
-      };
-    
-      const handleReasonClick = (reason) => {
-        setSelectedReason(reason);
-      };
-    
-      useEffect(() => {
-        getData();
-      }, []);
-    
-      const getData = async () => {
-        try {
-          const response = await axios.post('http://localhost:5000/permission/getPermission', 
-            {empId},
-            {
-            headers: {
-              'Authorization': `Bearer ${token}`,
-              'Content-Type': 'application/json',
-            },
-          });
-          console.log(response.data)
-          const filteredData = response.data.filter(record => record.status === 'Pending').reverse();
-          console.log(filteredData)
-          setData(filteredData);
-          
-        } catch (error) {
-          console.error('Error fetching data:', error);
-        }
-      };
+  const handleAccept = async (id) => {
+    try {
+      const response = await axios.post(`http://localhost:5000/permission/accept`, {
+        permissionId: id
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
 
-    
+      if (response.status === 200) {
+        toast.success('Leave request approved successfully!');
+      } else {
+        toast.error('Failed to approve leave request.');
+      }
 
-      // data.reverse();
-      console.log("after reverse" , data)
-      const startIndex = (currentPage - 1) * rowsPerPage;
-      const endIndex = startIndex + rowsPerPage;
-      const dataToDisplay = data.slice(startIndex, endIndex);
-      
-    console.log("datatobedispla   yed" , dataToDisplay)
-    
+      getData();
+    } catch (error) {
+      console.error('Error accepting leave:', error);
+    }
+  };
+
+  const handleReject = async (id) => {
+    try {
+      const response = await axios.post(`http://localhost:5000/permission/deny`, {
+        permissionId: id
+      }, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (response.status === 200) {
+        toast.success('Leave request declined successfully!');
+      } else {
+        toast.error('Failed to decline leave request.');
+      }
+
+      getData();
+    } catch (error) {
+      console.error('Error rejecting leave:', error);
+    }
+  };
+
+  const handleReasonClick = (reason) => {
+    setSelectedReason(reason);
+    setPopupOpen(true);
+  };
+
+  useEffect(() => {
+    getData();
+  }, []);
+
+  const getData = async () => {
+    try {
+      const response = await axios.post('http://localhost:5000/permission/getPermission', {
+        empId
+      }, {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      const filteredData = response.data.filter(record => record.status === 'Pending').reverse();
+      setData(filteredData);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
+  const startIndex = (currentPage - 1) * rowsPerPage;
+  const endIndex = startIndex + rowsPerPage;
+  const dataToDisplay = data.slice(startIndex, endIndex);
+
   return (
-    <div className="w-full  bg-slate-100 p-3 border-slate-950 rounded-lg">
-      <ToastContainer/>
+    <div className="w-full bg-slate-100 p-3 border-slate-950 rounded-lg">
+      <ToastContainer />
       <div className="w-full overflow-x-auto">
         <table className="min-w-full divide-y divide-gray-200 bg-white">
           <thead className="bg-gray-50">
@@ -145,27 +130,26 @@ console.log("ij table component" , token)
           </thead>
           <tbody className="bg-white divide-y divide-gray-200">
             {dataToDisplay.map((row, rowIndex) => (
-              
-              <tr key={rowIndex+1}>
-                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
-                  {rowIndex}
+              <tr key={rowIndex + 1}>
+                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900">
+                  {startIndex + rowIndex + 1}
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
+                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900">
                   {row.empName}
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
+                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900">
                   {row.role}
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
-                  Permission 
+                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900">
+                  Permission
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
+                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900">
                   {row.from}
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
+                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900">
                   {row.to}
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900 justify-center items-center">
+                <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900">
                   {row.hrs}
                 </td>
                 <td
@@ -174,7 +158,7 @@ console.log("ij table component" , token)
                 >
                   <MdMessage />
                 </td>
-                <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900 flex flex-row gap-4">
+                <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900 flex gap-4">
                   <button
                     className="text-green-500 hover:text-green-700 text-2xl"
                     onClick={() => handleAccept(row._id)}
@@ -197,6 +181,46 @@ console.log("ij table component" , token)
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
+      </div>
+      <Popup
+        isOpen={isPopupOpen}
+        onClose={() => setPopupOpen(false)}
+        content={selectedReason}
+      />
+    </div>
+  );
+};
+
+const Popup = ({ isOpen, onClose, content }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      {/* Overlay */}
+      <div className="absolute inset-0"></div>
+
+      {/* Popup Content */}
+      <div className="bg-white text-black p-6 rounded-lg shadow-lg z-10 max-w-lg w-full">
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-xl font-bold text-gray-900 dark:text-black">Details</h2>
+          <button
+            onClick={onClose}
+            className="text-black  hover:text-gray-500 dark:hover:text-gray-400"
+          >
+            <MdClose size={24} />
+          </button>
+        </div>
+        <div className="text-black ">
+          {content}
+        </div>
+        <div className="mt-4 flex justify-end">
+          <button
+            onClick={onClose}
+            className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
+          >
+            Close
+          </button>
+        </div>
       </div>
     </div>
   );
