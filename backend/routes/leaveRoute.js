@@ -6,6 +6,6 @@ router.post('/apply', checkUser, ApplyLeave)
 router.post('/applyLOP', checkUser, LOP)
 router.get('/accept/:leaveId', AcceptLeave)
 router.get('/deny/:leaveId',DenyLeave)
-router.get('/getLeave', checkUser, GetLeave)
+router.post('/getLeave', checkUser, GetLeave)
 
 module.exports = router;

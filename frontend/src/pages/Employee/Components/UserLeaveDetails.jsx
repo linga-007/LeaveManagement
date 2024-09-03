@@ -104,9 +104,9 @@ function Table() {
           <tr>
             <th
               colSpan={tableHead.length}
-              className=" text-left text-lg text-white uppercase"
+              className="text-left  text-lg text-white uppercase p-2"
             >
-              Leave Balance Management
+              Employee Leave Details
             </th>
           </tr>
         </thead>
@@ -117,7 +117,7 @@ function Table() {
                 key={index}
                 className="border text-md border-gray-400 text-left text-xs text-gray-500 uppercase text-balance break-words"
               >
-                <div className='flex justify-center items-center text-md'>{val}</div>
+                <div className='flex justify-center items-center text-md text-center p-1' >{val}</div>
               </th>
             ))}
           </tr>
@@ -126,7 +126,7 @@ function Table() {
           {currentData.map((val, index) => (
             <tr key={index} className="border border-gray-400 bg-white">
               <td className=' border border-gray-400 '>
-                <div className='flex justify-center items-center uppercase text-md'>{val}</div>
+                <div className='text-center uppercase text-md '>{val}</div>
               </td>
               {value[index].map((cellValue, i) => (
                 <td key={i} className='border border-gray-400 text-md'>

@@ -58,10 +58,10 @@ function Nav() {
             </button>
             {isDropdownOpen && (
               <div className='absolute right-0  w-80 bg-white shadow-lg rounded-lg p-4 z-50'>
-                <div className='flex flex-col justify-center items-center'>
+                <div className='flex flex-col '>
                   
                   <h1 className='text-xl font-bold'>{userDetails.empName}</h1>
-                  <table className='text-left text-gray-700 mt-2'>
+                  <table className=' text-gray-700 mt-2'>
                     <tbody>
                       <tr>
                         <td className='font-semibold'>Designation:</td>
