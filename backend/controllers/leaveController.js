@@ -178,7 +178,7 @@ const AcceptLeave = async (req, res) => {
             const filePath = path.join(__dirname, "../view/alreadyAccepted.html");
             res.sendFile(filePath);
         }
-        else if(leave.status === 'Rejected'){
+        else if(leave.status === 'Denied'){
             const filePath = path.join(__dirname, "../view/alreadyRejected.html");
             res.sendFile(filePath);
         }
@@ -202,12 +202,13 @@ const AcceptLeave = async (req, res) => {
             }
             else{
                 if(leave.leaveType === "Casual Leave"){
+                    console.log("CL")
                     const cl = await CasualLeave.findOne({empId: leave.empId})
                     cl.availed += 1;
                     cl.eligibility -= 1;
                     cl.totalEligibility -= 1;
                     cl.closingBalance -= 1;
-                    pl.carryForward -= 1;
+                    cl.carryForward -= 1;
                     cl.futureClosingBalance -= 1;
                     await cl.save()
                 }
@@ -231,12 +232,14 @@ const AcceptLeave = async (req, res) => {
                     await pl.save()
                 }
             }
-    
-            leave.status = 'Approved';
-            await leave.save();
-            // res.status(200).json({ message: 'Leave approved successfully', leave });
+
+            console.log("Ckeck")
+            if(leave.status === 'Pending'){
+                leave.status = 'Approved';
+                await leave.save();
+            }
             const filePath = path.join(__dirname, "../view/accept.html");
-            Accepted('lingeshwaran.kv2022cse@sece.ac.in')
+            Accepted('mohammedashif.a2022cse@sece.ac.in')
             res.sendFile(filePath);
         }
     } catch (error) {
@@ -254,13 +257,9 @@ const Accept = async (req, res) => {
         }
 
         if (leave.status === 'Approved'){
-            // const filePath = path.join(__dirname, "../view/alreadyAccepted.html");
-            // res.sendFile(filePath);
             res.status(401).json({ message: 'Already Accepted' });
         }
         else if(leave.status === 'Rejected'){
-            // const filePath = path.join(__dirname, "../view/alreadyRejected.html");
-            // res.sendFile(filePath);
             res.status(401).json({ message: 'Already Rejected' });
 
         }
@@ -322,10 +321,8 @@ const Accept = async (req, res) => {
             leave.status = 'Approved';
             await leave.save();
             console.log("done ")
+            Accepted('mohammmedashif.a2022cse@sece.ac.in')
             res.status(200).json({ message: 'Leave approved successfully', leave });
-            // const filePath = path.join(__dirname, "../view/accept.html");
-            // Accepted('lingeshwaran.kv2022cse@sece.ac.in')
-            // res.sendFile(filePath);
         }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -342,15 +339,21 @@ const DenyLeave = async (req, res) => {
             return res.status(404).json({ message: 'Leave not found' });
         }
 
-        leave.status = 'Denied';
-        await leave.save();
-
-       // res.status(200).json({ message: 'Leave denied successfully', leave });
-       const filePath = path.join(__dirname, "../view/reject.html");
-       Rejected('lingeshwaran.kv2022cse@sece.ac.in')
-
-       res.sendFile(filePath);
-        // res.status(200).json({msg:"hello"})
+        if (leave.status === 'Approved'){
+            const filePath = path.join(__dirname, "../view/alreadyAccepted.html");
+            res.sendFile(filePath);
+        }
+        else if(leave.status === 'Denied'){
+            const filePath = path.join(__dirname, "../view/alreadyRejected.html");
+            res.sendFile(filePath);
+        }
+        else{
+            leave.status = 'Denied';
+            await leave.save();
+            const filePath = path.join(__dirname, "../view/reject.html");
+            Rejected('mohammedashif.a2022cse@sece.ac.in')
+            res.sendFile(filePath);
+        }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -369,10 +372,7 @@ const Deny = async (req, res) => {
         await leave.save();
 
         res.status(200).json({ message: 'Leave denied successfully', leave });
-        // const filePath = path.join(__dirname, "../view/reject.html");
-        Rejected('lingeshwaran.kv2022cse@sece.ac.in')
-        // res.sendFile(filePath);
-        // res.status(200).json({msg:"hello"})
+        Rejected('mohammedashif.a2022cse@sece.ac.in')
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
