@@ -321,7 +321,7 @@ const Accept = async (req, res) => {
             leave.status = 'Approved';
             await leave.save();
             console.log("done ")
-            Accepted('mohammmedashif.a2022cse@sece.ac.in')
+            Accepted('mohammedashif.a2022cse@sece.ac.in')
             res.status(200).json({ message: 'Leave approved successfully', leave });
         }
     } catch (error) {
