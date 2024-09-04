@@ -22,10 +22,10 @@ ChartJS.register(
 
 const BarChart = () => {
   const data = {
-    labels: ['Label 1', 'Label 2', 'Label 3', 'Label 4', 'Label 5' ,"Label 6" ,"Label 7"],
+    labels: ['Dpt 1', 'Dpt 2', 'Dpt 3', 'Dpt 4', 'Dpt 5' ,"Dpt 6" ,"Dpt 7"],
     datasets: [
       {
-        label: 'Data Series 1',
+        label: 'Department',
         backgroundColor: 'rgba(75, 192, 192, 0.6)',
         borderColor: 'rgba(75, 192, 192, 1)',
         borderWidth: 1,

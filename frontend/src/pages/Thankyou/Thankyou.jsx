@@ -1,8 +1,25 @@
-import React from "react";
+import React, { useEffect } from "react";
 import GVR from "../../images/GVRLogo.png";
 import tick from "../../images/accept.png";
+import {jwtDecode} from 'jwt-decode';
+import { useNavigate } from 'react-router-dom';
 
 const ThankYouPage = () => {
+  
+  const navigate = useNavigate();
+
+  const token = document.cookie.split('=')[1];
+  const decodedToken = jwtDecode(token);
+
+  useEffect(()=>{
+      document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      console.log('Logged out, cookie removed');
+      // navigate("/");
+      //delay for 10 sec
+      setTimeout(() => {navigate('/')}, 5000);
+
+  }, [])
+
   return (
     <div className="flex flex-col h-screen bg-gray-100">
       {/* Navbar */}

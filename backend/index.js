@@ -25,9 +25,9 @@ app.use('/table',TableRoute)
 app.use('/mail', Email)
 app.use('/circular', Circular)
 
-cron.schedule('0 0 1 2 *', () => {
-    resetGVR();
-});
+// cron.schedule('0 0 1 2 *', () => {
+//     resetGVR();
+// });
 
 cron.schedule('0 0 1 * *', () => {
     reset3P();

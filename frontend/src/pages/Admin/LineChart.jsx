@@ -51,6 +51,16 @@ const LineChart = () => {
             size: 12,
           },
         },
+        title: {
+          display: true,
+          text: 'Month', // Replace with your desired label
+          color: 'black',
+          font: {
+            family: "Nunito",
+            size: 14,
+            weight: 'semibold',
+          },
+        },
       },
       y: {
         grid: {
@@ -67,6 +77,16 @@ const LineChart = () => {
           font: {
             family: "Nunito",
             size: 12,
+          },
+        },
+        title: {
+          display: true,
+          text: 'Leave Taken', // Replace with your desired label
+          color: 'black',
+          font: {
+            family: "Nunito",
+            size: 14,
+            weight: 'semibold',
           },
         },
       },

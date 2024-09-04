@@ -187,16 +187,19 @@ import 'react-toastify/dist/ReactToastify.css';
             },
           }
         );
-       
+
+        if(res.status === 200){
+          toast.success("Leave applied successfully")
+        }
         
       var data = res.data;
         console.log(data.leave._id)
-      
+        
         sendLeaveEmail(data.leave._id,"True");
         
         console.log("data", res.data);
       } catch (error) {
-
+        toast.error("Error in Applying Leave")
         console.error("Error Leave Apply", error);
       }finally{
         setIsAppliedLeave(!isAppliedLeave)
@@ -252,13 +255,17 @@ import 'react-toastify/dist/ReactToastify.css';
             },
           }
         );
-  
+        //toaast
+
+
         if(res.status === 202){
           setIsLOP(!isLOP);
           console.log(isLOP)
+
         }else{
           var data = res.data;
           console.log("data",data)
+          toast.success("Leave applied successfully");
           setLeaveId(data.leave._id)
           sendLeaveEmail(data.leave._id,"false");      
           
@@ -268,6 +275,7 @@ import 'react-toastify/dist/ReactToastify.css';
  
       } catch (error) {
         console.error("Error Leave Apply", error);
+        toast.error("Error in applying Leave");
       }
     };
 
