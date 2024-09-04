@@ -107,7 +107,7 @@ const Chat = () => {
   };
 
   return (
-    <div className="flex flex-col items-center justify-between p-4 w-full">
+    <div className="flex flex-col items-center justify-between p-4 w-full h-[98%]">
       <div className="w-full h-full overflow-y-auto mb-4 flex flex-col">
         <p className="font-semibold text-xl">Messages</p>
         <div className="flex flex-col space-y-2 gap-4">
