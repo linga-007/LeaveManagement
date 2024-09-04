@@ -12,7 +12,6 @@
   import duration from 'dayjs/plugin/duration';
   import ConfirmLeave from './ConfirmLeave';
 import ConfirmPermission from './ConfrimPermission';
-
 import { useNavigate } from 'react-router-dom';
 
 
@@ -22,7 +21,9 @@ import 'react-toastify/dist/ReactToastify.css';
   dayjs.extend(duration);
 
   const LeaveApplyForm = () => {
-    const navigate = useNavigate();
+
+  const navigate = useNavigate();
+    
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
     const [leaveDetail, setLeaveDetail] = useState("");
@@ -187,19 +188,16 @@ import 'react-toastify/dist/ReactToastify.css';
             },
           }
         );
-
-        if(res.status === 200){
-          toast.success("Leave applied successfully")
-        }
+       
         
       var data = res.data;
         console.log(data.leave._id)
-        
+      
         sendLeaveEmail(data.leave._id,"True");
         
         console.log("data", res.data);
       } catch (error) {
-        toast.error("Error in Applying Leave")
+
         console.error("Error Leave Apply", error);
       }finally{
         setIsAppliedLeave(!isAppliedLeave)
@@ -255,17 +253,17 @@ import 'react-toastify/dist/ReactToastify.css';
             },
           }
         );
-        //toaast
 
-
+        if(res.status === 201){
+          toast.success("Leave Request sent Successfully")
+        }
+  
         if(res.status === 202){
           setIsLOP(!isLOP);
           console.log(isLOP)
-
         }else{
           var data = res.data;
           console.log("data",data)
-          toast.success("Leave applied successfully");
           setLeaveId(data.leave._id)
           sendLeaveEmail(data.leave._id,"false");      
           
@@ -275,7 +273,6 @@ import 'react-toastify/dist/ReactToastify.css';
  
       } catch (error) {
         console.error("Error Leave Apply", error);
-        toast.error("Error in applying Leave");
       }
     };
 
@@ -326,11 +323,11 @@ import 'react-toastify/dist/ReactToastify.css';
         if (response.status === 200) {
           navigate('/thank-you')
         } else {
-          toast.error('Error Sending Mail !');
+          toast.error("Error in sending Email")
         }
       } catch (error) {
         console.error("Error sending email:", error.response ? error.response.data : error.message);
-        toast.error('Error Sending Mail !');
+        alert('Error sending email');
       }
     };  
 
@@ -349,7 +346,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
       try {
         const response = await axios.post(
-          'http://localhost:5000/mail/send  ',
+          'http://localhost:5000/mail/send',
           {
             email: "kkishorekumar536@gmail.com",
             html: emailContent,
@@ -364,21 +361,22 @@ import 'react-toastify/dist/ReactToastify.css';
     
         if (response.status === 200) {
           navigate('/thank-you')
-
-        } else {
-          toast.error('Error Sending Permission !');
+          
+        } 
+       
+        else {
+          toast.error("error in sending mail")
         }
       } catch (error) {
-        console.error("Error sending Permission:", error.response ? error.response.data : error.message);
-        toast.error('Error Sending Permission !');
-
+        console.error("Error sending email:", error.response ? error.response.data : error.message);
+        toast.error("error in sending mail")
       }
     };
     const applyPermission = async (e)=>{
       console.log("permission")
       try {
           if (isTimeExceeding()) {
-              toast.error('You have crossed 4 hrs limit !');
+              toast.error("Time limit Exceeded")
           } else {
             console.log("Permession Sendttttt",typeof(dayjs.duration(toTime.diff(fromTime)).asHours()))
         const res = await axios.post(
@@ -398,12 +396,21 @@ import 'react-toastify/dist/ReactToastify.css';
             },
           }
         );
-      var data = res.data;    
-        console.log("data", data.permission._id);
+        if(res.status === 201){
+          toast.success("Requested Permission Successfully")
+          var data = res.data;    
+        console.log("data", data);
       sendPermissionEmail(data.permission._id)
+        }
+        else if(res.status === 203){
+          toast.error("Insufficient Permission Balance")
+
+        }
+      
       } 
     }catch (error) {
         console.error("Error permission Apply", error);
+        toast.error("Error is requesting Permission")
       }finally{
         console.log("per end")
         setIsPermission(!isPermission)
@@ -414,8 +421,8 @@ import 'react-toastify/dist/ReactToastify.css';
       <div className="h-fit pt-2 pb-2 flex flex-wrap gap-2 justify-center">
       {/* Leave Application Form */}
       <ToastContainer />
-       <div className="w-[48%] p-4 bg-white shadow-md rounded-md">
-      <h2 className="text-2xl font-bold mb-4">Leave Application</h2>
+       <div className="w-[48%] p-4 bg-slate-100 shadow-md rounded-md">
+      <h2 className="text-2xl font-bold mb-4">Leave Form</h2>
       <div>
         {/* Leave Type and Reason */}
         <div className="flex justify-between mb-4">
@@ -428,7 +435,7 @@ import 'react-toastify/dist/ReactToastify.css';
             >
               <option value="">Select Leave Type</option>
               <option value="Casual Leave">Casual Leave</option>
-              {decodedToken.role !== "3P" && <option value="Privelage Leave">Privelage Leave</option>}
+              {decodedToken.role !== "3P" && <option value="privilege Leave">privilege Leave</option>}
               {decodedToken.role !== "3P" && <option value="Paternity Leave">Paternity Leave</option>}
             </select>
             {errors.leaveType && <p className="text-red-500 text-sm">{errors.leaveType}</p>}
@@ -480,7 +487,7 @@ import 'react-toastify/dist/ReactToastify.css';
         </div>
 
         {/* Half-Day Options */}
-        <div className="flex justify-between mb-4">
+        <div className="flex justify-between mb-2">
           <div className="w-[48%] flex justify-around">
             <label className="flex items-center">
               <input
@@ -524,7 +531,7 @@ import 'react-toastify/dist/ReactToastify.css';
           </div>
         </div>
 
-        <div className="mb-4">
+        <div className="mb-2">
           <label className="flex justify-between items-center text-gray-700 mb-1">Leave Description:{errors.leaveDescription && <p className="text-red-500 text-sm">{errors.leaveDescription}</p>}</label>
           <textarea
             className={`w-full border rounded-md p-2 focus:outline-none focus:ring resize-none ${errors.leaveDescription ? 'border-red-500' : 'border-gray-300'}`}
@@ -537,18 +544,18 @@ import 'react-toastify/dist/ReactToastify.css';
 
         <button
           onClick={handleSubmit}
-          className="w-full bg-[#595d5e] text-white py-2 rounded-md transition-colors duration-200"
+          className="w-full bg-blue-400 text-white py-2 rounded-md transition-colors duration-200"
         >
-          Submit Leave Application
+          Submit Leave Request
         </button>
       </div>
     </div>
 
       {/* Permission Form */}
-      <div className="w-[48%] p-4 bg-white shadow-md rounded-md flex flex-col justify-between">
+      <div className="w-[48%] p-4 bg-slate-100 shadow-md rounded-md flex flex-col justify-between">
       <h2 className="text-2xl font-bold mb-4">Permission Form</h2>
       <div>
-        <div className="flex justify-between mb-4">
+        <div className="flex justify-between mb-4 ">
           <div className="w-[50%]">
             <label className="block text-gray-700 mb-1">Permission Date</label>
             <input
@@ -608,9 +615,9 @@ import 'react-toastify/dist/ReactToastify.css';
 
         <button
           onClick={permissionFieldValidation}
-          className="w-full bg-[#595d5e] text-white py-2 rounded-md transition-colors duration-200"
+          className="w-full bg-blue-400 text-white py-2 rounded-md transition-colors duration-200"
         >
-          Apply Permission
+          Submit Permission Request
         </button>
       </div>
     </div>

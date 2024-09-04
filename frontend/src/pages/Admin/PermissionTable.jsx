@@ -70,7 +70,7 @@ const PermissionTable = () => {
       });
 
       if (response.status === 200) {
-        toast.success('Leave request declined successfully!');
+        toast.error('Leave request declined successfully!');
       } else {
         toast.error('Failed to decline leave request.');
       }
@@ -150,7 +150,7 @@ const PermissionTable = () => {
                   {row.to}
                 </td>
                 <td className="px-4 py-2 whitespace-nowrap text-md font-medium text-gray-900">
-                  {row.hrs}
+                {row.hrs<1?`${(row.hrs*60).toFixed(2)} mins`:`${row.hrs.toFixed(2)} hrs`}
                 </td>
                 <td
                   className="px-4 py-2 whitespace-nowrap text-2xl font-medium text-gray-900 cursor-pointer"

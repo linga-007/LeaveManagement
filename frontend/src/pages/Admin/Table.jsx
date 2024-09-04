@@ -60,6 +60,7 @@ const Table = () => {
       getData();
     } catch (error) {
       console.error('Error accepting leave:', error);
+      toast.error("not sending request")
     }
   };
 

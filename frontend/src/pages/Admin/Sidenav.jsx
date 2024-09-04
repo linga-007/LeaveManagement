@@ -28,7 +28,7 @@ const Sidenav = ({ setIsRequest, setIsPermission }) => {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="bg-slate-100 h-full w-[7rem] rounded-xl flex flex-col items-center gap-y-[3rem] py-[2rem]">
+      <div className="bg-slate-100 h-full  rounded-xl flex flex-col items-center gap-y-[3rem] py-[2rem]">
         <div className={getDivClass("dashboard")}>
           <button
             onClick={() => handleClick("dashboard")}

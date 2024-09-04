@@ -100,7 +100,7 @@ function Table() {
 
 <div className='flex flex-wrap flex-col w-[100%] justify-center items-center'>
       <table className='table-fixed w-[98%] border-collapse border border-gray-400'>
-        <thead className='bg-[#595d5e]'>
+        <thead className='bg-blue-400'>
           <tr>
             <th
               colSpan={tableHead.length}
@@ -117,7 +117,7 @@ function Table() {
                 key={index}
                 className="border text-md border-gray-400 text-left text-xs text-gray-500 uppercase text-balance break-words"
               >
-                <div className='flex justify-center items-center text-md text-center p-1' >{val}</div>
+                <div className='flex justify-center items-center text-md text-center py-1 px-2' >{val}</div>
               </th>
             ))}
           </tr>
@@ -126,7 +126,7 @@ function Table() {
           {currentData.map((val, index) => (
             <tr key={index} className="border border-gray-400 bg-white">
               <td className=' border border-gray-400 '>
-                <div className='text-center uppercase text-md '>{val}</div>
+                <div className='text-center uppercase text-[1.8vh] py-1.5'>{val}</div>
               </td>
               {value[index].map((cellValue, i) => (
                 <td key={i} className='border border-gray-400 text-md'>

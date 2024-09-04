@@ -86,7 +86,7 @@ const AdminHome = () => {
   return (
     <div className="flex w-screen h-screen">
       <Sidenav setIsRequest = {setIsRequest } setIsPermission = {setIsPermission}/>
-      <main className="flex flex-col pl-5 pr-5 pt-2 w-screen h-screen">
+      <main className="flex flex-col pt-2 w-screen h-screen">
         {/* <div className="w-full flex justify-between h-12 mb-5 items-center pl-5 pr-5 bg-slate-100 border-slate-950 rounded-lg">
           <h2 className="font-semibold text-xl">Dashboard</h2>
           <div>
@@ -166,14 +166,17 @@ const AdminHome = () => {
           {isRequest ? <div><Table/></div> : isPermission ?  <div><PermissionTable/></div> : <div> <Charts/></div>} 
 
           </div>
-          <div className="w-[25%] h-[98%] flex justify-center border-x-2 solid">
+          <div className="w-[25%] h-[100%] flex justify-center border-x-2 solid">
             <Circular/>
           </div>
         </div>
           </div>
 
         {/* Modal for displaying reason */}
+        
       </main>
+    
+   
     </div>
   );
 };

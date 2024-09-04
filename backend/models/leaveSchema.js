@@ -12,14 +12,12 @@ const schema = new db.Schema(
         },
         role:{
             type: String,
-
-        
             enum: ['Admin', 'Manager', '3P', 'GVR'],
             default: '3P'
         },
         leaveType: {
             type: String,
-            enum: ['Casual Leave', 'Privelage Leave', 'Paternity Leave'],
+            enum: ['Casual Leave', 'privilege Leave', 'Paternity Leave'],
             default: 'Casual Leave'
         },
         from: {

@@ -1,168 +1,173 @@
-import React, { useState, useEffect } from 'react';
-import { IoSend } from "react-icons/io5";
-import { MdOutlineDriveFolderUpload } from "react-icons/md";
-import {jwtDecode} from 'jwt-decode';
 import axios from 'axios';
+import { jwtDecode } from 'jwt-decode';
+import React, { useEffect, useState } from 'react';
 
-const Chat = () => {
+const ChatPanel = () => {
+  const [isOpen, setIsOpen] = useState(false);
+  const [subject, setSubject] = useState('');
   const [messages, setMessages] = useState([]);
-  const [input, setInput] = useState('');
-  const [file, setFile] = useState(null);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [selectedMessage, setSelectedMessage] = useState('');
+  const [content,setContent] = useState("");
+  const toggleChat = () => {
+    setIsOpen(!isOpen);
+  };
 
   const token = document.cookie.split('=')[1];
   const decodedToken = jwtDecode(token);
-  const id = decodedToken.empId;
-  const name = decodedToken.empName;
+  const empId = decodedToken.empId;
 
-  // Fetch messages from the server when the component mounts
-  useEffect(() => {
-    const fetchMessages = async () => {
-      try {
-        const response = await axios.get('http://localhost:5000/circular/getAll', {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
 
-        const fetchedMessages = response.data.map(msg => ({
-          text: msg.message,
-          fileName: msg.fileName,
-          fileUrl: msg.fileUrl // Assuming the server sends a URL for the file
-        }));
+  useEffect(()=>{
 
-        setMessages(fetchedMessages);
-      } catch (error) {
-        console.error('Error fetching messages:', error);
-      }
-    };
+    getCircular()
+  },[])
 
-    fetchMessages();
-  }, [token]);
 
-  const handleSendMessage = async () => {
-    if (!input.trim() && !file) {
-      return;
-    }
-
-    let fileData = null;
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = async () => {
-        fileData = reader.result.split(',')[1]; // Extract base64 string
-        try {
-          const response = await axios.post(
-            'http://localhost:5000/circular/save',
-            {
-              empId: id,
-              empName: name,
-              message: input,
-              fileName: file.name,
-              fileData: fileData,
-            },
-            {
-              headers: {
-                Authorization: `Bearer ${token}`,
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          const newMessage = { text: input, fileUrl: response.data.fileUrl, fileName: file.name };
-          setMessages([...messages, newMessage]);
-          setInput('');
-          setFile(null);
-        } catch (error) {
-          console.error('Error saving message:', error);
-        }
-      };
-      reader.readAsDataURL(file); // Convert file to base64 string
-    } else {
-      try {
-        const response = await axios.post(
-          'http://localhost:5000/circular/save',
-          {
-            empId: id,
-            empName: name,
-            message: input,
-          },
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-              "Content-Type": "application/json",
-            },
-          }
-        );
-
-        const newMessage = { text: input };
-        setMessages([...messages, newMessage]);
-        setInput('');
-      } catch (error) {
-        console.error('Error saving message:', error);
-      }
-    }
+  const handleMessageClick = (msg) => {
+    setSelectedMessage(msg);
+    setIsPopupOpen(true);
   };
 
-  const handleFileChange = (e) => {
-    setFile(e.target.files[0]);
+  const closePopup = () => {
+    setIsPopupOpen(false);
+    setSelectedMessage('');
   };
+
+
+  const sendCircular = async()=>{
+
+    try{
+      const res = await axios.post("http://localhost:5000/circular/save",{
+        empId:empId,
+        empName:decodedToken.empName,
+        message:content,
+        subject:subject
+     },
+     {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+    )
+    console.log(res);
+    }catch(e){
+      console.log("Error",e)
+    }
+  }
+
+  const getCircular = async ()=>{
+    try{
+      const res = await axios.get("http://localhost:5000/circular/getAll",
+     {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+        'Content-Type': 'application/json',
+      },
+    }
+    )
+    console.log("get",res);
+    setMessages(res.data)
+    }catch(e){
+      console.log("Error",e)
+    }
+  }
+
+ 
 
   return (
-    <div className="flex flex-col items-center justify-between p-4 w-full">
-      <div className="w-full h-full overflow-y-auto mb-4 flex flex-col">
-        <p className="font-semibold text-xl">Messages</p>
-        <div className="flex flex-col space-y-2 gap-4">
-          {messages.map((message, index) => (
-            <div
-              key={index}
-              className="self-end bg-blue-500 text-white p-2 rounded-lg max-w-xs"
-              style={{ marginTop: index === 0 ? 'auto' : 0 }}
-            >
-              {message.text && <p>{message.text}</p>}
-              {message.fileUrl && (
-                <div className="mt-2">
-                  <a
-                    href={message.fileUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="underline"
-                  >
-                    {message.fileName}
-                  </a>
-                </div>
-              )}
-            </div>
-          ))}
+    <>
+      <div className="relative w-[100%]">
+        <div className="p-4 w-full -auto flex-1">
+          {messages.length === 0 ? (
+            <p className="text-gray-600">No messages yet. Start a conversation!</p>
+          ) : (
+            <ul className="w-full">
+              {messages.map((msg, index) => (
+                <li
+                  key={index}
+                  className="bg-gray-100 p-2 rounded-md m-2 cursor-pointer"
+                  onClick={() => handleMessageClick(msg.message)}
+                >
+                  {msg.message}
+                </li>
+              ))}
+            </ul>
+          )}
         </div>
-      </div>
-      {/* Input Area */}
-      <div className="flex items-center justify-start w-full h-fit p-1 gap-2">
-        <div className="w-[70%] max-w-2xl space-x-2">
-          <input
-            type="text"
-            placeholder="Type a message..."
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            className="flex-1 p-2 border rounded-lg"
-          />
-        </div>
-        <input
-          type="file"
-          onChange={handleFileChange}
-          className="hidden"
-          id="file-upload"
-        />
-        <label htmlFor="file-upload" className="cursor-pointer p-2 border rounded-lg bg-blue-500 text-white">
-          <MdOutlineDriveFolderUpload />
-        </label>
+
+        {/* Toggle Button */}
         <button
-          onClick={handleSendMessage}
-          className="p-2 bg-green-500 text-white rounded-lg"
+          className="fixed bottom-4 right-4 bg-blue-500 text-white p-2 rounded-full shadow-lg "
+          onClick={toggleChat}
         >
-          <IoSend />
+          Chat
         </button>
+
+        {/* Chat Panel */}
+        <div
+          className={`fixed bottom-16 right-4 w-80 h-96 bg-white shadow-xl rounded-lg transform transition-transform duration-300 ease-in-out ${
+            isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+          }`}
+        >
+          {/* Chat Header */}
+          <div className="flex items-center justify-between p-4 border-b">
+            <h3 className="text-lg font-semibold">Messaging</h3>
+            <button
+              className="text-gray-500 hover:text-gray-700"
+              onClick={toggleChat}
+            >
+              ✕
+            </button>
+          </div>
+
+          {/* Chat Body */}
+
+          {/* Chat Footer */}
+          <div className="p-4 border-t flex space-x-2 flex-col gap-3">
+            <input
+              type="text"
+              placeholder="Subject"
+              value={subject}
+              onChange={(e) => setSubject(e.target.value)}
+              className="w-full flex-grow border rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+      
+             <input
+              type="text"
+              placeholder="Content"
+              value={content}
+              onChange={(e) => setContent(e.target.value)}
+              className="w-[100%] flex-grow border rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            />
+            <button
+              onClick={sendCircular}
+              className="bg-blue-500 text-white p-2 rounded-full shadow-md"
+            >
+              Send
+            </button>
+          </div>
+        </div>
+
+        {/* Popup for Circular */}
+        {isPopupOpen && (
+          <div className="fixed inset-0 flex items-center justify-center z-50 bg-black bg-opacity-50">
+            <div className="bg-white rounded-lg p-4 w-96">
+              <h3 className="text-lg font-semibold">Circular</h3>
+              <p className="mt-2">{selectedMessage}</p>
+              <button
+                onClick={closePopup}
+                className="mt-4 bg-red-500 text-white p-2 rounded"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 };
 
-export default Chat;
+export default ChatPanel;

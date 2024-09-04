@@ -26,7 +26,7 @@ const ApplyPermission = async (req, res) => {
             res.status(201).json({ message: 'Permission applied successfully', permission: newPermission });
         }
         else{
-            return res.status(403).json({ message: 'Insufficient permission level' });
+            return res.status(203).json({ message: 'Insufficient permission level' });
         }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
