@@ -68,7 +68,7 @@ const LoginTextFeild = () => {
               type="text"
               className="mt-1 p-2 w-full border border-gray-300 rounded-md "
               placeholder="empId"
-              autoFocus={true}
+              autoFocus
               value={RFID}
               onChange={(e) => setRFID(e.target.value)}
             />

@@ -7,7 +7,7 @@ import LoginTextFeild from "./LoginTextFeild";
 const Login = () => {
   return (
     <>
-      <div className="w-screen h-screen flex overflow-hidden absolute bg-white" >
+      <div className="w-screen h-screen flex overflow-hidden absolute bg-white pointer-events-none" >
       <div className="w-full h-full">
         <div className="bg-[#00aeff9d] rounded-r-3xl h-full rounded-br-full">
           <img src={gilbarco} className=" w-[300px] p-5" alt="Gilbarco" />

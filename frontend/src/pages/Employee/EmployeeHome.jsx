@@ -17,12 +17,15 @@ function EmployeeHomePage() {
 
 
   return (
-    <div className="w-screen h-screen flex">
+    <div className="w-screen h-screen flex bg-white">
         <Sidenav />
-      <div className="w-full  flex flex-col pt-2 ">
+      <div className="w-screen  flex flex-col pt-1 ">
         <Nav/>
         <LeaveApplyForm/>
         <Table />
+        <div className="h-full  text-black opacity-65 text-center  text-sm ">
+      <p>Copyright©2024 Sri Eshwar Technologies PVT LTD</p>
+    </div>
       </div>
   
     </div>

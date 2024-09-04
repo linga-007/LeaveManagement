@@ -48,12 +48,12 @@ function Nav() {
   return (
     <>
       <div className='w-full flex justify-center items-center pl-6 pr-6 rounded-lg'>
-        <div className='w-[100%] shadow-md flex justify-between items-center px-5 py-2 rounded-lg bg-[#595d5e]'>
+        <div  style={{ boxShadow: "0 -4px 6px -1px rgba(0, 0, 0, 0.1), 0 4px 6px -1px rgba(0, 0, 0, 0.1)" }} className='w-[100%]  flex justify-between items-center px-5 py-2 rounded-lg bg-white'>
           <div className='text-xl font-semibold'>
             <img src={GVR} alt="GVR Logo" className='h-10' />
           </div>
           <div className='relative'>
-            <button className='flex justify-center items-center bg-[#595d5e]' onClick={handleUserClick}>
+            <button className='flex justify-center items-center ' onClick={handleUserClick}>
               <img src={userImg} alt="User" className='h-10' />
             </button>
             {isDropdownOpen && (
