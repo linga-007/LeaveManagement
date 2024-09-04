@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import Pagination from './Pagination';
 
-const LeaveHistoryTable = (props) =>{
-  const tableHead = ["S.No","Employee Name","Leave Type", "From Date", "To Date", "No of Days", "Reason Type", "Reason of Leave","Status","LOP"];
+const LeaveHistoryTable = (props) => {
+  const tableHead = ["S.No", "Employee Name", "Leave Type", "From Date", "To Date", "No of Days", "Reason Type", "Reason of Leave", "Status", "LOP"];
 
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5; // Adjust the number of rows per page
+  const rowsPerPage = 5;
 
-  // Calculate total pages
   const totalPages = Math.ceil(props.LeaveLogs.length / rowsPerPage);
 
-  // Get current page LeaveLogs
   const currentData = props.LeaveLogs.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
@@ -18,7 +16,7 @@ const LeaveHistoryTable = (props) =>{
 
   return (
     <>
-      <div className='w-[100%] p-3 bg-slate-100 rounded-lg'>
+      <div className='w-[100%] p-1 bg-slate-100 rounded-lg'>
         <h1 className='text-xl font-semibold mb-2'>
           Leave Log
         </h1>
@@ -34,20 +32,27 @@ const LeaveHistoryTable = (props) =>{
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {currentData.map((val, index) => (
-                <tr key={index}>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{index+1}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.empName}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.leaveType}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.from.date}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.to.date}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.numberOfDays}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.reasonType}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.reason}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.status}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.isLOP?"Yes":"No"}</td>
-                </tr>
-              ))}
+              {currentData.map((val, index) => {
+                // Determine background color based on status
+                const statusBgColor = val.status === "Approved" ? "bg-green-100" : val.status === "Denied" ? "bg-red-100" : "bg-yellow-100";
+
+                return (
+                  <tr key={index}>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{index + 1}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.empName}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.leaveType}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.from.date}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.to.date}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.numberOfDays}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.reasonType}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.reason}</td>
+                    <td className={`px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900 ${statusBgColor}`}>
+                      {val.status}
+                    </td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.isLOP ? "Yes" : "No"}</td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <Pagination

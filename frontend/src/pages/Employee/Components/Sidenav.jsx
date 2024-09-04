@@ -18,11 +18,11 @@ const Sidenav = () => {
 
   return (
     <div className="flex justify-center items-center h-screen">
-      <div className="bg-[#f5f6f7] h-full w-[7rem] flex flex-col items-center gap-y-[3rem] py-[2rem]">
+      <div className="bg-[#f5f6f7] h-full w-[7rem] flex flex-col items-center gap-y-[3rem] py-[2rem] p-3">
         <Link
-          to={`/Employee/${id}`}
+          to={`/Employee`}
           className={`flex items-center justify-center flex-col gap-y-2 w-full p-4 ${
-            location.pathname === `/Employee/${id}` ? "bg-gray-300" : ""
+            location.pathname === `/Employee` ? "bg-gray-300" : ""
           }`}
           onClick={() => handleLinkClick("leave")}
         >

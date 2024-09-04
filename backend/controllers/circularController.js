@@ -2,9 +2,9 @@ const { Circular } = require("../models/circularSchema");
 
 const addCircular = async(req, res) => {
     try{
-        const { empId, empName, message } = req.body;
+        const { empId, empName, message,subject } = req.body;
 
-        const circular = new Circular({empId, empName, message});
+        const circular = new Circular({empId, empName, message,subject});
         await circular.save()
         res.status(201).json(circular);
     }

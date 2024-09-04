@@ -1,10 +1,19 @@
-import React from "react";
+import React, { useEffect } from "react";
 import caos from "../../images/caos.png";
 import gilbarco from "../../images/GVRLogo.png";
 import scanner from "../../images/tap-pay-15575682-unscreen.gif";
 import LoginTextFeild from "./LoginTextFeild";
+import { useNavigate } from "react-router-dom";
 
 const Login = () => {
+  const navigate= useNavigate();
+  useEffect(()=>{
+    if(document.cookie){
+    document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+      console.log('Logged out, cookie removed');
+      navigate("/");
+    }
+  },[])
   return (
     <>
       <div className="w-screen h-screen flex overflow-hidden absolute bg-white pointer-events-none" >

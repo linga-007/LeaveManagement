@@ -12,7 +12,6 @@
   import duration from 'dayjs/plugin/duration';
   import ConfirmLeave from './ConfirmLeave';
 import ConfirmPermission from './ConfrimPermission';
-
 import { useNavigate } from 'react-router-dom';
 
 
@@ -22,7 +21,9 @@ import 'react-toastify/dist/ReactToastify.css';
   dayjs.extend(duration);
 
   const LeaveApplyForm = () => {
-    const navigate = useNavigate();
+
+  const navigate = useNavigate();
+    
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
     const [leaveDetail, setLeaveDetail] = useState("");
@@ -187,19 +188,16 @@ import 'react-toastify/dist/ReactToastify.css';
             },
           }
         );
-
-        if(res.status === 200){
-          toast.success("Leave applied successfully")
-        }
+       
         
       var data = res.data;
         console.log(data.leave._id)
-        
+      
         sendLeaveEmail(data.leave._id,"True");
         
         console.log("data", res.data);
       } catch (error) {
-        toast.error("Error in Applying Leave")
+
         console.error("Error Leave Apply", error);
       }finally{
         setIsAppliedLeave(!isAppliedLeave)
@@ -255,17 +253,17 @@ import 'react-toastify/dist/ReactToastify.css';
             },
           }
         );
-        //toaast
 
-
+        if(res.status === 201){
+          toast.success("Leave Request sent Successfully")
+        }
+  
         if(res.status === 202){
           setIsLOP(!isLOP);
           console.log(isLOP)
-
         }else{
           var data = res.data;
           console.log("data",data)
-          toast.success("Leave applied successfully");
           setLeaveId(data.leave._id)
           sendLeaveEmail(data.leave._id,"false");      
           
@@ -275,7 +273,6 @@ import 'react-toastify/dist/ReactToastify.css';
  
       } catch (error) {
         console.error("Error Leave Apply", error);
-        toast.error("Error in applying Leave");
       }
     };
 
@@ -310,7 +307,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
       try {
         const response = await axios.post(
-          'http://localhost:5000/mail/send  ',
+          'http://localhost:5000/mail/send',
           {
             email: "kkishorekumar536@gmail.com",
             html: emailContent,
@@ -326,11 +323,11 @@ import 'react-toastify/dist/ReactToastify.css';
         if (response.status === 200) {
           navigate('/thank-you')
         } else {
-          toast.error('Error Sending Mail !');
+          toast.error("Error in sending Email")
         }
       } catch (error) {
         console.error("Error sending email:", error.response ? error.response.data : error.message);
-        toast.error('Error Sending Mail !');
+        alert('Error sending email');
       }
     };  
 
@@ -349,7 +346,7 @@ import 'react-toastify/dist/ReactToastify.css';
 
       try {
         const response = await axios.post(
-          'http://localhost:5000/mail/send  ',
+          'http://localhost:5000/mail/send',
           {
             email: "kkishorekumar536@gmail.com",
             html: emailContent,
@@ -364,21 +361,22 @@ import 'react-toastify/dist/ReactToastify.css';
     
         if (response.status === 200) {
           navigate('/thank-you')
-
-        } else {
-          toast.error('Error Sending Permission !');
+          
+        } 
+       
+        else {
+          toast.error("error in sending mail")
         }
       } catch (error) {
-        console.error("Error sending Permission:", error.response ? error.response.data : error.message);
-        toast.error('Error Sending Permission !');
-
+        console.error("Error sending email:", error.response ? error.response.data : error.message);
+        toast.error("error in sending mail")
       }
     };
     const applyPermission = async (e)=>{
       console.log("permission")
       try {
           if (isTimeExceeding()) {
-              toast.error('You have crossed 4 hrs limit !');
+              toast.error("Time limit Exceeded")
           } else {
             console.log("Permession Sendttttt",typeof(dayjs.duration(toTime.diff(fromTime)).asHours()))
         const res = await axios.post(
@@ -398,12 +396,21 @@ import 'react-toastify/dist/ReactToastify.css';
             },
           }
         );
-      var data = res.data;    
-        console.log("data", data.permission._id);
+        if(res.status === 201){
+          toast.success("Requested Permission Successfully")
+          var data = res.data;    
+        console.log("data", data);
       sendPermissionEmail(data.permission._id)
+        }
+        else if(res.status === 203){
+          toast.error("Insufficient Permission Balance")
+
+        }
+      
       } 
     }catch (error) {
         console.error("Error permission Apply", error);
+        toast.error("Error is requesting Permission")
       }finally{
         console.log("per end")
         setIsPermission(!isPermission)

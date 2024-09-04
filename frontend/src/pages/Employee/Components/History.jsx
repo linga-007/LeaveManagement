@@ -78,11 +78,14 @@ const getEmployeePermissionsLogs = async()=>{
       <div className='flex flex-col justify-between   w-[75%] '>
         <LeaveHistoryTable LeaveLogs={leaveLogs}/>
         <PermissionHistoryTable PermissionLogs={permissionLogs}/>
-        </div>
-
-       
+        </div>       
       <Cicular/>
-        
+      </div>
+
+      <div className="fixed bottom-0 left-0 w-full text-black opacity-65 text-center text-sm bg-white pb-1">
+        <a href="https://sece.ac.in/" target="_blank" rel="noopener noreferrer">
+          Copyright©2024 Sri Eshwar Technologies PVT LTD
+        </a>
       </div>
       </div>
   

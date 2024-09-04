@@ -1,16 +1,14 @@
 import React, { useState } from 'react';
 import Pagination from './Pagination';
 
-const PermissionHistoryTable = ({PermissionLogs}) =>{
-  const tableHead = ["S.No","Employee Name", "Date", "From ", "To", "Duration","Reason of Permission","Status"];
+const PermissionHistoryTable = ({ PermissionLogs }) => {
+  const tableHead = ["S.No", "Employee Name", "Date", "From", "To", "Duration", "Reason of Permission", "Status"];
 
   const [currentPage, setCurrentPage] = useState(1);
-  const rowsPerPage = 5; // Adjust the number of rows per page
+  const rowsPerPage = 5;
 
-  // Calculate total pages
   const totalPages = Math.ceil(PermissionLogs.length / rowsPerPage);
 
-  // Get current page data
   const currentData = PermissionLogs.slice(
     (currentPage - 1) * rowsPerPage,
     currentPage * rowsPerPage
@@ -18,9 +16,9 @@ const PermissionHistoryTable = ({PermissionLogs}) =>{
 
   return (
     <>
-      <div className='w-[100%] p-3 bg-slate-100 rounded-lg'>
+      <div className='w-[100%] p-1 bg-slate-100 rounded-lg'>
         <h1 className='text-xl font-semibold mb-2'>
-          Leave Log
+          Permission Log
         </h1>
         <div className='flex flex-wrap flex-col w-[100%]'>
           <table className='table-fixed'>
@@ -33,19 +31,28 @@ const PermissionHistoryTable = ({PermissionLogs}) =>{
                 ))}
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-gray-200 ">
-              {currentData.map((val, index) => (
-                <tr key={index}>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{index+1}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.empName}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.date}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.from}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.to}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.hrs<1?`${(val.hrs*60).toFixed(2)} mins`:`${val.hrs.toFixed(2)} hrs`}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.reason}</td>
-                  <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.status}</td>
-                </tr>
-              ))}
+            <tbody className="bg-white divide-y divide-gray-200">
+              {currentData.map((val, index) => {
+                // Determine background color based on status
+                const statusBgColor = val.status === "Approved" ? "bg-green-100" : val.status === "Denied" ? "bg-red-100" : "bg-white";
+
+                return (
+                  <tr key={index}>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{index + 1}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.empName}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.date}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.from}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.to}</td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>
+                      {val.hrs < 1 ? `${(val.hrs * 60).toFixed(2)} mins` : `${val.hrs.toFixed(2)} hrs`}
+                    </td>
+                    <td className='px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900'>{val.reason}</td>
+                    <td className={`px-3 py-2 whitespace-nowrap text-sm font-medium text-center text-gray-900 ${statusBgColor}`}>
+                      {val.status}
+                    </td>
+                  </tr>
+                );
+              })}
             </tbody>
           </table>
           <Pagination

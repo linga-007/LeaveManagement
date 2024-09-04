@@ -19,8 +19,8 @@ function Cicular() {
     ];
   
     return (
-      <div className='flex flex-col w-[25%] bg-white'>
-          <div className='w-full text-center text-xl font-bold text-black border-2 border-black bg-slate-100'>
+      <div className='flex flex-col w-[25%] bg-white '>
+          <div className='w-full text-center text-xl font-bold text-black border-2 border-white rounded-lg  bg-slate-100'>
     Circular
     </div>
         {circulars.map((circular, index) => (

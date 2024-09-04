@@ -47,7 +47,7 @@ function Nav() {
 
   return (
     <>
-      <div className='w-full flex justify-center items-center rounded-lg'>
+      <div className='w-[100%] flex justify-center items-center rounded-lg pl-5 pr-5'>
         <div className='w-[100%] shadow-md flex justify-between items-center px-5 py-2 rounded-lg '>
           <div className='text-xl font-semibold'>
             <img src={GVR} alt="GVR Logo" className='h-10' />
