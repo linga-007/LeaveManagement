@@ -5,11 +5,11 @@ import {createBrowserRouter,RouterProvider} from 'react-router-dom'
 // import Login from './pages/User/Login'
 // import Signup from './pages/User/Signup';
 // import Profile from './pages/Employee/Profile';
-import LandingPage from './pages/Landing/LandingPage';
+// import LandingPage from './pages/Landing/LandingPage';
 import EmployeeHomePage from './pages/Employee/EmployeeHome';
 import Login from './pages/User/Login';
 import History from './pages/Employee/Components/History';
-
+import Thankyou from './pages/Thankyou/Thankyou';
 
 
 
@@ -17,20 +17,13 @@ function App() {
 
   const route = createBrowserRouter([
 
-    // {
-    //   path:'/',
-    //   element:<Login/>
-    // },
-    // {
-    //   path:'/login',
-    //   element:<Login/>
-    // },
+    
     {
       path:'/',
       element:<Login/>
     },
     {
-      path:'/Employee/:id',
+      path:'/Employee/',
       element:<EmployeeHomePage/>
     },
     {
@@ -41,22 +34,11 @@ function App() {
       path:'/history/:id',
       element:<History/>
     },
-    // {
-    //   path:'/Employee/:username',
-    //   element:<EmployeeHomePage/>
-    // },
-    // {
-    //   path:'/Landing',
-    //   element:<LandingPage/>
-    // },
-    // {
-    //   path:'/EmpProfile/:username',
-    //   element:<Profile />
-    // },
-    // {
-    //   path:'/AdProfile/:username',
-    //   element:<AdmProfile />
-    // },
+    {
+      path:'/thank-you',
+      element:<Thankyou/>
+    },
+    
   ])
 
   return (
