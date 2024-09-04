@@ -23,6 +23,12 @@ function Nav() {
             "Content-Type": "application/json",
           },
         });
+        
+        if(res.status === 401){
+          console.log("yes")
+          navigate('/thank-you')
+        }
+
         setUserDetails(res.data[0]);
       } catch (error) {
         console.error("Error fetching user details:", error);

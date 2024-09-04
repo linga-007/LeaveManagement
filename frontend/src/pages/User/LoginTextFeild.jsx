@@ -38,7 +38,7 @@ const LoginTextFeild = () => {
           if (decodedToken.role === "Manager") {
             navigate("/Admin"); // Redirect to admin page
           } else {
-            navigate(`/Employee/${decodedToken.empId}`); // Redirect to employee page with ID
+            navigate(`/Employee`); // Redirect to employee page with ID
           }
         } else if (res.status === 401) {
           setError("Incorrect password");

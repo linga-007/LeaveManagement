@@ -94,7 +94,8 @@ const AdminHome = () => {
           </div>
         </div> */}
         <Nav />
-        <div className="w-full h-full flex justify-between">
+        <div className="w-full h-full ">
+          <div className="w-full h-[98%] flex justify-between">
           <div className="w-[75%] h-full p-5 ">
             <div className="h-20px w-full flex justify-between gap-10 pb-5">
               <div>
@@ -165,10 +166,11 @@ const AdminHome = () => {
           {isRequest ? <div><Table/></div> : isPermission ?  <div><PermissionTable/></div> : <div> <Charts/></div>} 
 
           </div>
-          <div className="w-[25%]  flex justify-center border-x-2 solid">
+          <div className="w-[25%] h-[98%] flex justify-center border-x-2 solid">
             <Circular/>
           </div>
         </div>
+          </div>
 
         {/* Modal for displaying reason */}
       </main>

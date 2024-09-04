@@ -11,7 +11,7 @@ const DoughnutChart = () => {
   Chart.defaults.plugins.legend.title.font = "Helvetica Neue";
 
   const data = {
-    labels: ["processed", "pending"],
+    labels: ["GVR", "3P "],
     datasets: [
       {
         data: [60, 40],
