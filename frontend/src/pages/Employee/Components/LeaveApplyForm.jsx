@@ -13,6 +13,8 @@
   import ConfirmLeave from './ConfirmLeave';
 import ConfirmPermission from './ConfrimPermission';
 
+import { useNavigate } from 'react-router-dom';
+
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
@@ -20,6 +22,7 @@ import 'react-toastify/dist/ReactToastify.css';
   dayjs.extend(duration);
 
   const LeaveApplyForm = () => {
+    const navigate = useNavigate();
     const [fromDate, setFromDate] = useState("");
     const [toDate, setToDate] = useState("");
     const [leaveDetail, setLeaveDetail] = useState("");
@@ -313,13 +316,13 @@ import 'react-toastify/dist/ReactToastify.css';
         );
     
         if (response.status === 200) {
-          alert('Email sent successfully');
+          navigate('/thank-you')
         } else {
-          alert('Failed to send email');
+          toast.error('Error Sending Mail !');
         }
       } catch (error) {
         console.error("Error sending email:", error.response ? error.response.data : error.message);
-        alert('Error sending email');
+        toast.error('Error Sending Mail !');
       }
     };  
 
@@ -352,20 +355,22 @@ import 'react-toastify/dist/ReactToastify.css';
         );
     
         if (response.status === 200) {
-          alert('Email sent successfully');
+          navigate('/thank-you')
+
         } else {
-          alert('Failed to send email');
+          toast.error('Error Sending Permission !');
         }
       } catch (error) {
-        console.error("Error sending email:", error.response ? error.response.data : error.message);
-        alert('Error sending email');
+        console.error("Error sending Permission:", error.response ? error.response.data : error.message);
+        toast.error('Error Sending Permission !');
+
       }
     };
     const applyPermission = async (e)=>{
       console.log("permission")
       try {
           if (isTimeExceeding()) {
-              alert("Time difference exceeds 4 hours");
+              toast.error('You have crossed 4 hrs limit !');
           } else {
             console.log("Permession Sendttttt",typeof(dayjs.duration(toTime.diff(fromTime)).asHours()))
         const res = await axios.post(
