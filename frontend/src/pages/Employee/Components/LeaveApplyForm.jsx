@@ -11,8 +11,10 @@
   import PermissionEmailTemplate from '../../PermissionTemplate';
   import duration from 'dayjs/plugin/duration';
   import ConfirmLeave from './ConfirmLeave';
-import ConfirmPermission from './ConfrimPermission';
-import { useNavigate } from 'react-router-dom';
+  import ConfirmPermission from './ConfrimPermission';
+  import { useNavigate } from 'react-router-dom';
+  import DatePicker from 'react-datepicker';
+  import 'react-datepicker/dist/react-datepicker.css';
 
 
 import { ToastContainer, toast } from 'react-toastify';
@@ -88,7 +90,6 @@ import 'react-toastify/dist/ReactToastify.css';
         handleAppliedLeave(!isAppliedLeave); 
       }
     };
-
 
   
   
@@ -189,6 +190,12 @@ import 'react-toastify/dist/ReactToastify.css';
           }
         );
        
+        if(res.status === 201){
+          toast.success("Leave Requested Successfully")
+        }
+        else{
+          toast.error("Error in requesting Leave")
+        }
         
       var data = res.data;
         console.log(data.leave._id)
@@ -223,8 +230,8 @@ import 'react-toastify/dist/ReactToastify.css';
     dataPrint()
 
     console.log("leave app",isAppliedLeave)
+    
     const applyLeave = async (e) => {
-
       console.log("nothinggggg")
       try {
         const res = await axios.post(
@@ -417,8 +424,19 @@ import 'react-toastify/dist/ReactToastify.css';
       }
     }
 
+
+    const formatDate = (date) => {
+      if (!date) return '';
+      const day = String(date.getDate()).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0'); // Month is zero-based
+      const year = date.getFullYear();
+      return `${day}/${month}/${year}`;
+    };
+    
+
     return (
       <div className="h-fit pt-2 pb-2 flex flex-wrap gap-2 justify-center">
+  
       {/* Leave Application Form */}
       <ToastContainer />
        <div className="w-[48%] p-4 bg-slate-100 shadow-md rounded-md">
@@ -460,30 +478,55 @@ import 'react-toastify/dist/ReactToastify.css';
 
         {/* From Date and To Date */}
         <div className="flex justify-between mb-4">
-          <div className="w-[48%]">
-            <label className="flex items-center justify-between text-gray-700 mb-1">From Date: {errors.fromDate && <p className="text-red-500 text-sm">{errors.fromDate}</p>}</label>
-            <input
-              type="date"
-              className={`w-full border rounded-md p-2 focus:outline-none focus:ring ${errors.fromDate ? 'border-red-500' : 'border-gray-300'}`}
-              value={fromDate}
-              onChange={(e) => {
-                setFromDate(e.target.value);
-                setToDate(e.target.value);
-              }}
-            />
-           
-          </div>
 
-          <div className="w-[48%]">
-            <label className=" text-gray-700 mb-1 flex items-center justify-between">To Date:{errors.toDate && <p className="text-red-500 text-sm">{errors.toDate}</p>}</label>
-            <input
-              type="date"
-              className={`w-full border rounded-md p-2 focus:outline-none focus:ring ${errors.toDate ? 'border-red-500' : 'border-gray-300'}`}
-              value={toDate}
-              onChange={(e) => setToDate(e.target.value)}
-            />
-            
-          </div>
+
+        <div className="w-[48%]">
+        <label className="flex items-center justify-between text-gray-700 mb-1">
+          From Date: {errors.fromDate && <p className="text-red-500 text-sm">{errors.fromDate}</p>}
+        </label>
+        <DatePicker
+          selected={fromDate}
+          onChange={(date) => {
+            setFromDate(formatDate(date));
+            setToDate(date); // Set toDate to fromDate directly
+            setErrors((prev) => ({ ...prev, fromDate: '', toDate: '' })); // Reset errors
+            if (!date) {
+              setErrors((prev) => ({ ...prev, fromDate: 'From Date is required.' }));
+            }
+          }}
+          className={`w-[150%] border rounded-md p-2 focus:outline-none focus:ring ${errors.fromDate ? 'border-red-500' : 'border-gray-300'}`}
+          dateFormat="dd/MM/yyyy" // Change the format as per your requirement
+          placeholderText="Select From Date"
+          // Format display value
+          value={fromDate}
+        />
+      </div>
+
+
+
+
+     <div className="w-[48%]">
+        <label className="text-gray-700 mb-1 flex items-center justify-between">
+          To Date: {errors.toDate && <p className="text-red-500 text-sm">{errors.toDate}</p>}
+        </label>
+        <DatePicker
+          selected={toDate}
+          onChange={(date) => {
+            setToDate(formatDate(date));
+            setErrors((prev) => ({ ...prev, toDate: '', fromDate: '' })); // Reset errors
+            if (fromDate && date && new Date(date) < new Date(fromDate)) {
+              setErrors((prev) => ({ ...prev, toDate: 'To Date must be equal to or after From Date.' }));
+            }
+          }}
+          className={`w-[150%] border rounded-md p-2 focus:outline-none focus:ring ${errors.toDate ? 'border-red-500' : 'border-gray-300'}`}
+          dateFormat="dd/MM/yyyy" // Change the format as per your requirement
+          placeholderText="Select To Date"
+          // Format display value
+          value={toDate}
+        />
+      </div>
+
+      
         </div>
 
         {/* Half-Day Options */}
@@ -555,8 +598,8 @@ import 'react-toastify/dist/ReactToastify.css';
       <div className="w-[48%] p-4 bg-slate-100 shadow-md rounded-md flex flex-col justify-between">
       <h2 className="text-2xl font-bold mb-4">Permission Form</h2>
       <div>
-        <div className="flex justify-between mb-4 ">
-          <div className="w-[50%]">
+        <div className="flex justify-between mb-4 w-[50%] ">
+        {/* <div className="w-[50%]">
             <label className="block text-gray-700 mb-1">Permission Date</label>
             <input
               type="date"
@@ -565,7 +608,27 @@ import 'react-toastify/dist/ReactToastify.css';
               onChange={(e) => setPermissionDate(e.target.value)}
             />
             {permissionErrors.date && <p className="text-red-500 text-xs">{permissionErrors.date}</p>}
-          </div>
+          </div> */}
+          <div className="w-[50%]">
+      <label className="block text-gray-700 mb-1">Permission Date</label>
+      <DatePicker
+        selected={permissionDate}
+        onChange={(date) => {
+          setPermissionDate(formatDate(date));
+          setPermissionsErrors((prev) => ({ ...prev, date: '' })); // Reset errors
+          if (!date) {
+            setPermissionsErrors((prev) => ({ ...prev, date: 'Permission Date is required.' }));
+          }
+        }}
+        className={`w-full border ${permissionErrors.date ? 'border-red-500' : 'border-gray-300'} rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500`}
+        dateFormat="dd/MM/yyyy" // Change the format as per your requirement
+        placeholderText="Select Permission Date"
+        // Use the formatDate function to display the formatted value
+        value={permissionDate}
+      />
+      {permissionErrors.date && <p className="text-red-500 text-xs">{permissionErrors.date}</p>}
+    </div>
+
         </div>
 
         <div className="flex justify-between mb-4">
