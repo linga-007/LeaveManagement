@@ -239,7 +239,8 @@ const AcceptLeave = async (req, res) => {
                 await leave.save();
             }
             const filePath = path.join(__dirname, "../view/accept.html");
-            Accepted('mohammedashif.a2022cse@sece.ac.in')
+            const emp = await EmpModel.findOne(leave.empId)
+            Accepted(emp.empMail)
             res.sendFile(filePath);
         }
     } catch (error) {
@@ -321,7 +322,8 @@ const Accept = async (req, res) => {
             leave.status = 'Approved';
             await leave.save();
             console.log("done ")
-            Accepted('mohammedashif.a2022cse@sece.ac.in')
+            const emp = await EmpModel.findOne(leave.empId)
+            Accepted(emp.empMail)
             res.status(200).json({ message: 'Leave approved successfully', leave });
         }
     } catch (error) {
@@ -351,7 +353,8 @@ const DenyLeave = async (req, res) => {
             leave.status = 'Denied';
             await leave.save();
             const filePath = path.join(__dirname, "../view/reject.html");
-            Rejected('mohammedashif.a2022cse@sece.ac.in')
+            const emp = await EmpModel.findOne(leave.empId)
+            Rejected(emp.empMail)
             res.sendFile(filePath);
         }
     } catch (error) {
@@ -370,9 +373,9 @@ const Deny = async (req, res) => {
 
         leave.status = 'Denied';
         await leave.save();
-
+        const emp = await EmpModel.findOne(leave.empId)
+        Rejected(emp.empMail)
         res.status(200).json({ message: 'Leave denied successfully', leave });
-        Rejected('mohammedashif.a2022cse@sece.ac.in')
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }

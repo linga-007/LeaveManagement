@@ -10,7 +10,7 @@ const { PaternityLeave } = require('../models/paternityLeaveSchema');
 // Signup
 const Register = async (req, res) => {
     try {
-        const { empId, empName, role, designation, reportionManager, dateOfJoining, function: empFunction, department, level, location, isPaternity, permissionEligible, permissionAvailed } = req.body;
+        const { empId, empName, empMail, role, designation, reportionManager, dateOfJoining, function: empFunction, department, level, location, isPaternity, permissionEligible, permissionAvailed } = req.body;
 
         // Check if employee already exists
         const existingEmployee = await EmpModel.findOne({ empId });
@@ -22,6 +22,7 @@ const Register = async (req, res) => {
         const newEmployee = new EmpModel({
             empId,
             empName,
+            empMail,
             role,
             designation,
             reportionManager,
@@ -128,7 +129,7 @@ const RFIDLogin = async(req,res) =>{
         }
 
         // Generate JWT token
-        const token = jwt.sign({ empId: employee.empId, role: employee.role, empName: employee.empName }, process.env.SECRET, { expiresIn: '1h' });
+        const token = jwt.sign({ empId: employee.empId, role: employee.role, empName: employee.empName, empMail: employee.empMail, managerMail: employee.reportionManager}, process.env.SECRET, { expiresIn: '1h' });
 
         res.status(200).json({ message: 'Login successful', token });
     } catch (error) {
