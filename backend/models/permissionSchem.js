@@ -29,7 +29,7 @@ const schema = new db.Schema(
         },
         hrs: {
             type: Number,
-            min: 0,
+            min: 1,
             max: 2
         },
         reason: {

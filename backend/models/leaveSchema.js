@@ -17,7 +17,7 @@ const schema = new db.Schema(
         },
         leaveType: {
             type: String,
-            enum: ['Casual Leave', 'privilege Leave', 'Paternity Leave'],
+            enum: ['Casual Leave', 'Privilege Leave', 'Paternity Leave'],
             default: 'Casual Leave'
         },
         from: {
@@ -44,12 +44,12 @@ const schema = new db.Schema(
         status: {
             type: String,
             required: true,
-            enum: ['Pending', 'Approved', 'Denied'],
+            enum: ['Pending', 'Approved', 'Denied', 'Withdrawn'],
             default: 'Pending'
         },
-        isLOP: {
-            type: Boolean,
-            default: false
+        LOP: {
+            type: Number,
+            default: 0
         }
     },
     {
