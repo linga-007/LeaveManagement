@@ -1,4 +1,5 @@
 const { EmpModel } = require('../models/employeeSchema');
+const { LeaveModel } = require('../models/leaveSchema');
 const { PermissionModel } = require('../models/permissionSchem'); // Replace with the correct path
 const { Accepted, Rejected } = require('../utils/AdminResponseLeave')
 
@@ -131,6 +132,31 @@ const Deny = async (req, res) => {
         res.status(500).json({ message: 'Server error', error });
     }
 }
+const checkPermission = async(req, res) => {
+    try{
+        const { empId, date } = req.body;
+        const data = await LeaveModel.find({empId: empId, "from.date": date});
+        if(data.length){
+            return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
+        }
+        else{
+            const emp = await EmpModel.findOne({empId})
+            if(!emp){
+                return res.status(404).json({ message: 'Employee not found' });
+            }
+            if(hrs <= emp.permissionEligible){
+                res.status(200).json({ message: 'Permission can be availed'})
+            }
+            else{
+                res.status(203).json({ message: 'Permission limit exceeded'})
+            }
+        }
+    }
+    catch(err){
+        res.status(500).json({ message: 'Server error', error });
+    }
+}
+
 
 // Get permissions granted to a particular employee
 const GetPermission = async (req, res) => {
