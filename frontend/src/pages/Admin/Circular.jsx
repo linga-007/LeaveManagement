@@ -107,12 +107,15 @@ export const Circular = () => {
         </div>
 
         {/* Toggle Button */}
+        <div  className="flex justify-center">
         <button
           className="fixed bottom-10 right-4 bg-blue-500 text-white p-2 rounded-md shadow-lg"
           onClick={toggleChat}
         >
           Circular
         </button>
+        </div>
+      
 
         {/* Chat Panel */}
         <div
@@ -121,8 +124,8 @@ export const Circular = () => {
           }`}
         >
           {/* Chat Header */}
-          <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="text-lg font-semibold">Messaging</h3>
+          <div className="flex items-center justify-between  p-4 border-b">
+            <h3 className="text-lg font-semibold">Compose circular</h3>
             <button
               className="text-gray-500 hover:text-gray-700"
               onClick={toggleChat}
