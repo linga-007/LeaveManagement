@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import {jwtDecode} from 'jwt-decode';
+import { jwtDecode } from 'jwt-decode';
 import GVR from '../../../images/GVRLogo.png';
 import userImg from '../../../images/profile.png';
 import { useNavigate } from 'react-router-dom';
@@ -23,7 +23,7 @@ function Nav() {
             "Content-Type": "application/json",
           },
         });
-        
+
         if(res.status === 401){
           console.log("yes")
           navigate('/thank-you')
@@ -63,39 +63,39 @@ function Nav() {
               <img src={userImg} alt="User" className='h-10' />
             </button>
             {isDropdownOpen && (
-              <div className='absolute right-0  w-80 bg-white shadow-lg rounded-lg p-4 z-50'>
-                <div className='flex flex-col '>
+              <div className='absolute right-0  bg-white shadow-lg rounded-lg p-4 z-50'>
+                <div className='flex flex-col'>
                   
                   <h1 className='text-xl font-bold'>{userDetails.empName}</h1>
-                  <table className=' text-gray-700 mt-2'>
+                  <table className='text-gray-700 mt-2 w-full break-words'>
                     <tbody>
                       <tr>
-                        <td className='font-semibold'>Designation:</td>
-                        <td>{userDetails.designation}</td>
+                        <td className='font-semibold w-32'>Designation:</td>
+                        <td className='break-words'>{userDetails.designation}</td>
                       </tr>
                       <tr>
-                        <td className='font-semibold'>Reporting Manager:</td>
-                        <td>{userDetails.reportionManager}</td>
+                        <td className='font-semibold w-32'>Reporting Manager:</td>
+                        <td className='break-words'>{userDetails.reportionManager}</td>
                       </tr>
                       <tr>
-                        <td className='font-semibold'>DOJ:</td>
+                        <td className='font-semibold w-32'>DOJ:</td>
                         <td>{userDetails.dateOfJoining}</td>
                       </tr>
                       <tr>
-                        <td className='font-semibold'>Function:</td>
-                        <td>{userDetails.function}</td>
+                        <td className='font-semibold w-32'>Function:</td>
+                        <td className='break-words'>{userDetails.function}</td>
                       </tr>
                       <tr>
-                        <td className='font-semibold'>Department:</td>
-                        <td>{userDetails.department}</td>
+                        <td className='font-semibold w-32'>Department:</td>
+                        <td className='break-words'>{userDetails.department}</td>
                       </tr>
                       <tr>
-                        <td className='font-semibold'>Band/Level:</td>
-                        <td>{userDetails.level}</td>
+                        <td className='font-semibold w-32'>Band/Level:</td>
+                        <td className='break-words'>{userDetails.level}</td>
                       </tr>
                       <tr>
-                        <td className='font-semibold'>Location:</td>
-                        <td>{userDetails.location}</td>
+                        <td className='font-semibold w-32'>Location:</td>
+                        <td className='break-words'>{userDetails.location}</td>
                       </tr>
                     </tbody>
                   </table>

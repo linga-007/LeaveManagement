@@ -10,7 +10,7 @@ const { Accepted, Rejected } = require('../utils/AdminResponseLeave')
 const ApplyLeave = async (req, res) => {
     try {
         console.log(req.body)
-        const { empId, leaveType, from, to, numberOfDays, reason, LOP } = req.body;
+        const { empId, leaveType, from, to, numberOfDays, reasonType, reason, LOP } = req.body;
 
         const emp = await EmpModel.findOne({empId});
 
@@ -21,7 +21,6 @@ const ApplyLeave = async (req, res) => {
         if(emp.role === "3P"){
             if(leaveType === "Casual Leave"){
                 const cl = await CasualLeave.findOne({empId})
-                if(cl.availed < 1){
                     const leave = new LeaveModel({
                         empId,
                         empName: emp.empName,
@@ -36,11 +35,9 @@ const ApplyLeave = async (req, res) => {
                     })
                     await leave.save()
                     res.status(201).json({ message: 'Leave applied successfully', leave });
-                }
             }
             else if(leaveType === "Paternity Leave" && emp.isPaternity){
                 const pl = await PaternityLeave.findOne({empId})
-                if(pl.availed < 5){
                     const leave = new LeaveModel({
                         empId,
                         empName: emp.empName,
@@ -55,7 +52,6 @@ const ApplyLeave = async (req, res) => {
                     })
                     await leave.save()
                     res.status(201).json({ message: 'Leave applied successfully', leave });
-                }
             }
             else{
                 return res.status(400).json({ message: 'Permission Denied to Apply Leave' });
@@ -64,7 +60,6 @@ const ApplyLeave = async (req, res) => {
         else{
             if(leaveType === "Casual Leave"){
                 const cl = await CasualLeave.findOne({empId})
-                if(cl.availed < 10){
                     const leave = new LeaveModel({
                         empId,
                         empName: emp.empName,
@@ -79,7 +74,6 @@ const ApplyLeave = async (req, res) => {
                     })
                     await leave.save()
                     res.status(201).json({ message: 'Leave applied successfully', leave });
-                }
             }
             else if(leaveType === "Privelage Leave"){
                 const pl = await PrivelageLeave.findOne({empId})
@@ -102,7 +96,6 @@ const ApplyLeave = async (req, res) => {
             }
             else if(leaveType === "Paternity Leave" && emp.isPaternity){
                 const pl = await PaternityLeave.findOne({empId})
-                if(pl.availed < 5){
                     const leave = new LeaveModel({
                         empId,
                         empName: emp.empName,
@@ -117,7 +110,6 @@ const ApplyLeave = async (req, res) => {
                     })
                     await leave.save()
                     res.status(201).json({ message: 'Leave applied successfully', leave });
-                }
             }
             else{
                 return res.status(400).json({ message: 'Permission Denied to Apply Leave' });
@@ -368,17 +360,17 @@ const checkLeave = async(req, res) => {
         const { empId, role, leaveType, from, numberOfDays } = req.body
         // console.log(from.firstHalf)
         if(from.firstHalf === true){
-            const data = await LeaveModel.find({empId: empId, "from.date": from.date, "from.first-half": true})
+            const data = await LeaveModel.find({empId: empId, "from.date": from.date, "from.firstHalf": true})
             console.log(data.length)
             console.log(data)
             if(data.length){
-                return res.status(300).json({ mesasage: "Already leave had applied in the same day" })
+                return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
             }
         }
         else if(from.secondHalf === true){
-            const data = await LeaveModel.findOne({empId: empId, "from.date": from.date, "from.second-half": true})
+            const data = await LeaveModel.findOne({empId: empId, "from.date": from.date, "from.secondHalf": true})
             if(data){
-                return res.status(300).json({ mesasage: "Already leave had applied in the same day" })
+                return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
             }
         }
 

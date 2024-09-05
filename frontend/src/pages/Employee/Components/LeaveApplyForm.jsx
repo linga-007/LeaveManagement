@@ -46,6 +46,7 @@ import LeaveNotification from './LeaveNotification';
     const [leaveDescription, setLeaveDescription] = useState("");
     const [isAppliedLeave , setIsAppliedLeave] = useState(false)
     const [isPermission , setIsPermission] = useState(false)
+    const [summary,setSummary] = useState({})
 
 
     const [isLOP, setIsLOP] = useState(false);
@@ -176,25 +177,29 @@ import LeaveNotification from './LeaveNotification';
 
 
     const handleConfirm = async() => {
-      console.log("check")
+  
       try {
         const res = await axios.post(
-          "http://localhost:5000/leave/applyLOP",
+          "http://localhost:5000/leave/apply",
           {
             "empId": decodedToken.empId,
+            "empName": decodedToken.empName,
+            "role": decodedToken.role,
             "leaveType": leaveType,
             "from": {
-                "date": fromDate.toLocaleDateString('en-GB'),
-                "first-half": fromFirstHalf,
-                "second-half" : fromSecondHalf
+                "date": "10-10-24",
+                "firstHalf": false,
+                "secondHalf": true
             },
             "to": {
-                "date": toDate.toLocaleDateString('en-GB'),
-                "first-half": toFirstHalf,
-                "second-half": toSecondHalf
+                "date": "12-10-24",
+                "firstHalf": true,
+                "secondHalf": false
             },
-            "numberOfDays": numberOfDays,
-            "reason": "Personal"
+            "numberOfDays": 1,
+            "reasonType": "Family Function",
+            "reason": "sample function",
+            "LOP": 1
         },
           {
             headers: {
@@ -203,7 +208,7 @@ import LeaveNotification from './LeaveNotification';
             },
           }
         );
-       
+        console.log("ksdhfgiyrsgbrwnh")
         if(res.status === 201){
           toast.success("Leave Requested Successfully")
         }
@@ -255,17 +260,18 @@ import LeaveNotification from './LeaveNotification';
             "leaveType": leaveType,
             "from": {
                 "date": fromDate.toLocaleDateString('en-GB'),
-                "first-half": fromFirstHalf,
-                "second-half" : fromSecondHalf
+                "firstHalf": !fromFirstHalf && !fromSecondHalf?true:fromFirstHalf ,
+                "secondHalf": !fromFirstHalf && !fromSecondHalf?true:fromSecondHalf
             },
             "to": {
                 "date": toDate.toLocaleDateString('en-GB'),
-                "first-half": toFirstHalf,
-                "second-half": toSecondHalf
+                "firstHalf": !fromFirstHalf && !fromSecondHalf?true:fromFirstHalf ,
+                "secondHalf": !fromFirstHalf && !fromSecondHalf?true:fromSecondHalf
             },
-            "numberOfDays": numberOfDays,
+            "numberOfDays": leaveType === "Casual Leave"?summary.CL:leaveType === "privilege Leave"?summary.PL:summary.Paternity,
             "reasonType":leaveReason ,
-            "reason" : leaveDescription
+            "reason" : leaveDescription,
+            "LOP":summary.LOP
         },
           {
             headers: {
@@ -278,19 +284,17 @@ import LeaveNotification from './LeaveNotification';
         if(res.status === 201){
           toast.success("Leave Request sent Successfully")
         }
-  
-        if(res.status === 202){
-          setIsLOP(!isLOP);
-          console.log(isLOP)
-        }else{
+
           var data = res.data;
           console.log("data",data)
+          setIsLOP(false)
+          setIsAppliedLeave(!isAppliedLeave)
           setLeaveId(data.leave._id)
           sendLeaveEmail(data.leave._id,"false");      
           
           console.log("data", res.data);
-          setIsAppliedLeave(!isAppliedLeave)
-        }
+         
+
  
       } catch (error) {
         console.error("Error Leave Apply", error);
@@ -438,6 +442,44 @@ import LeaveNotification from './LeaveNotification';
       }
     }
 
+    const handleLOP = ()=>{
+      setIsLOP(!isLOP);
+      setIsAppliedLeave(!isAppliedLeave)
+    }
+
+    const checkLeave = async()=>{
+      try{
+        const res =await axios.post("http://localhost:5000/leave/checkLeave",{
+          "empId": decodedToken.empId,
+          "role": decodedToken.role,
+          "leaveType": leaveType,
+          "from": {
+              "date": fromDate,
+              "firstHalf": !fromFirstHalf && !fromSecondHalf?true:fromFirstHalf ,
+              "secondHalf": !fromFirstHalf && !fromSecondHalf?true:fromSecondHalf
+          },
+          "numberOfDays":numberOfDays
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+ 
+      if(res.status === 202){
+        toast.error("Date is Already Applied")
+      }else{
+        setSummary(res.data);
+        handleLOP();
+      }
+ 
+      }catch(e){
+       toast.error("Somthing went wrong")
+      }
+    }
+
 
     const formatDate = (date) => {
       if (!date) return '';
@@ -512,7 +554,11 @@ import LeaveNotification from './LeaveNotification';
     const day = date.getDay();
     return day !== 0 && day !== 6; // Disable weekends
   }}
-  className={`w-[150%] border rounded-md p-2 focus:outline-none focus:ring ${errors.fromDate ? 'border-red-500' : 'border-gray-300'}`}
+  minDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+  maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0)} // Last day of next month
+  className={`w-[150%] border rounded-md p-2 focus:outline-none focus:ring ${
+    errors.fromDate ? 'border-red-500' : 'border-gray-300'
+  }`}
   dateFormat="dd/MM/yyyy"
   placeholderText="Select From Date"
 />
@@ -543,6 +589,8 @@ import LeaveNotification from './LeaveNotification';
     
     return isWeekend && sameMonth; // Return only if it's a valid day and in the same month
   }}
+  minDate={fromDate}
+  maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0)}
   className={`w-[150%] border rounded-md p-2 focus:outline-none focus:ring ${errors.toDate ? 'border-red-500' : 'border-gray-300'}`}
   dateFormat="dd/MM/yyyy"
   placeholderText="Select To Date"
@@ -735,15 +783,15 @@ import LeaveNotification from './LeaveNotification';
     </div>
       {isLOP && (
        <LeaveNotification
-      casualLeaveDays={10} 
-      lopDays={5} 
+      casualLeaveDays={leaveType === "Casual Leave"?summary.CL:leaveType === "privilege Leave"?summary.PL:summary.Paternity} 
+      lopDays={summary.LOP} 
       handleCancel={handleCancel} 
       handleConfirm={handleConfirm} 
     />
       )}
 
       {/* Confirmation Popup */}
-      { !isLOP && isAppliedLeave ? (
+      {  isAppliedLeave ? (
         <ConfirmLeave
           fromDate={fromDate.toLocaleDateString('en-GB')}
           toDate={toDate.toLocaleDateString('en-GB')}
@@ -752,7 +800,7 @@ import LeaveNotification from './LeaveNotification';
           leaveDescription={leaveDescription}
           onClose={setIsAppliedLeave}
           numberOfDays={numberOfDays}
-          applyLeave={applyLeave}
+          applyLeave={checkLeave}
         />
       ) : null}
       {/* <ConfirmPermission/> */}
