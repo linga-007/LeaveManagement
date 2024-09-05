@@ -11,6 +11,11 @@ const schema = new db.Schema(
             type: String,
             required: true
         },
+        empMail: {
+            type: String,
+            required: true,
+            unique: true
+        },
         role: {
             type: String,
             enum: ['Admin', 'Manager', '3P', 'GVR'],
