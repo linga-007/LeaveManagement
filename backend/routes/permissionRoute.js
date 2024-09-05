@@ -1,7 +1,8 @@
 const router = require('express').Router();
-const {ApplyPermission,AcceptPermission,Accept,DenyPermission,Deny,GetPermission} = require('../controllers/permissionController');
+const {checkPermission,ApplyPermission,AcceptPermission,Accept,DenyPermission,Deny,GetPermission} = require('../controllers/permissionController');
 const checkUser = require('../middleware/auth')
 
+router.post('/checkPermission', checkUser, checkPermission)
 router.post('/apply', checkUser, ApplyPermission)
 router.get('/accept/:permissionId', AcceptPermission)
 router.get('/deny/:permissionId',DenyPermission)
