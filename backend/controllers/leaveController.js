@@ -364,13 +364,13 @@ const checkLeave = async(req, res) => {
             console.log(data.length)
             console.log(data)
             if(data.length){
-                return res.status(300).json({ mesasage: "Already leave had applied in the same day" })
+                return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
             }
         }
         else if(from.secondHalf === true){
             const data = await LeaveModel.findOne({empId: empId, "from.date": from.date, "from.secondHalf": true})
             if(data){
-                return res.status(300).json({ mesasage: "Already leave had applied in the same day" })
+                return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
             }
         }
 

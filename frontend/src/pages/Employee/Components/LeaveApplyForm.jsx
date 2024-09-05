@@ -19,6 +19,7 @@
 
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
+import LeaveNotification from './LeaveNotification';
 
   dayjs.extend(duration);
 
@@ -36,16 +37,16 @@ import 'react-toastify/dist/ReactToastify.css';
 
     const [leaveType, setLeaveType] = useState("Casual Leave");
     const [leaveReason, setLeaveReason] = useState("Personal");
-    const [selectedOption, setSelectedOption] = useState('Leave Application');
     const [permissionDate,setPermissionDate] = useState("");
     const [fromTime, setFromTime] = useState(dayjs()); 
-    const [toTime, setToTime] = useState(dayjs().add(10,"minute"));
+    const [toTime, setToTime] = useState(dayjs().add(1,"hour"));
     const [permissionReason,setPermissionReason] = useState("") 
     const [numberOfDays, setNumberOfDays] = useState(0);
     const [leaveId,setLeaveId] = useState("");
     const [leaveDescription, setLeaveDescription] = useState("");
     const [isAppliedLeave , setIsAppliedLeave] = useState(false)
     const [isPermission , setIsPermission] = useState(false)
+    const [summary,setSummary] = useState({})
 
 
     const [isLOP, setIsLOP] = useState(false);
@@ -55,6 +56,7 @@ import 'react-toastify/dist/ReactToastify.css';
       fromDate: '',
       toDate: '',
       leaveDescription: '',
+      privilegeLeave:''
     });
 
     const [permissionErrors, setPermissionsErrors] = useState({
@@ -62,6 +64,7 @@ import 'react-toastify/dist/ReactToastify.css';
       fromTime: '',
       toTime: '',
       reason: '',
+      maxTime:''
     });
 
 
@@ -72,29 +75,38 @@ import 'react-toastify/dist/ReactToastify.css';
         fromDate: '',
         toDate: '',
         leaveDescription: '',
+        privilegeLeave: ''
       };
-  
-     
+
+      console.log("loglog")
+    
+      // Basic validations
       if (!leaveType) newErrors.leaveType = 'Enter a value';
       if (!leaveReason) newErrors.leaveReason = 'Enter a value';
       if (!fromDate) newErrors.fromDate = 'Enter a value';
       if (!toDate) newErrors.toDate = 'Enter a value';
       if (!leaveDescription) newErrors.leaveDescription = 'Enter a value';
-  
- 
+    
+      // Check if leaveType is 'privilege Leave' and if the number of days is less than 3
+      const numberOfDays = dayjs(toDate).diff(dayjs(fromDate), 'day') + 1;
+      if (leaveType === 'privilege Leave' && numberOfDays < 3) {
+        newErrors.privilegeLeave = 'Privilege Leave requires at least 3 days.';
+      }
+      console.log("check",numberOfDays)
+    
       setErrors(newErrors);
-  
+    
       const hasErrors = Object.values(newErrors).some((error) => error);
-
+    
+      // Proceed only if no errors
       if (!hasErrors) {
         handleAppliedLeave(!isAppliedLeave); 
       }
     };
-
   
   
     const permissionFieldValidation = () => {
-      let newErrors = { date: '', fromTime: '', toTime: '', reason: '' };
+      let newErrors = { date: '', fromTime: '', toTime: '', reason: '' ,maxTime:''};
   
       if (!permissionDate) {
         newErrors.date = 'Enter a value';
@@ -107,6 +119,9 @@ import 'react-toastify/dist/ReactToastify.css';
       }
       if (!permissionReason) {
         newErrors.reason = 'Enter a value';
+      }
+      if(dayjs.duration(toTime.diff(fromTime)).asHours()<0 || !(dayjs.duration(toTime.diff(fromTime)).asHours()>=1 )|| !(dayjs.duration(toTime.diff(fromTime)).asHours()<=2) ){
+        newErrors.maxTime = 'Enter a proper Time';
       }
       const hasErrors = Object.values(newErrors).some((error) => error);
       if (Object.values(newErrors).some((error) => error)) {
@@ -157,30 +172,34 @@ import 'react-toastify/dist/ReactToastify.css';
     const isTimeExceeding = () => {
       const timeDifference = dayjs.duration(toTime.diff(fromTime)).asHours();
       console.log("time Difference",timeDifference)
-      return timeDifference > 4;
+      return timeDifference > 2;
   };
 
 
     const handleConfirm = async() => {
-      console.log("check")
+  
       try {
         const res = await axios.post(
-          "http://localhost:5000/leave/applyLOP",
+          "http://localhost:5000/leave/apply",
           {
             "empId": decodedToken.empId,
+            "empName": decodedToken.empName,
+            "role": decodedToken.role,
             "leaveType": leaveType,
             "from": {
-                "date": fromDate,
-                "first-half": fromFirstHalf,
-                "second-half" : fromSecondHalf
+                "date": "10-10-24",
+                "firstHalf": false,
+                "secondHalf": true
             },
             "to": {
-                "date": toDate,
-                "first-half": toFirstHalf,
-                "second-half": toSecondHalf
+                "date": "12-10-24",
+                "firstHalf": true,
+                "secondHalf": false
             },
-            "numberOfDays": numberOfDays,
-            "reason": "Personal"
+            "numberOfDays": 1,
+            "reasonType": "Family Function",
+            "reason": "sample function",
+            "LOP": 1
         },
           {
             headers: {
@@ -189,7 +208,7 @@ import 'react-toastify/dist/ReactToastify.css';
             },
           }
         );
-       
+        console.log("ksdhfgiyrsgbrwnh")
         if(res.status === 201){
           toast.success("Leave Requested Successfully")
         }
@@ -240,18 +259,19 @@ import 'react-toastify/dist/ReactToastify.css';
             "empId": decodedToken.empId,
             "leaveType": leaveType,
             "from": {
-                "date": fromDate,
-                "first-half": fromFirstHalf,
-                "second-half" : fromSecondHalf
+                "date": fromDate.toLocaleDateString('en-GB'),
+                "firstHalf": !fromFirstHalf && !fromSecondHalf?true:fromFirstHalf ,
+                "secondHalf": !fromFirstHalf && !fromSecondHalf?true:fromSecondHalf
             },
             "to": {
-                "date": toDate,
-                "first-half": toFirstHalf,
-                "second-half": toSecondHalf
+                "date": toDate.toLocaleDateString('en-GB'),
+                "firstHalf": !fromFirstHalf && !fromSecondHalf?true:fromFirstHalf ,
+                "secondHalf": !fromFirstHalf && !fromSecondHalf?true:fromSecondHalf
             },
-            "numberOfDays": numberOfDays,
+            "numberOfDays": leaveType === "Casual Leave"?summary.CL:leaveType === "privilege Leave"?summary.PL:summary.Paternity,
             "reasonType":leaveReason ,
-            "reason" : leaveDescription
+            "reason" : leaveDescription,
+            "LOP":summary.LOP
         },
           {
             headers: {
@@ -264,19 +284,17 @@ import 'react-toastify/dist/ReactToastify.css';
         if(res.status === 201){
           toast.success("Leave Request sent Successfully")
         }
-  
-        if(res.status === 202){
-          setIsLOP(!isLOP);
-          console.log(isLOP)
-        }else{
+
           var data = res.data;
           console.log("data",data)
+          setIsLOP(false)
+          setIsAppliedLeave(!isAppliedLeave)
           setLeaveId(data.leave._id)
           sendLeaveEmail(data.leave._id,"false");      
           
           console.log("data", res.data);
-          setIsAppliedLeave(!isAppliedLeave)
-        }
+         
+
  
       } catch (error) {
         console.error("Error Leave Apply", error);
@@ -298,8 +316,8 @@ import 'react-toastify/dist/ReactToastify.css';
       <EmailTemplate
       empId={decodedToken.empId}
       leaveType={leaveType}
-      fromDate={fromDate}
-      toDate={toDate}
+      fromDate={fromDate.toLocaleDateString('en-GB')}
+      toDate={toDate.toLocaleDateString('en-GB')}
       leaveReason={leaveReason}
       fromDay={fromDay}
       toDay={toDay}
@@ -424,6 +442,44 @@ import 'react-toastify/dist/ReactToastify.css';
       }
     }
 
+    const handleLOP = ()=>{
+      setIsLOP(!isLOP);
+      setIsAppliedLeave(!isAppliedLeave)
+    }
+
+    const checkLeave = async()=>{
+      try{
+        const res =await axios.post("http://localhost:5000/leave/checkLeave",{
+          "empId": decodedToken.empId,
+          "role": decodedToken.role,
+          "leaveType": leaveType,
+          "from": {
+              "date": fromDate,
+              "firstHalf": !fromFirstHalf && !fromSecondHalf?true:fromFirstHalf ,
+              "secondHalf": !fromFirstHalf && !fromSecondHalf?true:fromSecondHalf
+          },
+          "numberOfDays":numberOfDays
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    )
+ 
+      if(res.status === 202){
+        toast.error("Date is Already Applied")
+      }else{
+        setSummary(res.data);
+        handleLOP();
+      }
+ 
+      }catch(e){
+       toast.error("Somthing went wrong")
+      }
+    }
+
 
     const formatDate = (date) => {
       if (!date) return '';
@@ -480,50 +536,65 @@ import 'react-toastify/dist/ReactToastify.css';
         <div className="flex justify-between mb-4">
 
 
-        <div className="w-[48%]">
+        <div className="w-[48%] ">
         <label className="flex items-center justify-between text-gray-700 mb-1">
-          From Date: {errors.fromDate && <p className="text-red-500 text-sm">{errors.fromDate}</p>}
+          From Date: {(errors.fromDate || errors.privilegeLeave) && <p className="text-red-500 text-sm">{errors.fromDate || errors.privilegeLeave}</p>}
         </label>
         <DatePicker
-          selected={fromDate}
-          onChange={(date) => {
-            setFromDate(formatDate(date));
-            setToDate(date); // Set toDate to fromDate directly
-            setErrors((prev) => ({ ...prev, fromDate: '', toDate: '' })); // Reset errors
-            if (!date) {
-              setErrors((prev) => ({ ...prev, fromDate: 'From Date is required.' }));
-            }
-          }}
-          className={`w-[150%] border rounded-md p-2 focus:outline-none focus:ring ${errors.fromDate ? 'border-red-500' : 'border-gray-300'}`}
-          dateFormat="dd/MM/yyyy" // Change the format as per your requirement
-          placeholderText="Select From Date"
-          // Format display value
-          value={fromDate}
-        />
+  selected={fromDate}
+  onChange={(date) => {
+    setFromDate(date);
+    setToDate(date); // Set toDate to fromDate when fromDate changes
+    setErrors((prev) => ({ ...prev, fromDate: '', toDate: '' })); // Reset errors
+    if (!date) {
+      setErrors((prev) => ({ ...prev, fromDate: 'From Date is required.' }));
+    }
+  }}
+  filterDate={(date) => {
+    const day = date.getDay();
+    return day !== 0 && day !== 6; // Disable weekends
+  }}
+  minDate={new Date(new Date().setDate(new Date().getDate() - 1))}
+  maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0)} // Last day of next month
+  className={`w-[150%] border rounded-md p-2 focus:outline-none focus:ring ${
+    errors.fromDate ? 'border-red-500' : 'border-gray-300'
+  }`}
+  dateFormat="dd/MM/yyyy"
+  placeholderText="Select From Date"
+/>
       </div>
-
-
 
 
      <div className="w-[48%]">
         <label className="text-gray-700 mb-1 flex items-center justify-between">
-          To Date: {errors.toDate && <p className="text-red-500 text-sm">{errors.toDate}</p>}
+          To Date: {errors.toDate || errors.privilegeLeave && <p className="text-red-500 text-sm">{errors.toDate || errors.privilegeLeave}</p>}
         </label>
         <DatePicker
-          selected={toDate}
-          onChange={(date) => {
-            setToDate(formatDate(date));
-            setErrors((prev) => ({ ...prev, toDate: '', fromDate: '' })); // Reset errors
-            if (fromDate && date && new Date(date) < new Date(fromDate)) {
-              setErrors((prev) => ({ ...prev, toDate: 'To Date must be equal to or after From Date.' }));
-            }
-          }}
-          className={`w-[150%] border rounded-md p-2 focus:outline-none focus:ring ${errors.toDate ? 'border-red-500' : 'border-gray-300'}`}
-          dateFormat="dd/MM/yyyy" // Change the format as per your requirement
-          placeholderText="Select To Date"
-          // Format display value
-          value={toDate}
-        />
+  selected={toDate}
+  onChange={(date) => {
+    setToDate(date);
+    setErrors((prev) => ({ ...prev, toDate: '', fromDate: '' })); // Reset errors
+
+    // Ensure that To Date is after or equal to From Date
+    if (fromDate && date && new Date(date) < new Date(fromDate)) {
+      setErrors((prev) => ({ ...prev, toDate: 'To Date must be equal to or after From Date.' }));
+    }
+  }}
+  filterDate={(date) => {
+    const day = date.getDay();
+    const isWeekend = day !== 0 && day !== 6; // Disable weekends
+
+    // Ensure the date is in the same month as fromDate
+    const sameMonth = fromDate && date.getMonth() === fromDate.getMonth();
+    
+    return isWeekend && sameMonth; // Return only if it's a valid day and in the same month
+  }}
+  minDate={fromDate}
+  maxDate={new Date(new Date().getFullYear(), new Date().getMonth() + 2, 0)}
+  className={`w-[150%] border rounded-md p-2 focus:outline-none focus:ring ${errors.toDate ? 'border-red-500' : 'border-gray-300'}`}
+  dateFormat="dd/MM/yyyy"
+  placeholderText="Select To Date"
+/>
       </div>
 
       
@@ -619,6 +690,24 @@ import 'react-toastify/dist/ReactToastify.css';
           if (!date) {
             setPermissionsErrors((prev) => ({ ...prev, date: 'Permission Date is required.' }));
           }
+
+        }}
+        filterDate={(date) => {
+          const today = new Date();
+          const dayOfWeek = today.getDay();
+          
+          // Allow today and tomorrow
+          const isToday = date.toDateString() === today.toDateString();
+          const isTomorrow = date.toDateString() === new Date(today.setDate(today.getDate() + 1)).toDateString();
+          
+          // If today is Friday, allow Monday (two days after tomorrow)
+          const isMonday = dayOfWeek === 5 && date.toDateString() === new Date(today.setDate(today.getDate() + 2)).toDateString();
+          
+          // Disable weekends (Saturday and Sunday)
+          const day = date.getDay();
+          const isWeekend = day === 0 || day === 6;
+          
+          return !isWeekend && (isToday || isTomorrow || isMonday);
         }}
         className={`w-full border ${permissionErrors.date ? 'border-red-500' : 'border-gray-300'} rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500`}
         dateFormat="dd/MM/yyyy" // Change the format as per your requirement
@@ -628,7 +717,7 @@ import 'react-toastify/dist/ReactToastify.css';
       />
       {permissionErrors.date && <p className="text-red-500 text-xs">{permissionErrors.date}</p>}
     </div>
-
+{  dayjs.duration(toTime.diff(fromTime)).asHours()}
         </div>
 
         <div className="flex justify-between mb-4">
@@ -638,6 +727,8 @@ import 'react-toastify/dist/ReactToastify.css';
               <MobileTimePicker
                 value={fromTime}
                 onChange={(newValue) => setFromTime(newValue)}
+                minTime={dayjs().set('hour', 9).set('minute', 0)}
+                maxTime={dayjs().set('hour', 17).set('minute', 0)}
                 renderInput={(params) => (
                   <input
                     {...params}
@@ -652,12 +743,18 @@ import 'react-toastify/dist/ReactToastify.css';
               <label className="block text-gray-700 mb-1">To Time</label>
               <MobileTimePicker
                 value={toTime}
-                minTime={fromTime.add(10,"minute")}
-                onChange={(newValue) => setToTime(newValue)}
+                minTime={fromTime.add(1,"hour")}
+                maxTime={fromTime.add(2,"hour")}
+                onChange={(newValue) => {setToTime(newValue)
+                  setPermissionsErrors((prev) => ({ ...prev, maxTime: '' })); 
+                  if(dayjs.duration(toTime.diff(fromTime)).asHours()<0 || !(dayjs.duration(toTime.diff(fromTime)).asHours()>=1 )|| !(dayjs.duration(toTime.diff(fromTime)).asHours()<=2) ){
+                    setPermissionsErrors((prev) => ({ ...prev, maxTime: 'Enter Proper To Time' }));
+                  }
+                }}
                 renderInput={(params) => (
                   <input
                     {...params}
-                    className={`w-full border ${permissionErrors.toTime ? 'border-red-500' : 'border-gray-300'} rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500`}
+                    className={`w-full border ${permissionErrors.toTime || permissionErrors.maxTime  ? 'border-red-500' : 'border-gray-300'} rounded-md p-2 focus:outline-none focus:ring focus:ring-blue-500`}
                   />
                 )}
               />
@@ -685,41 +782,25 @@ import 'react-toastify/dist/ReactToastify.css';
       </div>
     </div>
       {isLOP && (
-       <div className="fixed inset-0 bg-gray-800 bg-opacity-50 flex items-center justify-center z-50">
-       <div className="bg-white p-6 rounded-lg shadow-lg w-80">
-         <h2 className="text-lg font-semibold mb-4">Leave Limit Notification</h2>
-         <p className="mb-4">
-           You have crossed your leave limit. Are you sure you want to apply for Loss Of Pay (LOP)?
-         </p>
-         <div className="flex justify-end space-x-4">
-           <button
-             className="px-4 py-2 bg-red-600 text-white rounded-lg"
-             onClick={handleCancel}
-           >
-             Cancel
-           </button>
-           <button
-             className="px-4 py-2 bg-green-600 text-white rounded-lg"
-             onClick={handleConfirm}
-           >
-             Confirm
-           </button>
-         </div>
-       </div>
-     </div>
+       <LeaveNotification
+      casualLeaveDays={leaveType === "Casual Leave"?summary.CL:leaveType === "privilege Leave"?summary.PL:summary.Paternity} 
+      lopDays={summary.LOP} 
+      handleCancel={handleCancel} 
+      handleConfirm={handleConfirm} 
+    />
       )}
 
       {/* Confirmation Popup */}
-      { !isLOP && isAppliedLeave ? (
+      {  isAppliedLeave ? (
         <ConfirmLeave
-          fromDate={fromDate}
-          toDate={toDate}
+          fromDate={fromDate.toLocaleDateString('en-GB')}
+          toDate={toDate.toLocaleDateString('en-GB')}
           leaveReason={leaveReason}
           leaveType={leaveType}
           leaveDescription={leaveDescription}
           onClose={setIsAppliedLeave}
           numberOfDays={numberOfDays}
-          applyLeave={applyLeave}
+          applyLeave={checkLeave}
         />
       ) : null}
       {/* <ConfirmPermission/> */}

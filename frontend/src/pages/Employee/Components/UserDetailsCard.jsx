@@ -72,7 +72,7 @@ function Nav() {
             </button>
             {showDetails && (
               <div className='absolute mt-2 bg-white shadow-md rounded-lg p-4 text-black'>
-                <h1 className='text-xl font-bold'>{response.empName}</h1>
+                <h1 className='text-xl font-bold'>{response.empName } </h1>
                 <div className='text-sm'>
                   {title.map((val, index) => (
                     <h1 key={index}>

@@ -95,41 +95,26 @@ const AdminHome = () => {
         </div> */}
         <Nav />
         <div className="w-full h-full ">
-          <div className="w-full h-[98%] flex justify-between">
+          <div className="w-full h-[98%] flex justify-between items-center">
           <div className="w-[75%] h-full p-5 ">
             <div className="h-20px w-full flex justify-between gap-10 pb-5">
-              <div>
-                <div className=" w-64">
-                  <input
-                    type="text"
-                    value={inputValue}
-                    onChange={handleInputChange}
-                    onFocus={() => setShowDropdown(true)} // Show dropdown on focus
-                    className="w-full px-4 py-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    placeholder="Search department..."
-                  />
-                  {showDropdown && (
-                    <ul className="absolute  left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md w-[40%px] max-h-48 overflow-y-auto z-10">
-                      {filteredOptions.length ? (
-                        filteredOptions.map((option, index) => (
-                          <li
-                            key={index}
-                            className="px-4 py-2 hover:bg-gray-100 cursor-pointer"
-                            onClick={() => handleOptionClick(option)}
-                          >
-                            {option}
-                          </li>
-                        ))
-                      ) : (
-                        <li className="px-4 py-2 text-gray-500">
-                          No results found
-                        </li>
-                      )}
-                    </ul>
-                  )}
-                </div>
-              </div>
-              <div className="flex gap-5  border-2 solid p-1 radius-2px rounded-lg">
+            <div className="w-[48%]">
+            {/* <label className="block text-gray-700 mb-1">Leave Type</label> */}
+            <select
+              className={`w-full border rounded-md p-2 focus:outline-none focus:ring `}
+              // value={leaveType}
+              // onChange={(e) => setLeaveType(e.target.value)}
+            >
+              <option value="">Select Department</option>
+              <option value="Casual Leave">Casual Leave</option>
+              {decodedToken.role !== "3P" && <option value="privilege Leave">CSE</option>}
+              {decodedToken.role !== "3P" && <option value="Paternity Leave">ECE</option>}
+              {decodedToken.role !== "3P" && <option value="Paternity Leave">EEE</option>}
+              {decodedToken.role !== "3P" && <option value="Paternity Leave">MECH</option>}
+            </select>
+            {/* {errors.leaveType && <p className="text-red-500 text-sm">{errors.leaveType}</p>} */}
+          </div>
+              <div className="h-[10%]  flex gap-5  border-2 solid p-1 radius-2px rounded-lg">
                 <div
                   className={getButtonClass("Today")}
                   onClick={() => setSelected("Today")}
