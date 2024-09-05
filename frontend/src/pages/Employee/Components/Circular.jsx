@@ -1,37 +1,58 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import { useState } from 'react';
+import { jwtDecode } from 'jwt-decode';
+import axios from 'axios';
 
 function Cicular() {
-    const circulars = [
-      {
-        subject: 'Annual Report',
-        date: '2024-09-01',
-        manager: 'John Doe',
-        content: 'This is the content of the Annual Report circular.',
-      },
-      {
-        subject: 'Quarterly Meeting',
-        date: '2024-08-25',
-        manager: 'Jane Smith',
-        content: 'This is the content of the Quarterly Meeting circular.',
-      },
-      // Add more circulars here
-    ];
+
+  const token = document.cookie.split('=')[1];
+  const decodedToken = jwtDecode(token);
+  const empId = decodedToken.empId;
+
+  const [circular,setCircular] = useState([])
+
+  const formatDate = (dateString) => {
+    var [year,month,day] = dateString.split('T')[0].split('-')
+    var date = day+"-"+month+"-"+year;
+    return date; 
+  };
+  useEffect(()=>{
+    getData();
+  },[])
+  const getData = async() =>{
+    try{
+      const res = await axios.get('http://localhost:5000/circular/getAll',{
+        
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        
+      })
+      console.log(res.data)
+      setCircular(res.data)
+    }
+    catch{
+      console.log("error")
+    }
+  }
   
     return (
-      <div className='flex flex-col w-[25%] bg-white '>
+      <div className='flex flex-col w-[25%] bg-white h-full'>
           <div className='w-full text-center text-xl font-bold text-black border-2 border-white rounded-lg  bg-slate-100'>
     Circular
     </div>
-        {circulars.map((circular, index) => (
+        <div className='overflow-y-auto'>
+        {circular.map((circular, index) => (
           <CircularContainer
             key={index}
             subject={circular.subject}
-            date={circular.date}
-            manager={circular.manager}
-            content={circular.content}
+            date={formatDate(circular.createdAt)}
+            manager="Manager"
+            content={circular.message}
           />
         ))}
+        </div>
       </div>
     );
   };
@@ -59,10 +80,10 @@ const CircularContainer = ({ subject, date, manager, content }) => {
           <div className='w-full text-center text-xl font-bold text-black'>
             {subject}
           </div>
-          <div className='text-sm text-gray-500'>
+          <div className='text-sm text-gray-500 font-semibold'>
             Date: {date}
           </div>        
-          <div className='text-sm text-gray-500'>
+          <div className='text-sm text-gray-500 font-semibold'>
             Manager: {manager}
           </div>
         </div>

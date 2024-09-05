@@ -5,7 +5,7 @@ import { jwtDecode } from 'jwt-decode';
 import LeaveHistoryTable from './LeaveHistoryTable';
 import PermissionHistoryTable from './PermissionHistoryTable';
 import Nav from './Nav';
-import Cicular from './Cicular';
+import Cicular from './Circular';
 
 const History = () => {
 
