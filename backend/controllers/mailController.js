@@ -2,22 +2,22 @@ const nodemailer = require('nodemailer');
 
 const Email = async (req, res) => {
     const { email, html } = req.body;
-    console.log("heloooooooooooooooooooooooooooooooooooooo");
+    console.log("check");
 
     // Configure nodemailer transporter
     const transporter = nodemailer.createTransport({
-        service: 'gmail', // Email service provider
+        service: 'gmail', 
         auth: {
-            user: 'voiceassistantcheck@gmail.com', // Gmail address
-            pass: 'dnqmwejcqsydywhb', // Gmail app-specific password
+            user: 'voiceassistantcheck@gmail.com', 
+            pass: 'dnqmwejcqsydywhb', 
         },
     });
 
     const mailOptions = {
-        from: 'voiceassistantcheck@gmail.com', // Sender email address
-        to: email, // Recipient email address from request body
-        subject: 'Leave Request', // Subject of the email
-        html: html, // HTML content from request body
+        from: 'voiceassistantcheck@gmail.com',
+        to: email, 
+        subject: 'Leave Request', 
+        html: html, 
     };
 
     try {

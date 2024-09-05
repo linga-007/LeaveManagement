@@ -12,8 +12,6 @@ const schema = new db.Schema(
         },
         role:{
             type: String,
-
-        
             enum: ['Admin', 'Manager', '3P', 'GVR'],
             default: '3P'
         },

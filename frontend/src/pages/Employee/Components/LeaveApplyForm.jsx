@@ -316,7 +316,7 @@ import 'react-toastify/dist/ReactToastify.css';
         const response = await axios.post(
           'http://localhost:5000/mail/send',
           {
-            email: "kkishorekumar536@gmail.com",
+            email: "mohammedashif.a2022cse@sece.ac.in",
             html: emailContent,
           },
           {
