@@ -84,7 +84,7 @@ const ChatPanel = () => {
 
   return (
     <>
-      <div className="relative w-[100%] h-[85%] overflow-y-auto">
+      <div className="relative w-[100%] h-[50%] overflow-y-auto">
         <div className="p-4 w-full -auto flex-1">
           {messages.length === 0 ? (
             <p className="text-gray-600">No messages yet. Start a conversation!</p>
@@ -104,22 +104,25 @@ const ChatPanel = () => {
         </div>
 
         {/* Toggle Button */}
+        <div  className="flex justify-center">
         <button
-          className="fixed bottom-10 right-4 bg-blue-500 text-white p-2 rounded-md shadow-lg "
+          className="fixed bottom-10  bg-blue-500 text-white justify-center items-center p-2 rounded-md shadow-lg "
           onClick={toggleChat}
         >
           Circular
         </button>
+        </div>
+      
 
         {/* Chat Panel */}
         <div
-          className={`fixed bottom-16 right-4 w-80 h-96 bg-white shadow-xl rounded-lg transform transition-transform duration-300 ease-in-out ${
-            isOpen ? 'translate-y-0 opacity-100' : 'translate-y-full opacity-0'
+          className={`fixed bottom-10 right-4 w-80 h-50  bg-white shadow-xl rounded-lg transform transition-transform duration-300 ease-in-out ${
+            isOpen ? 'translate-y-0 opacity-100 ' : 'translate-y-full opacity-0'
           }`}
         >
           {/* Chat Header */}
-          <div className="flex items-center justify-between p-4 border-b">
-            <h3 className="text-lg font-semibold">Messaging</h3>
+          <div className="flex items-center justify-between  p-4 border-b">
+            <h3 className="text-lg font-semibold">Compose circular</h3>
             <button
               className="text-gray-500 hover:text-gray-700"
               onClick={toggleChat}
@@ -137,15 +140,15 @@ const ChatPanel = () => {
               placeholder="Subject"
               value={subject}
               onChange={(e) => setSubject(e.target.value)}
-              className="w-full flex-grow border rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full flex-grow border rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
       
-             <input
+             <textarea
               type="text"
               placeholder="Content"
               value={content}
               onChange={(e) => setContent(e.target.value)}
-              className="w-[100%] flex-grow border rounded-full p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="w-full flex-grow border  rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
             />
             <button
               onClick={sendCircular}
