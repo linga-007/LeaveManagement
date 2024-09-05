@@ -52,6 +52,12 @@ const ChatPanel = () => {
     }
     )
     console.log(res);
+    if(res.status === 201){
+      toggleChat();
+      getCircular();
+      console.log("got it")
+      
+    }
     }catch(e){
       console.log("Error",e)
     }
@@ -78,7 +84,7 @@ const ChatPanel = () => {
 
   return (
     <>
-      <div className="relative w-[100%]">
+      <div className="relative w-[100%] h-[85%] overflow-y-auto">
         <div className="p-4 w-full -auto flex-1">
           {messages.length === 0 ? (
             <p className="text-gray-600">No messages yet. Start a conversation!</p>
@@ -99,10 +105,10 @@ const ChatPanel = () => {
 
         {/* Toggle Button */}
         <button
-          className="fixed bottom-4 right-4 bg-blue-500 text-white p-2 rounded-full shadow-lg "
+          className="fixed bottom-10 right-4 bg-blue-500 text-white p-2 rounded-md shadow-lg "
           onClick={toggleChat}
         >
-          Chat
+          Circular
         </button>
 
         {/* Chat Panel */}

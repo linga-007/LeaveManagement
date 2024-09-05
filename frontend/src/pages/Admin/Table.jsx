@@ -2,12 +2,9 @@ import React, { useState, useEffect } from "react";
 import axios from "axios";
 import Pagination from './Pagination';
 import { MdMessage, MdClose } from 'react-icons/md';
-import {jwtDecode} from 'jwt-decode';
+import {jwtDecode} from 'jwt-decode'; // Corrected import for jwtDecode
 import { ToastContainer, toast } from 'react-toastify';
-
 import 'react-toastify/dist/ReactToastify.css';
-
-// Set root element for accessibility
 
 const Table = () => {
   const headers = [
@@ -23,6 +20,8 @@ const Table = () => {
   ];
 
   const [isPopupOpen, setPopupOpen] = useState(false);
+  const [isConfirmPopupOpen, setConfirmPopupOpen] = useState(false); // State for the confirmation popup
+  const [selectedLeaveId, setSelectedLeaveId] = useState(null); // State to track selected leave ID
 
   const token = document.cookie.split('=')[1];
   const decodedToken = jwtDecode(token);
@@ -32,19 +31,26 @@ const Table = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedReason, setSelectedReason] = useState(null);
 
-
-  const rowsPerPage = 6; // Adjust as needed
+  const rowsPerPage = 6;
   const totalPages = Math.ceil(data.length / rowsPerPage);
 
   const handlePageChange = (page) => {
     setCurrentPage(page);
   };
 
-  const handleAccept = async (id) => {
+  const handlePopup = (id) => {
+    setSelectedLeaveId(id); // Store the leave ID for the selected row
+    setConfirmPopupOpen(true); // Open the confirmation popup
+  };
+
+  const handleAccept = async () => {
+    if (!selectedLeaveId) return;
+
     try {
-      const response = await axios.post(`http://localhost:5000/leave/accept`, 
-        { leaveId: id },
-        { headers: {
+      const response = await axios.post(`http://localhost:5000/leave/accept`,
+        { leaveId: selectedLeaveId },
+        {
+          headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           }
@@ -60,7 +66,9 @@ const Table = () => {
       getData();
     } catch (error) {
       console.error('Error accepting leave:', error);
-      toast.error("not sending request")
+      toast.error("Failed to send request");
+    } finally {
+      setConfirmPopupOpen(false); // Close the confirmation popup
     }
   };
 
@@ -68,7 +76,8 @@ const Table = () => {
     try {
       const response = await axios.post(`http://localhost:5000/leave/deny`,
         { leaveId: id },
-        { headers: {
+        {
+          headers: {
             'Authorization': `Bearer ${token}`,
             'Content-Type': 'application/json',
           }
@@ -98,7 +107,7 @@ const Table = () => {
 
   const getData = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/leave/getLeave', 
+      const response = await axios.post('http://localhost:5000/leave/getLeave',
         { empId },
         {
           headers: {
@@ -168,7 +177,7 @@ const Table = () => {
                 <td className="px-4 py-2 whitespace-nowrap text-sm font-medium text-gray-900 flex flex-row gap-4">
                   <button
                     className="text-green-500 hover:text-green-700 text-2xl"
-                    onClick={() => handleAccept(row._id)}
+                    onClick={() => handlePopup(row._id)}
                   >
                     ☑
                   </button>
@@ -188,16 +197,21 @@ const Table = () => {
           totalPages={totalPages}
           onPageChange={handlePageChange}
         />
-        
       </div>
+
+      {/* Popup for displaying reason */}
       <Popup
         isOpen={isPopupOpen}
         onClose={() => setPopupOpen(false)}
         content={selectedReason}
       />
 
-      {/* Modal for displaying reason */}
-      
+      {/* Confirmation Popup */}
+      <ConfirmationPopup
+        isOpen={isConfirmPopupOpen}
+        onConfirm={handleAccept}
+        onCancel={() => setConfirmPopupOpen(false)}
+      />
     </div>
   );
 };
@@ -208,7 +222,7 @@ const Popup = ({ isOpen, onClose, content }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       {/* Overlay */}
-      <div className="absolute inset-0"></div>
+      <div className="absolute inset-0 bg-black opacity-50"></div>
 
       {/* Popup Content */}
       <div className="bg-white text-black p-6 rounded-lg shadow-lg z-10 max-w-lg w-full">
@@ -216,12 +230,12 @@ const Popup = ({ isOpen, onClose, content }) => {
           <h2 className="text-xl font-bold text-gray-900 dark:text-black">Details</h2>
           <button
             onClick={onClose}
-            className="text-black  hover:text-gray-500 dark:hover:text-gray-400"
+            className="text-black hover:text-gray-500 dark:hover:text-gray-400"
           >
             <MdClose size={24} />
           </button>
         </div>
-        <div className="text-black ">
+        <div className="text-black">
           {content}
         </div>
         <div className="mt-4 flex justify-end">
@@ -230,6 +244,37 @@ const Popup = ({ isOpen, onClose, content }) => {
             className="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600"
           >
             Close
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const ConfirmationPopup = ({ isOpen, onConfirm, onCancel }) => {
+  if (!isOpen) return null;
+
+  return (
+    <div className="fixed inset-0 flex items-center justify-center z-50">
+      {/* Overlay */}
+      <div className="absolute inset-0 bg-black opacity-50"></div>
+
+      {/* Popup Content */}
+      <div className="bg-white text-black p-6 rounded-lg shadow-lg z-10 max-w-lg w-full">
+        <h2 className="text-xl font-bold mb-4">Confirm Leave Approval</h2>
+        <p>Are you sure you want to approve this leave request?</p>
+        <div className="mt-6 flex justify-end gap-2">
+          <button
+            onClick={onCancel}
+            className="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600"
+          >
+            Cancel
+          </button>
+          <button
+            onClick={onConfirm}
+            className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
+          >
+            Confirm
           </button>
         </div>
       </div>

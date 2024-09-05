@@ -99,7 +99,7 @@ const AdminHome = () => {
           <div className="w-[75%] h-full p-5 ">
             <div className="h-20px w-full flex justify-between gap-10 pb-5">
               <div>
-                <div className="relative w-64">
+                <div className=" w-64">
                   <input
                     type="text"
                     value={inputValue}
@@ -109,7 +109,7 @@ const AdminHome = () => {
                     placeholder="Search department..."
                   />
                   {showDropdown && (
-                    <ul className="absolute left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md max-h-48 overflow-y-auto z-10">
+                    <ul className="absolute  left-0 right-0 mt-1 bg-white border border-gray-300 rounded-md w-[40%px] max-h-48 overflow-y-auto z-10">
                       {filteredOptions.length ? (
                         filteredOptions.map((option, index) => (
                           <li
@@ -156,7 +156,7 @@ const AdminHome = () => {
                 </div>
               </div>
             </div>
-            <div className="w-full h-fit p-5 rounded-lg">
+            <div className="w-full h-fit p-1 rounded-lg">
               <div className="flex justify-between">
                 <Card label="Total Leaves Requested" value="20" image="gmail" />
                 <Card label="Total Leaves Granted" value="15" image="accept" />
@@ -175,7 +175,11 @@ const AdminHome = () => {
         {/* Modal for displaying reason */}
         
       </main>
-    
+      <div className="fixed bottom-0 left-0 w-full text-black  text-center text-sm p-2">
+            <a href="https://sece.ac.in/" target="_blank" rel="noopener noreferrer">
+              Copyright©2024 Sri Eshwar Technologies PVT LTD
+            </a>
+          </div>
    
     </div>
   );
