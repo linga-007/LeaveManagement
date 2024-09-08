@@ -9,8 +9,20 @@ const { Accepted, Rejected } = require('../utils/AdminResponseLeave')
 // Apply for leave
 const ApplyLeave = async (req, res) => {
     try {
-        console.log(req.body)
+        // console.log(req.body)
         const { empId, leaveType, from, to, numberOfDays, reasonType, reason, LOP } = req.body;
+        var list = []
+
+        for(let i = parseInt(from.date.slice(0,2))+1; i < parseInt(to.date.slice(0,2)); i++) {
+            if(i < 10){
+                list.push(0+i.toString())
+            }
+            else{
+                list.push(i.toString())
+            }
+        }
+
+        console.log(list)
 
         const emp = await EmpModel.findOne({empId});
 
@@ -29,6 +41,7 @@ const ApplyLeave = async (req, res) => {
                         from,
                         to,
                         numberOfDays,
+                        days: list,
                         reasonType,
                         reason,
                         LOP
@@ -46,6 +59,7 @@ const ApplyLeave = async (req, res) => {
                         from,
                         to,
                         numberOfDays,
+                        days: list,
                         reasonType,
                         reason,
                         LOP
@@ -68,6 +82,7 @@ const ApplyLeave = async (req, res) => {
                         from,
                         to,
                         numberOfDays,
+                        days: list,
                         reasonType,
                         reason,
                         LOP
@@ -86,6 +101,7 @@ const ApplyLeave = async (req, res) => {
                         from,
                         to,
                         numberOfDays,
+                        days: list,
                         reasonType,
                         reason,
                         LOP
@@ -104,6 +120,7 @@ const ApplyLeave = async (req, res) => {
                         from,
                         to,
                         numberOfDays,
+                        days: list,
                         reasonType,
                         reason,
                         LOP
@@ -358,20 +375,23 @@ const Deny = async (req, res) => {
 const checkLeave = async(req, res) => {
     try{
         const { empId, role, leaveType, from, numberOfDays } = req.body
-        // console.log(from.firstHalf)
-        if(from.firstHalf === true){
-            const data = await LeaveModel.find({empId: empId, "from.date": from.date, "from.firstHalf": true})
-            console.log(data.length)
-            console.log(data)
-            if(data.length){
-                return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
-            }
+        console.log(from.date.slice(0,2))
+        console.log(from.secondHalf)
+        const fromData = await LeaveModel.find({empId: empId, "from.date": from.date, "from.firstHalf": true})
+        const toData = await LeaveModel.find({empId: empId, "to.date": from.date, "to.firstHalf": true})
+        const From = await LeaveModel.find({empId: empId, "from.date": from.date, "from.secondHalf": true})
+        const To = await LeaveModel.find({empId: empId, "to.date": from.date, "to.secondHalf": true})
+        if(from.firstHalf && (fromData.length || toData.length)){
+            return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
         }
-        else if(from.secondHalf === true){
-            const data = await LeaveModel.findOne({empId: empId, "from.date": from.date, "from.secondHalf": true})
-            if(data){
-                return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
-            }
+        else if(from.secondHalf && (From.length || To.length)){
+            console.log(from.firstHalf)
+            return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
+        }
+
+        const data = await LeaveModel.find({empId: empId, days: { $in: [from.date.slice(0,2)] }})
+        if(data.length){
+            return res.status(202).json({ mesasage: "Already leave had applied in the same day" })
         }
 
         if(role === '3P'){

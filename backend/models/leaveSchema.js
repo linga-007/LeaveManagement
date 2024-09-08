@@ -32,6 +32,10 @@ const schema = new db.Schema(
             type: Number,
             required: true
         },
+        days: {
+            type: Array,
+            default: []
+        },
         reasonType: {
             type: String,
             enum: ['Personal', 'Medical', 'Peternity', 'Family Function'],
