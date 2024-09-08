@@ -138,6 +138,44 @@ const ApplyLeave = async (req, res) => {
     }
 }
 
+const withDrawLeave = async(req, res) => {
+    try{
+        const { leaveId } = req.body;
+        const leave = await LeaveModel.findById(leaveId);
+        if(leave.status === 'Pending'){
+            leave.status = 'Withdrawn';
+            await leave.save();
+            res.status(200).json({message: 'Leave withdrawn successfully'})
+        }
+        else{
+            res.status(400).json({message: 'Leave request has already been responded as '+leave.status})
+        }
+    }
+    catch(err){
+        res.status(500).json({ message: 'Server error', err });
+    }
+}
+
+const updateStatus = async(req, res)=> {
+    try{
+        const { empId, leaveId, status } = req.body;
+        const emp = await EmpModel.findOne({empId})
+        if (!emp) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        if(emp.role === 'Manager'){
+            const leave = await LeaveModel.findByIdAndUpdate(leaveId, { $set: { status } });
+            res.status(200).json({message: 'Leave status updated successfully'})
+        }
+        else{
+            res.status(404).json({message: 'You are not allowed perform this operation'})
+        }
+    }
+    catch(err){
+        res.status(500).json({ message: 'Server error', err });
+    }
+}
+
 // const LOP = async(req, res) => {
 //     try{
 //         const { empId, leaveType, from, to, numberOfDays, reason } = req.body;
@@ -234,12 +272,11 @@ const AcceptLeave = async (req, res) => {
             if(leave.status === 'Pending'){
                 leave.status = 'Approved';
                 await leave.save();
+                const filePath = path.join(__dirname, "../view/accept.html");
+                const emp = await EmpModel.findOne({empId: leave.empId})
+                Accepted('mohammedashif.a2022cse@sece.ac.in')
+                res.sendFile(filePath);
             }
-            const filePath = path.join(__dirname, "../view/accept.html");
-            const emp = await EmpModel.findOne({empId: leave.empId})
-            // Accepted(emp.empMail)
-            Accepted('mohammedashif.a2022cse@sece.ac.in')
-            res.sendFile(filePath);
         }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -256,10 +293,10 @@ const Accept = async (req, res) => {
         }
 
         if (leave.status === 'Approved'){
-            res.status(401).json({ message: 'Already Accepted' });
+            res.status(202).json({ message: 'Already Accepted' });
         }
         else if(leave.status === 'Rejected'){
-            res.status(401).json({ message: 'Already Rejected' });
+            res.status(202).json({ message: 'Already Rejected' });
 
         }
         else{
@@ -307,12 +344,13 @@ const Accept = async (req, res) => {
                 pl.futureClosingBalance -= 1;
                 await pl.save()
             }
-            leave.status = 'Approved';
-            await leave.save();
-            const emp = await EmpModel.findOne({empId: leave.empId})
-            // Accepted(emp.empMail)
-            Accepted('mohammedashif.a2022cse@sece.ac.in')
-            res.status(200).json({ message: 'Leave approved successfully', leave });
+            if(leave.status === 'Pending'){
+                leave.status = 'Approved';
+                await leave.save();
+                const emp = await EmpModel.findOne({empId: leave.empId})
+                Accepted('mohammedashif.a2022cse@sece.ac.in')
+                res.status(200).json({ message: 'Leave approved successfully', leave });
+            }
         }
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
@@ -359,14 +397,21 @@ const Deny = async (req, res) => {
         if (!leave) {
             return res.status(404).json({ message: 'Leave not found' });
         }
-
-        leave.status = 'Denied';
-        await leave.save();
-        const emp = await EmpModel.findOne({empId: leave.empId})
-        console.log(emp.empMail)
-        // Rejected(emp.empMail)
-        Rejected('mohammedashif.a2022cse@sece.ac.in')
-        res.status(200).json({ message: 'Leave denied successfully', leave });
+        if (leave.status === 'Denied'){
+            res.status(202).json({ message: 'Already Denied' });
+        }
+        else if(leave.status === 'Approved'){
+            res.status(202).json({ message: 'Already Accepted' });
+        }
+        else{
+            leave.status = 'Denied';
+            await leave.save();
+            const emp = await EmpModel.findOne({empId: leave.empId})
+            console.log(emp.empMail)
+            Rejected('mohammedashif.a2022cse@sece.ac.in')
+            res.status(200).json({ message: 'Leave denied successfully', leave });
+        }
+        
     } catch (error) {
         res.status(500).json({ message: 'Server error', error });
     }
@@ -396,10 +441,10 @@ const checkLeave = async(req, res) => {
 
         if(role === '3P'){
             const cl = await CasualLeave.findOne({empId: empId})
-            if(numberOfDays > 1 && cl.availed === 0){
+            if(numberOfDays >= 1 && cl.availed === 0){
                 res.status(200).json({ CL: 1, LOP: numberOfDays-1 })
             }
-            else if(numberOfDays > 1 && cl.availed !== 0){
+            else if(numberOfDays >= 1 && cl.availed !== 0){
                 res.status(200).json({ CL: 0, LOP: numberOfDays })
             }
             else{
@@ -410,7 +455,7 @@ const checkLeave = async(req, res) => {
             if(leaveType === 'Casual Leave'){
                 const cl = await CasualLeave.findOne({empId: empId})
                 console.log(cl)
-                if(numberOfDays > cl.eligibility){
+                if(numberOfDays >= cl.eligibility){
                     res.status(200).json({ CL: cl.eligibility, LOP: numberOfDays-cl.eligibility })
                 }
                 else{
@@ -421,7 +466,7 @@ const checkLeave = async(req, res) => {
                 console.log("check")
                 const pl = await PrivelageLeave.findOne({empId: empId})
                 console.log(pl)
-                if(numberOfDays > pl.eligibility){
+                if(numberOfDays >= pl.eligibility){
                     res.status(200).json({ PL: pl.eligibility, LOP: numberOfDays-pl.eligibility })
                 }
                 else{
@@ -430,7 +475,7 @@ const checkLeave = async(req, res) => {
             }
             else{
                 const pl = await PaternityLeave.findOne({empId: empId})
-                if(numberOfDays > 1){
+                if(numberOfDays >= 1){
                     res.status(200).json({ PL: pl.eligibility, LOP: numberOfDays-pl.eligibility })
                 }
                 else{
@@ -465,4 +510,4 @@ const GetLeave = async (req, res) => {
     }
 }
 
-module.exports = {checkLeave,ApplyLeave,AcceptLeave,Accept,DenyLeave,Deny,GetLeave}
+module.exports = {checkLeave,ApplyLeave,withDrawLeave,updateStatus,AcceptLeave,Accept,DenyLeave,Deny,GetLeave}
