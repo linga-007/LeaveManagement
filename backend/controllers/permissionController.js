@@ -135,15 +135,22 @@ const Deny = async (req, res) => {
 const checkPermission = async(req, res) => {
     try{
         const { empId, date, hrs } = req.body;
-        const data = await LeaveModel.find({empId: empId, "from.date": date});
+        const fromData = await LeaveModel.find({empId: empId, "from.date": date, "from.firstHalf": true})
+        const toData = await LeaveModel.find({empId: empId, "to.date": date, "to.firstHalf": true})
+        const From = await LeaveModel.find({empId: empId, "from.date": date, "from.secondHalf": true})
+        const To = await LeaveModel.find({empId: empId, "to.date": date, "to.secondHalf": true})
         const per = await PermissionModel.find({empId, date})
-        if(data.length || per.length){
+        const data = await LeaveModel.find({empId: empId, days: { $in: [date.slice(0,2)] }})
+        if(data.length){
             return res.status(202).json({ mesasage: "Already permission had applied in the same day" })
+        }
+        if(fromData.length || toData.length || From.length || To.length || per.length){
+            return res.status(202).json({ mesasage: "Already permission had applied in the same day"})
         }
         else{
             const emp = await EmpModel.findOne({empId})
             if(!emp){
-                return res.status(404).json({ message: 'Employee not found' });
+                return res.status(404).json({ message: 'Employee not found'});
             }
             if(hrs <= emp.permissionEligible){
                 console.log(emp.permissionEligible)
@@ -155,7 +162,7 @@ const checkPermission = async(req, res) => {
         }
     }
     catch(err){
-        res.status(500).json({ message: 'Server error', error });
+        res.status(500).json({ message: 'Server error', err });
     }
 }
 
