@@ -166,6 +166,25 @@ const checkPermission = async(req, res) => {
     }
 }
 
+const updatePermission = async(req, res)=> {
+    try{
+        const { empId, permissionId, status } = req.body;
+        const emp = await EmpModel.findOne({empId})
+        if (!emp) {
+            return res.status(404).json({ message: 'Employee not found' });
+        }
+        if(emp.role === 'Manager'){
+            const permission = await PermissionModel.findByIdAndUpdate(permissionId, { $set: { status } });
+            res.status(200).json({message: 'Permission status updated successfully'})
+        }
+        else{
+            res.status(404).json({message: 'You are not allowed perform this operation'})
+        }
+    }
+    catch(err){
+        res.status(500).json({ message: 'Server error', err });
+    }
+}
 
 // Get permissions granted to a particular employee
 const GetPermission = async (req, res) => {
@@ -188,4 +207,4 @@ const GetPermission = async (req, res) => {
     }
 }
 
-module.exports = {checkPermission,ApplyPermission,AcceptPermission,Accept,DenyPermission,Deny,GetPermission}
+module.exports = {checkPermission,ApplyPermission,AcceptPermission,Accept,DenyPermission,Deny,updatePermission,GetPermission}
